@@ -1,18 +1,21 @@
+import os
+import tempfile
+from pathlib import Path
+from ai.gemini_detector import analyze_donation_image
 from django.contrib.auth import authenticate
 from django.shortcuts import render
-from pathlib import Path
 
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from rest_framework_simplejwt.tokens import RefreshToken
-
 from rest_framework.parsers import (
     MultiPartParser,
     FormParser
 )
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import (
     CustomUser,
@@ -27,7 +30,11 @@ from .serializers import (
     NGOProfileSerializer
 )
 
-from ai.image_scanner import scan_image
+# ============================================================
+# GEMINI AI
+# ============================================================
+
+from ai.gemini_detector import analyze_donation_image
 
 
 # ============================================================
@@ -108,23 +115,6 @@ class LoginView(APIView):
 
     Endpoint:
         POST /api/login/
-
-    Request:
-
-    {
-        "username": "example",
-        "password": "password"
-    }
-
-    Returns:
-
-    {
-        "access": "...",
-        "refresh": "...",
-        "user": {
-            ...
-        }
-    }
     """
 
     permission_classes = [
@@ -145,7 +135,6 @@ class LoginView(APIView):
             "password"
         )
 
-
         # ====================================================
         # VALIDATE INPUT
         # ====================================================
@@ -160,7 +149,6 @@ class LoginView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         # ====================================================
         # AUTHENTICATE USER
         # ====================================================
@@ -169,7 +157,6 @@ class LoginView(APIView):
             username=username,
             password=password
         )
-
 
         # ====================================================
         # INVALID LOGIN
@@ -185,7 +172,6 @@ class LoginView(APIView):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
-
         # ====================================================
         # CHECK USER ACTIVE STATUS
         # ====================================================
@@ -200,7 +186,6 @@ class LoginView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-
         # ====================================================
         # CREATE JWT TOKENS
         # ====================================================
@@ -211,14 +196,12 @@ class LoginView(APIView):
 
         access_token = refresh.access_token
 
-
         # ====================================================
         # RETURN USER + TOKENS
         # ====================================================
 
         return Response(
             {
-
                 "access": str(
                     access_token
                 ),
@@ -230,7 +213,6 @@ class LoginView(APIView):
                 "user": UserSerializer(
                     user
                 ).data
-
             },
             status=status.HTTP_200_OK
         )
@@ -257,7 +239,6 @@ class ProfileView(APIView):
         IsAuthenticated
     ]
 
-
     # ========================================================
     # GET PROFILE
     # ========================================================
@@ -265,7 +246,6 @@ class ProfileView(APIView):
     def get(self, request):
 
         user = request.user
-
 
         # ====================================================
         # DONOR PROFILE
@@ -292,10 +272,12 @@ class ProfileView(APIView):
                         "username": user.username,
                         "first_name": user.first_name,
                         "last_name": user.last_name,
+
                         "name": (
                             f"{user.first_name} "
                             f"{user.last_name}"
                         ).strip(),
+
                         "email": user.email,
                         "phone": user.phone,
                         "role": user.role
@@ -305,7 +287,6 @@ class ProfileView(APIView):
                 },
                 status=status.HTTP_200_OK
             )
-
 
         # ====================================================
         # NGO PROFILE
@@ -341,11 +322,13 @@ class ProfileView(APIView):
                         "username": user.username,
                         "first_name": user.first_name,
                         "last_name": user.last_name,
+
                         "name": (
                             display_name
                             if display_name
                             else user.username
                         ),
+
                         "email": user.email,
                         "phone": user.phone,
                         "role": user.role
@@ -355,7 +338,6 @@ class ProfileView(APIView):
                 },
                 status=status.HTTP_200_OK
             )
-
 
         # ====================================================
         # INVALID ROLE
@@ -369,7 +351,6 @@ class ProfileView(APIView):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-
     # ========================================================
     # UPDATE PROFILE
     # ========================================================
@@ -377,7 +358,6 @@ class ProfileView(APIView):
     def put(self, request):
 
         user = request.user
-
 
         # ====================================================
         # GET NAME FIELDS
@@ -391,7 +371,6 @@ class ProfileView(APIView):
             "last_name"
         )
 
-
         # ====================================================
         # UPDATE USER NAME
         # ====================================================
@@ -402,18 +381,13 @@ class ProfileView(APIView):
                 first_name
             ).strip()
 
-
         if last_name is not None:
 
             user.last_name = str(
                 last_name
             ).strip()
 
-
-        # Save user information
-
         user.save()
-
 
         # ====================================================
         # DONOR PROFILE
@@ -427,17 +401,11 @@ class ProfileView(APIView):
                 )
             )
 
-
-            # ------------------------------------------------
-            # Profile serializer
-            # ------------------------------------------------
-
             serializer = ProfileSerializer(
                 profile,
                 data=request.data,
                 partial=True
             )
-
 
             if serializer.is_valid():
 
@@ -450,25 +418,17 @@ class ProfileView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # Updated display name
-            # ------------------------------------------------
-
             display_name = (
                 f"{user.first_name} "
                 f"{user.last_name}"
             ).strip()
 
-
             if not display_name:
 
                 display_name = user.username
 
-
             return Response(
                 {
-
                     "message":
                     "Profile updated successfully.",
 
@@ -488,11 +448,9 @@ class ProfileView(APIView):
 
                     "profile":
                     serializer.data
-
                 },
                 status=status.HTTP_200_OK
             )
-
 
         # ====================================================
         # NGO PROFILE
@@ -506,17 +464,11 @@ class ProfileView(APIView):
                 )
             )
 
-
-            # ------------------------------------------------
-            # NGO profile serializer
-            # ------------------------------------------------
-
             serializer = NGOProfileSerializer(
                 profile,
                 data=request.data,
                 partial=True
             )
-
 
             if serializer.is_valid():
 
@@ -529,11 +481,6 @@ class ProfileView(APIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-
-            # ------------------------------------------------
-            # NGO display name
-            # ------------------------------------------------
-
             if profile.ngo_name:
 
                 display_name = profile.ngo_name
@@ -545,15 +492,12 @@ class ProfileView(APIView):
                     f"{user.last_name}"
                 ).strip()
 
-
             if not display_name:
 
                 display_name = user.username
 
-
             return Response(
                 {
-
                     "message":
                     "Profile updated successfully.",
 
@@ -574,11 +518,9 @@ class ProfileView(APIView):
 
                     "profile":
                     serializer.data
-
                 },
                 status=status.HTTP_200_OK
             )
-
 
         # ====================================================
         # INVALID ROLE
@@ -594,10 +536,34 @@ class ProfileView(APIView):
 
 
 # ============================================================
-# AI IMAGE SCAN
+# GEMINI AI DONATION IMAGE SCAN
 # ============================================================
 
 class AIScanView(APIView):
+    """
+    AI Donation Image Analysis API.
+
+    Uses Gemini Vision to detect multiple donation items
+    from a single uploaded image.
+
+    Endpoint:
+
+        POST /api/donations/scan/
+
+    Also available as:
+
+        POST /api/donations/analyze-image/
+
+    Request:
+
+        multipart/form-data
+
+        image = donation.jpg
+
+    Authentication:
+
+        JWT required
+    """
 
     permission_classes = [
         IsAuthenticated
@@ -608,8 +574,22 @@ class AIScanView(APIView):
         FormParser
     ]
 
-
     def post(self, request):
+
+        # ====================================================
+        # CHECK USER ROLE
+        # ====================================================
+
+        if request.user.role != "Donor":
+
+            return Response(
+                {
+                    "success": False,
+                    "message":
+                    "Only donors can scan donation images."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         # ====================================================
         # GET IMAGE
@@ -619,78 +599,61 @@ class AIScanView(APIView):
             "image"
         )
 
-
         if not image:
 
             return Response(
                 {
                     "success": False,
-
-                    "error":
+                    "message":
                     "Image is required."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-
 
         # ====================================================
         # IMAGE TYPE VALIDATION
         # ====================================================
 
         allowed_types = [
-
             "image/jpeg",
-
             "image/jpg",
-
             "image/png",
-
             "image/webp"
-
         ]
-
 
         if image.content_type not in allowed_types:
 
             return Response(
                 {
                     "success": False,
-
-                    "error":
+                    "message":
                     "Only JPG, JPEG, PNG and WEBP images are allowed."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         # ====================================================
         # IMAGE SIZE VALIDATION
         # ====================================================
 
-        max_size = 5 * 1024 * 1024
-
+        max_size = 10 * 1024 * 1024
 
         if image.size > max_size:
 
             return Response(
                 {
                     "success": False,
-
-                    "error":
-                    "Image size must be less than 5 MB."
+                    "message":
+                    "Image size must be less than 10 MB."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-
         # ====================================================
-        # TEMP FILE
+        # TEMPORARY FILE
         # ====================================================
-
-        import tempfile
 
         temp_path = None
-
 
         try:
 
@@ -701,7 +664,6 @@ class AIScanView(APIView):
             suffix = Path(
                 image.name
             ).suffix
-
 
             # ------------------------------------------------
             # Create temporary file
@@ -718,42 +680,84 @@ class AIScanView(APIView):
                         chunk
                     )
 
-
                 temp_path = temp_file.name
 
-
             # =================================================
-            # RUN AI MODEL
+            # SEND IMAGE TO GEMINI
             # =================================================
 
-            result = scan_image(
+            result = analyze_donation_image(
                 temp_path
             )
 
+            # =================================================
+            # GEMINI ERROR
+            # =================================================
+
+            if not result.get(
+                "success",
+                False
+            ):
+
+                return Response(
+                    {
+                        "success": False,
+                        "message":
+                        result.get(
+                            "message",
+                            "Gemini image analysis failed."
+                        )
+                    },
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
             # =================================================
-            # RETURN AI RESULT
+            # GET DETECTED ITEMS
+            # =================================================
+
+            items = result.get(
+                "items",
+                []
+            )
+
+            # =================================================
+            # RETURN RESULT TO REACT
             # =================================================
 
             return Response(
-                result,
+                {
+                    "success": True,
+
+                    "message":
+                    "Image analyzed successfully.",
+
+                    "items": items,
+
+                    "total_item_types":
+                    len(items),
+
+                    "verification_required":
+                    True
+                },
                 status=status.HTTP_200_OK
             )
 
+        # ====================================================
+        # GENERAL ERROR
+        # ====================================================
 
         except Exception as e:
 
             print(
-                "AI SCANNING ERROR:",
+                "GEMINI AI SCANNING ERROR:",
                 str(e)
             )
-
 
             return Response(
                 {
                     "success": False,
 
-                    "error":
+                    "message":
                     "AI image scanning failed.",
 
                     "details":
@@ -762,12 +766,11 @@ class AIScanView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+        # ====================================================
+        # CLEANUP TEMPORARY FILE
+        # ====================================================
 
         finally:
-
-            # =================================================
-            # DELETE TEMP FILE
-            # =================================================
 
             if temp_path:
 

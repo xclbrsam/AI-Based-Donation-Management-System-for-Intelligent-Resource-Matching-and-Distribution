@@ -31,7 +31,6 @@ function Donation() {
     const token =
         localStorage.getItem("access_token");
 
-
     const isLoggedIn =
         !!token;
 
@@ -64,10 +63,10 @@ function Donation() {
         Upload image
 
         STEP 2
-        AI detection + user verification
+        AI detection + donor verification
 
         STEP 3
-        Additional donation details
+        Verified donation details
     */
 
     const [step, setStep] =
@@ -81,7 +80,6 @@ function Donation() {
     const [image, setImage] =
         useState(null);
 
-
     const [imagePreview, setImagePreview] =
         useState("");
 
@@ -93,38 +91,38 @@ function Donation() {
     const [scanning, setScanning] =
         useState(false);
 
-
     const [verified, setVerified] =
         useState(false);
 
 
-    const [aiResult, setAiResult] =
-        useState({
+    /*
+        Gemini can detect MULTIPLE items.
 
-            item: "",
+        Example:
 
-            category: "",
+        [
+            {
+                item: "Blanket",
+                category: "Household",
+                quantity: 3,
+                confidence: 0.95
+            },
+            {
+                item: "Book",
+                category: "Books",
+                quantity: 2,
+                confidence: 0.91
+            }
+        ]
+    */
 
-            confidence: 0,
-
-        });
+    const [detectedItems, setDetectedItems] =
+        useState([]);
 
 
     // =====================================================
-    // USER-EDITABLE ITEM INFORMATION
+    // ADDITIONAL DONATION INFORMATION
     // =====================================================
-
-    const [itemName, setItemName] =
-        useState("");
-
-
-    const [category, setCategory] =
-        useState("");
-
-
-    const [condition, setCondition] =
-        useState("");
-
 
     const [description, setDescription] =
         useState("");
@@ -136,7 +134,6 @@ function Donation() {
 
     const [error, setError] =
         useState("");
-
 
     const [success, setSuccess] =
         useState(false);
@@ -313,25 +310,10 @@ function Donation() {
 
 
         // =================================================
-        // RESET AI RESULT
+        // RESET PREVIOUS AI RESULTS
         // =================================================
 
-        setAiResult({
-
-            item: "",
-
-            category: "",
-
-            confidence: 0,
-
-        });
-
-
-        setItemName("");
-
-        setCategory("");
-
-        setCondition("");
+        setDetectedItems([]);
 
         setDescription("");
 
@@ -350,21 +332,7 @@ function Donation() {
 
         setImagePreview("");
 
-        setAiResult({
-
-            item: "",
-
-            category: "",
-
-            confidence: 0,
-
-        });
-
-        setItemName("");
-
-        setCategory("");
-
-        setCondition("");
+        setDetectedItems([]);
 
         setDescription("");
 
@@ -386,7 +354,7 @@ function Donation() {
     const scanImage = async () => {
 
         // -------------------------------------------------
-        // Check image
+        // CHECK IMAGE
         // -------------------------------------------------
 
         if (!image) {
@@ -401,7 +369,7 @@ function Donation() {
 
 
         // -------------------------------------------------
-        // Check token
+        // CHECK TOKEN
         // -------------------------------------------------
 
         const accessToken =
@@ -430,9 +398,9 @@ function Donation() {
 
         try {
 
-            // =============================================
+            // =================================================
             // CREATE FORMDATA
-            // =============================================
+            // =================================================
 
             const formData =
                 new FormData();
@@ -444,9 +412,9 @@ function Donation() {
             );
 
 
-            // =============================================
-            // SEND IMAGE TO DJANGO AI API
-            // =============================================
+            // =================================================
+            // SEND IMAGE TO DJANGO
+            // =================================================
 
             const response =
                 await api.post(
@@ -463,12 +431,12 @@ function Donation() {
                 );
 
 
-            // =============================================
+            // =================================================
             // DEBUG RESPONSE
-            // =============================================
+            // =================================================
 
             console.log(
-                "AI Scan Response:",
+                "Gemini AI Scan Response:",
                 response.data
             );
 
@@ -477,9 +445,9 @@ function Donation() {
                 response.data;
 
 
-            // =============================================
+            // =================================================
             // CHECK RESPONSE
-            // =============================================
+            // =================================================
 
             if (
                 !result.success
@@ -488,7 +456,7 @@ function Donation() {
                 setError(
                     result.message ||
                     result.error ||
-                    "No recognizable item was detected."
+                    "No recognizable donation item was detected."
                 );
 
                 return;
@@ -496,55 +464,114 @@ function Donation() {
             }
 
 
-            // =============================================
-            // STORE AI RESULT
-            // =============================================
+            // =================================================
+            // GET MULTIPLE DETECTED ITEMS
+            // =================================================
 
-            setAiResult({
-
-                item:
-                    result.item || "",
-
-                category:
-                    result.category || "Other",
-
-                confidence:
-                    Number(
-                        result.confidence || 0
-                    ),
-
-            });
+            const items =
+                result.items || [];
 
 
-            // =============================================
-            // PUT AI RESULT INTO EDITABLE FIELDS
-            // =============================================
+            if (
+                items.length === 0
+            ) {
 
-            setItemName(
-                result.item || ""
+                setError(
+                    "No donation items were detected in the image."
+                );
+
+                return;
+
+            }
+
+
+            // =================================================
+            // FORMAT GEMINI ITEMS
+            // =================================================
+
+            const formattedItems =
+                items.map(
+                    (item, index) => {
+
+                        let confidence =
+                            Number(
+                                item.confidence
+                            ) || 0;
+
+
+                        /*
+                            Gemini may return:
+
+                            0.95
+
+                            OR
+
+                            95
+
+                            Convert both to percentage.
+                        */
+
+                        if (
+                            confidence <= 1
+                        ) {
+
+                            confidence =
+                                confidence * 100;
+
+                        }
+
+
+                        confidence =
+                            Math.min(
+                                100,
+                                Math.max(
+                                    0,
+                                    confidence
+                                )
+                            );
+
+
+                        return {
+
+                            id:
+                                `${Date.now()}-${index}`,
+
+                            item:
+                                item.item || "",
+
+                            category:
+                                item.category ||
+                                "Other",
+
+                            quantity:
+                                Math.max(
+                                    1,
+                                    Number(
+                                        item.quantity
+                                    ) || 1
+                                ),
+
+                            confidence:
+                                confidence
+
+                        };
+
+                    }
+                );
+
+
+            // =================================================
+            // STORE DETECTED ITEMS
+            // =================================================
+
+            setDetectedItems(
+                formattedItems
             );
 
 
-            setCategory(
-                result.category || "Other"
-            );
-
-
-            /*
-                IMPORTANT:
-
-                AI is NOT setting condition.
-
-                The user must verify the
-                physical condition manually.
-            */
-
-            setCondition("");
-
-
-            // =============================================
-            // MOVE TO VERIFICATION
-            // =============================================
+            // =================================================
+            // MOVE TO STEP 2
+            // =================================================
 
             setStep(2);
 
@@ -557,9 +584,9 @@ function Donation() {
             );
 
 
-            // =============================================
+            // =================================================
             // UNAUTHORIZED
-            // =============================================
+            // =================================================
 
             if (
                 error.response?.status === 401
@@ -574,9 +601,22 @@ function Donation() {
             }
 
 
-            // =============================================
+            // =================================================
             // BACKEND ERROR
-            // =============================================
+            // =================================================
+
+            if (
+                error.response?.data?.message
+            ) {
+
+                setError(
+                    error.response.data.message
+                );
+
+                return;
+
+            }
+
 
             if (
                 error.response?.data?.error
@@ -591,9 +631,9 @@ function Donation() {
             }
 
 
-            // =============================================
+            // =================================================
             // NETWORK ERROR
-            // =============================================
+            // =================================================
 
             if (
                 error.message ===
@@ -609,9 +649,9 @@ function Donation() {
             }
 
 
-            // =============================================
+            // =================================================
             // GENERAL ERROR
-            // =============================================
+            // =================================================
 
             setError(
                 "Unable to scan the image. Please try again."
@@ -627,6 +667,111 @@ function Donation() {
 
 
     // =====================================================
+    // UPDATE DETECTED ITEM
+    // =====================================================
+
+    const updateDetectedItem = (
+        id,
+        field,
+        value
+    ) => {
+
+        setDetectedItems(
+            (items) =>
+
+                items.map(
+                    (item) => {
+
+                        if (
+                            item.id !== id
+                        ) {
+
+                            return item;
+
+                        }
+
+
+                        return {
+
+                            ...item,
+
+                            [field]:
+                                value
+
+                        };
+
+                    }
+                )
+        );
+
+    };
+
+
+    // =====================================================
+    // UPDATE QUANTITY
+    // =====================================================
+
+    const updateQuantity = (
+        id,
+        change
+    ) => {
+
+        setDetectedItems(
+            (items) =>
+
+                items.map(
+                    (item) => {
+
+                        if (
+                            item.id !== id
+                        ) {
+
+                            return item;
+
+                        }
+
+
+                        return {
+
+                            ...item,
+
+                            quantity:
+                                Math.max(
+                                    1,
+                                    Number(
+                                        item.quantity
+                                    ) + change
+                                )
+
+                        };
+
+                    }
+                )
+        );
+
+    };
+
+
+    // =====================================================
+    // REMOVE DETECTED ITEM
+    // =====================================================
+
+    const removeDetectedItem = (
+        id
+    ) => {
+
+        setDetectedItems(
+            (items) =>
+                items.filter(
+                    (item) =>
+                        item.id !== id
+                )
+        );
+
+    };
+
+
+    // =====================================================
     // VERIFY AI RESULT
     // =====================================================
 
@@ -635,16 +780,16 @@ function Donation() {
         setError("");
 
 
-        // -------------------------------------------------
-        // ITEM
-        // -------------------------------------------------
+        // =================================================
+        // CHECK ITEMS
+        // =================================================
 
         if (
-            !itemName.trim()
+            detectedItems.length === 0
         ) {
 
             setError(
-                "Please enter the item name."
+                "At least one donation item is required."
             );
 
             return;
@@ -652,42 +797,80 @@ function Donation() {
         }
 
 
-        // -------------------------------------------------
-        // CATEGORY
-        // -------------------------------------------------
+        // =================================================
+        // VALIDATE EACH ITEM
+        // =================================================
 
-        if (!category) {
+        for (
+            const item of detectedItems
+        ) {
 
-            setError(
-                "Please select a category."
-            );
+            // ---------------------------------------------
+            // ITEM NAME
+            // ---------------------------------------------
 
-            return;
+            if (
+                !item.item ||
+                !item.item.trim()
+            ) {
+
+                setError(
+                    "Every detected item must have a name."
+                );
+
+                return;
+
+            }
+
+
+            // ---------------------------------------------
+            // CATEGORY
+            // ---------------------------------------------
+
+            if (
+                !item.category
+            ) {
+
+                setError(
+                    `Please select a category for ${item.item}.`
+                );
+
+                return;
+
+            }
+
+
+            // ---------------------------------------------
+            // QUANTITY
+            // ---------------------------------------------
+
+            if (
+                Number(
+                    item.quantity
+                ) < 1
+            ) {
+
+                setError(
+                    `Quantity for ${item.item} must be at least 1.`
+                );
+
+                return;
+
+            }
 
         }
 
 
-        // -------------------------------------------------
-        // CONDITION
-        // -------------------------------------------------
-
-        if (!condition) {
-
-            setError(
-                "Please select the item condition."
-            );
-
-            return;
-
-        }
-
-
-        // -------------------------------------------------
-        // VERIFIED
-        // -------------------------------------------------
+        // =================================================
+        // DONOR APPROVED AI RESULT
+        // =================================================
 
         setVerified(true);
 
+
+        // =================================================
+        // MOVE TO STEP 3
+        // =================================================
 
         setStep(3);
 
@@ -715,7 +898,9 @@ function Donation() {
     // FINAL SUBMIT
     // =====================================================
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (
+        event
+    ) => {
 
         event.preventDefault();
 
@@ -724,14 +909,16 @@ function Donation() {
         setSuccess(false);
 
 
-        // -------------------------------------------------
+        // =================================================
         // VERIFY FIRST
-        // -------------------------------------------------
+        // =================================================
 
-        if (!verified) {
+        if (
+            !verified
+        ) {
 
             setError(
-                "Please verify the AI detected item first."
+                "Please verify the AI detected items first."
             );
 
             setStep(2);
@@ -746,16 +933,32 @@ function Donation() {
          *
          * IMPORTANT
          *
-         * The final Donation API has not been created yet.
+         * Final Donation API has not been created yet.
          *
-         * Therefore we are NOT sending the donation to
-         * Django at this stage.
+         * Therefore we are NOT saving the donation
+         * to the database yet.
          *
-         * This button currently confirms that the item
-         * is ready for the next NGO matching stage.
+         * The verified data currently contains:
+         *
+         * - item
+         * - category
+         * - quantity
+         * - AI confidence
          *
          * =================================================
          */
+
+
+        console.log(
+            "Verified donation:",
+            {
+                items:
+                    detectedItems,
+
+                description:
+                    description
+            }
+        );
 
 
         setSuccess(true);
@@ -902,9 +1105,9 @@ function Donation() {
                     <p>
 
                         Upload your item and let our
-                        AI identify it before you
-                        verify and continue with
-                        your donation.
+                        AI identify everything in the
+                        image before you verify and
+                        continue with your donation.
 
                     </p>
 
@@ -1065,8 +1268,8 @@ function Donation() {
                                     <p>
 
                                         Upload a clear image
-                                        of the item you want
-                                        to donate.
+                                        showing the items
+                                        you want to donate.
 
                                     </p>
 
@@ -1121,7 +1324,8 @@ function Donation() {
 
                                             Choose a clear
                                             photo showing
-                                            the item properly.
+                                            the donation
+                                            items properly.
 
                                         </p>
 
@@ -1219,7 +1423,7 @@ function Donation() {
                                                         className="spin"
                                                     />
 
-                                                    AI is scanning...
+                                                    AI is analyzing...
 
                                                 </>
 
@@ -1231,7 +1435,7 @@ function Donation() {
                                                         size={18}
                                                     />
 
-                                                    Scan Item with AI
+                                                    Analyze Image with AI
 
                                                 </>
 
@@ -1279,8 +1483,8 @@ function Donation() {
 
                                     <p>
 
-                                        Review the AI result
-                                        and correct anything
+                                        Review every item detected
+                                        by AI and correct anything
                                         that isn't accurate.
 
                                     </p>
@@ -1308,7 +1512,9 @@ function Donation() {
                             <div className="ai-result-layout">
 
 
-                                {/* IMAGE */}
+                                {/* =================================================
+                                    IMAGE
+                                ================================================= */}
 
                                 <div className="ai-image-container">
 
@@ -1320,192 +1526,277 @@ function Donation() {
                                 </div>
 
 
-                                {/* DETECTION INFORMATION */}
+                                {/* =================================================
+                                    DETECTED ITEMS
+                                ================================================= */}
 
                                 <div className="ai-detection">
 
 
-                                    {/* CONFIDENCE */}
+                                    <div className="detected-items-heading">
 
-                                    <div className="confidence-card">
-
-                                        <div>
-
-                                            <span>
-                                                AI CONFIDENCE
-                                            </span>
+                                        <h3>
+                                            Detected Items
+                                        </h3>
 
 
-                                            <strong>
-
-                                                {
-                                                    Number(
-                                                        aiResult.confidence
-                                                    ).toFixed(2)
-                                                }%
-
-                                            </strong>
-
-                                        </div>
-
-
-                                        <div className="confidence-bar">
-
-                                            <div
-                                                style={{
-                                                    width:
-                                                        `${Math.min(
-                                                            Math.max(
-                                                                Number(
-                                                                    aiResult.confidence
-                                                                ) || 0,
-                                                                0
-                                                            ),
-                                                            100
-                                                        )}%`
-                                                }}
-                                            />
-
-                                        </div>
+                                        <p>
+                                            Gemini identified
+                                            the following items
+                                            in your image.
+                                        </p>
 
                                     </div>
 
 
-                                    {/* DETECTED ITEM */}
+                                    {
+                                        detectedItems.map(
+                                            (item) => (
 
-                                    <div className="donation-field">
-
-                                        <label>
-                                            Detected Item
-                                        </label>
-
-
-                                        <input
-                                            type="text"
-                                            value={itemName}
-                                            onChange={(event) =>
-                                                setItemName(
-                                                    event.target.value
-                                                )
-                                            }
-                                            placeholder="Detected item"
-                                        />
-
-                                    </div>
+                                                <div
+                                                    className="detected-item-card"
+                                                    key={item.id}
+                                                >
 
 
-                                    {/* CATEGORY */}
+                                                    {/* =================================
+                                                        ITEM NAME
+                                                    ================================= */}
 
-                                    <div className="donation-field">
+                                                    <div className="donation-field">
 
-                                        <label>
-                                            Category
-                                        </label>
-
-
-                                        <select
-                                            value={category}
-                                            onChange={(event) =>
-                                                setCategory(
-                                                    event.target.value
-                                                )
-                                            }
-                                        >
-
-                                            <option value="">
-                                                Select category
-                                            </option>
+                                                        <label>
+                                                            Detected Item
+                                                        </label>
 
 
-                                            <option value="Clothing">
-                                                Clothing
-                                            </option>
+                                                        <input
+                                                            type="text"
+                                                            value={
+                                                                item.item
+                                                            }
+                                                            onChange={
+                                                                (event) =>
+                                                                    updateDetectedItem(
+                                                                        item.id,
+                                                                        "item",
+                                                                        event.target.value
+                                                                    )
+                                                            }
+                                                            placeholder="Detected item"
+                                                        />
+
+                                                    </div>
 
 
-                                            <option value="Food">
-                                                Food
-                                            </option>
+                                                    {/* =================================
+                                                        CATEGORY
+                                                    ================================= */}
+
+                                                    <div className="donation-field">
+
+                                                        <label>
+                                                            Category
+                                                        </label>
 
 
-                                            <option value="Books">
-                                                Books & Education
-                                            </option>
+                                                        <select
+                                                            value={
+                                                                item.category
+                                                            }
+                                                            onChange={
+                                                                (event) =>
+                                                                    updateDetectedItem(
+                                                                        item.id,
+                                                                        "category",
+                                                                        event.target.value
+                                                                    )
+                                                            }
+                                                        >
+
+                                                            <option value="">
+                                                                Select category
+                                                            </option>
 
 
-                                            <option value="Electronics">
-                                                Electronics
-                                            </option>
+                                                            <option value="Clothing">
+                                                                Clothing
+                                                            </option>
 
 
-                                            <option value="Furniture">
-                                                Furniture
-                                            </option>
+                                                            <option value="Food">
+                                                                Food
+                                                            </option>
 
 
-                                            <option value="Medical">
-                                                Medical Supplies
-                                            </option>
+                                                            <option value="Books">
+                                                                Books
+                                                            </option>
 
 
-                                            <option value="Household">
-                                                Household Items
-                                            </option>
+                                                            <option value="Education">
+                                                                Education
+                                                            </option>
 
 
-                                            <option value="Other">
-                                                Other
-                                            </option>
-
-                                        </select>
-
-                                    </div>
+                                                            <option value="Electronics">
+                                                                Electronics
+                                                            </option>
 
 
-                                    {/* CONDITION */}
-
-                                    <div className="donation-field">
-
-                                        <label>
-                                            Item Condition
-                                        </label>
+                                                            <option value="Furniture">
+                                                                Furniture
+                                                            </option>
 
 
-                                        <select
-                                            value={condition}
-                                            onChange={(event) =>
-                                                setCondition(
-                                                    event.target.value
-                                                )
-                                            }
-                                        >
-
-                                            <option value="">
-                                                Select condition
-                                            </option>
+                                                            <option value="Medical">
+                                                                Medical Supplies
+                                                            </option>
 
 
-                                            <option value="New">
-                                                New
-                                            </option>
+                                                            <option value="Household">
+                                                                Household Items
+                                                            </option>
 
 
-                                            <option value="Good">
-                                                Good
-                                            </option>
+                                                            <option value="Toys">
+                                                                Toys
+                                                            </option>
 
 
-                                            <option value="Used">
-                                                Used
-                                            </option>
+                                                            <option value="Other">
+                                                                Other
+                                                            </option>
+
+                                                        </select>
+
+                                                    </div>
 
 
-                                            <option value="Needs Repair">
-                                                Needs Repair
-                                            </option>
+                                                    {/* =================================
+                                                        QUANTITY
+                                                    ================================= */}
 
-                                        </select>
+                                                    <div className="quantity-row">
 
-                                    </div>
+                                                        <label>
+                                                            Quantity
+                                                        </label>
+
+
+                                                        <div className="quantity-control">
+
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    updateQuantity(
+                                                                        item.id,
+                                                                        -1
+                                                                    )
+                                                                }
+                                                            >
+
+                                                                −
+
+                                                            </button>
+
+
+                                                            <span>
+
+                                                                {
+                                                                    item.quantity
+                                                                }
+
+                                                            </span>
+
+
+                                                            <button
+                                                                type="button"
+                                                                onClick={() =>
+                                                                    updateQuantity(
+                                                                        item.id,
+                                                                        1
+                                                                    )
+                                                                }
+                                                            >
+
+                                                                +
+
+                                                            </button>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    {/* =================================
+                                                        AI CONFIDENCE
+                                                    ================================= */}
+
+                                                    <div className="confidence-card">
+
+                                                        <div>
+
+                                                            <span>
+                                                                AI CONFIDENCE
+                                                            </span>
+
+
+                                                            <strong>
+
+                                                                {
+                                                                    Math.round(
+                                                                        item.confidence
+                                                                    )
+                                                                }%
+
+                                                            </strong>
+
+                                                        </div>
+
+
+                                                        <div className="confidence-bar">
+
+                                                            <div
+                                                                style={{
+                                                                    width:
+                                                                        `${item.confidence}%`
+                                                                }}
+                                                            />
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    {/* =================================
+                                                        REMOVE ITEM
+                                                    ================================= */}
+
+                                                    <button
+                                                        type="button"
+                                                        className="remove-detected-item"
+                                                        onClick={() =>
+                                                            removeDetectedItem(
+                                                                item.id
+                                                            )
+                                                        }
+                                                    >
+
+                                                        <X
+                                                            size={15}
+                                                        />
+
+                                                        Remove Item
+
+                                                    </button>
+
+                                                </div>
+
+                                            )
+                                        )
+                                    }
+
 
                                 </div>
 
@@ -1526,7 +1817,7 @@ function Donation() {
                                 <div>
 
                                     <strong>
-                                        Please verify this result
+                                        Please verify these results
                                     </strong>
 
 
@@ -1535,7 +1826,7 @@ function Donation() {
                                         AI suggestions are
                                         not final. Review
                                         the detected item,
-                                        category and condition
+                                        category and quantity
                                         before continuing.
 
                                     </p>
@@ -1617,7 +1908,9 @@ function Donation() {
                         >
 
 
-                            {/* HEADER */}
+                            {/* =================================================
+                                HEADER
+                            ================================================= */}
 
                             <div className="donation-card-heading">
 
@@ -1635,9 +1928,10 @@ function Donation() {
 
                                     <p>
 
-                                        Your item has been
-                                        verified. Add any
-                                        additional information.
+                                        Your donation items
+                                        have been verified.
+                                        Add any additional
+                                        information.
 
                                     </p>
 
@@ -1653,45 +1947,71 @@ function Donation() {
 
 
                             {/* =================================================
-                                VERIFIED ITEM
+                                VERIFIED ITEMS
                             ================================================= */}
 
-                            <div className="verified-item">
+                            <div className="verified-items">
+
+                                <span>
+                                    VERIFIED DONATION ITEMS
+                                </span>
 
 
-                                <div className="verified-item-image">
+                                {
+                                    detectedItems.map(
+                                        (item) => (
 
-                                    <img
-                                        src={imagePreview}
-                                        alt="Verified donation item"
-                                    />
-
-                                </div>
-
-
-                                <div>
-
-                                    <span>
-                                        VERIFIED ITEM
-                                    </span>
+                                            <div
+                                                className="verified-item"
+                                                key={item.id}
+                                            >
 
 
-                                    <h3>
-                                        {itemName}
-                                    </h3>
+                                                <div className="verified-item-image">
+
+                                                    <img
+                                                        src={imagePreview}
+                                                        alt={
+                                                            item.item
+                                                        }
+                                                    />
+
+                                                </div>
 
 
-                                    <p>
+                                                <div className="verified-item-information">
 
-                                        {category}
+                                                    <h3>
+                                                        {
+                                                            item.item
+                                                        }
+                                                    </h3>
 
-                                        {" • "}
 
-                                        {condition}
+                                                    <p>
 
-                                    </p>
+                                                        {
+                                                            item.category
+                                                        }
 
-                                </div>
+                                                        {" • "}
+
+                                                        Quantity:
+                                                        {" "}
+
+                                                        {
+                                                            item.quantity
+                                                        }
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        )
+                                    )
+                                }
 
 
                                 <button
@@ -1702,7 +2022,7 @@ function Donation() {
                                     className="edit-result-button"
                                 >
 
-                                    Edit
+                                    Edit AI Results
 
                                 </button>
 
@@ -1724,12 +2044,13 @@ function Donation() {
                                     value={
                                         description
                                     }
-                                    onChange={(event) =>
-                                        setDescription(
-                                            event.target.value
-                                        )
+                                    onChange={
+                                        (event) =>
+                                            setDescription(
+                                                event.target.value
+                                            )
                                     }
-                                    placeholder="Add quantity, size, color or any other useful information..."
+                                    placeholder="Add quantity details, size, color, condition or any other useful information..."
                                     rows="5"
                                 />
 
@@ -1753,7 +2074,7 @@ function Donation() {
                                         <div>
 
                                             <strong>
-                                                Item verified successfully!
+                                                Donation verified successfully!
                                             </strong>
 
 
@@ -1784,10 +2105,9 @@ function Donation() {
 
                                         <p>
 
-                                            Your verified item
-                                            will be matched
-                                            with NGOs that
-                                            need it.
+                                            Your verified donation
+                                            items will be matched
+                                            with NGOs that need them.
 
                                         </p>
 
@@ -1814,6 +2134,7 @@ function Donation() {
 
                     )
                 }
+
 
             </main>
 

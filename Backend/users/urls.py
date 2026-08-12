@@ -14,7 +14,9 @@ from .views import (
 
 urlpatterns = [
 
-    # Frontend pages
+    # ========================================================
+    # FRONTEND PAGES
+    # ========================================================
 
     path(
         "",
@@ -41,7 +43,9 @@ urlpatterns = [
     ),
 
 
-    # APIs
+    # ========================================================
+    # AUTHENTICATION APIs
+    # ========================================================
 
     path(
         "register/",
@@ -49,12 +53,16 @@ urlpatterns = [
         name="register"
     ),
 
-    # SINGLE LOGIN API
     path(
         "login/",
         LoginView.as_view(),
         name="login"
     ),
+
+
+    # ========================================================
+    # PROFILE API
+    # ========================================================
 
     path(
         "profile/",
@@ -62,10 +70,23 @@ urlpatterns = [
         name="profile"
     ),
 
-    # AI Scan API
+
+    # ========================================================
+    # GEMINI AI DONATION SCAN API
+    # ========================================================
+
+    # Existing endpoint
     path(
-       "donations/scan/",
+        "donations/scan/",
         AIScanView.as_view(),
-         name="ai-scan"
+        name="ai-scan"
     ),
+
+    # New endpoint used by React donation page
+    path(
+        "donations/analyze-image/",
+        AIScanView.as_view(),
+        name="analyze-donation-image"
+    ),
+
 ]

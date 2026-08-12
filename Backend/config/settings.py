@@ -27,7 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # Application definition
 
 INSTALLED_APPS = [
