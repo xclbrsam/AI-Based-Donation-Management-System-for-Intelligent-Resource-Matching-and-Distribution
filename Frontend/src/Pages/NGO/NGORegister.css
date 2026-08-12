@@ -1,0 +1,661 @@
+/* =====================================================
+   NGO REGISTER
+   PREMIUM LIGHT + DARK DESIGN
+===================================================== */
+
+:root {
+  --ngo-bg: #f8f5ef;
+  --ngo-surface: #ffffff;
+  --ngo-surface-soft: #fcfaf6;
+
+  --ngo-text: #182235;
+  --ngo-muted: #737b89;
+
+  --ngo-border: #e5dfd5;
+
+  --ngo-navy: #172033;
+  --ngo-navy-light: #26334a;
+
+  --ngo-coral: #e8755c;
+  --ngo-coral-dark: #d85f47;
+  --ngo-coral-soft: #f8e1da;
+
+  --ngo-green: #4d8066;
+  --ngo-green-soft: #edf5ef;
+
+  --ngo-shadow:
+    0 18px 50px rgba(23, 32, 51, 0.08);
+}
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+body.dark-theme {
+  --ngo-bg: #0d111b;
+  --ngo-surface: #151c2a;
+  --ngo-surface-soft: #192231;
+
+  --ngo-text: #f3f5f8;
+  --ngo-muted: #9aa4b4;
+
+  --ngo-border: #293344;
+
+  --ngo-navy: #090e18;
+  --ngo-navy-light: #151e2d;
+
+  --ngo-coral-soft: #35201d;
+  --ngo-green-soft: #17271f;
+
+  --ngo-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.28);
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.ngo-register-container {
+  min-height: 100vh;
+  width: 100%;
+
+  padding: 65px 25px 80px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 5% 10%,
+      rgba(232, 117, 92, 0.08),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 95% 45%,
+      rgba(91, 122, 158, 0.08),
+      transparent 25%
+    ),
+    var(--ngo-bg);
+
+  color: var(--ngo-text);
+
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+
+/* Decorative circles */
+
+.ngo-register-container::before {
+  content: "";
+
+  position: absolute;
+
+  width: 420px;
+  height: 420px;
+
+  right: -230px;
+  top: -210px;
+
+  border-radius: 50%;
+
+  border: 1px solid
+    rgba(232, 117, 92, 0.12);
+
+  pointer-events: none;
+}
+
+.ngo-register-container::after {
+  content: "";
+
+  position: absolute;
+
+  width: 300px;
+  height: 300px;
+
+  left: -180px;
+  bottom: -170px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(91, 122, 158, 0.08),
+      transparent 70%
+    );
+
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.register-header {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+  max-width: 760px;
+
+  text-align: center;
+
+  margin-bottom: 28px;
+}
+
+.register-header::before {
+  content: "JOIN THE PLATFORM";
+
+  display: block;
+
+  margin-bottom: 14px;
+
+  color: var(--ngo-coral);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+}
+
+.register-header h1 {
+  margin: 0;
+
+  color: var(--ngo-text);
+
+  font-size: clamp(
+    36px,
+    5vw,
+    52px
+  );
+
+  line-height: 1;
+
+  letter-spacing: -2px;
+}
+
+.register-header p {
+  max-width: 550px;
+
+  margin: 15px auto 0;
+
+  color: var(--ngo-muted);
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+
+/* =====================================================
+   ACCOUNT TYPE
+===================================================== */
+
+.account-type-section {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  max-width: 760px;
+
+  margin-bottom: 20px;
+}
+
+.account-type-section > label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: var(--ngo-muted);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+
+  text-transform: uppercase;
+}
+
+.account-type-buttons {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 10px;
+}
+
+.account-type {
+  min-height: 54px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  border: 1px solid var(--ngo-border);
+
+  border-radius: 12px;
+
+  background: var(--ngo-surface);
+
+  color: var(--ngo-muted);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.account-type span:first-child {
+  font-size: 17px;
+}
+
+.account-type:hover {
+  transform: translateY(-2px);
+
+  border-color:
+    rgba(232, 117, 92, 0.35);
+
+  box-shadow:
+    0 8px 20px
+    rgba(23, 32, 51, 0.07);
+}
+
+.account-type.active {
+  border-color: var(--ngo-coral);
+
+  background: var(--ngo-coral-soft);
+
+  color: var(--ngo-coral);
+
+  box-shadow:
+    0 8px 20px
+    rgba(232, 117, 92, 0.08);
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.ngo-register-container form {
+  position: relative;
+
+  z-index: 2;
+
+  width: 100%;
+
+  max-width: 760px;
+
+  padding: 34px;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 15px;
+
+  border: 1px solid var(--ngo-border);
+
+  border-radius: 22px;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--ngo-surface),
+      var(--ngo-surface-soft)
+    );
+
+  box-shadow: var(--ngo-shadow);
+
+  transition:
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.ngo-register-container input,
+.ngo-register-container textarea,
+.ngo-register-container select {
+  width: 100%;
+
+  min-height: 48px;
+
+  padding: 13px 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid var(--ngo-border);
+
+  border-radius: 10px;
+
+  outline: none;
+
+  background: var(--ngo-surface-soft);
+
+  color: var(--ngo-text);
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.ngo-register-container input::placeholder,
+.ngo-register-container textarea::placeholder {
+  color: #9aa1ab;
+}
+
+.ngo-register-container input:focus,
+.ngo-register-container textarea:focus,
+.ngo-register-container select:focus {
+  border-color: var(--ngo-coral);
+
+  background: var(--ngo-surface);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(232, 117, 92, 0.09);
+}
+
+.ngo-register-container textarea {
+  min-height: 100px;
+
+  resize: vertical;
+
+  line-height: 1.6;
+}
+
+.ngo-register-container select {
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   FILE UPLOAD
+===================================================== */
+
+.file-field {
+  width: 100%;
+
+  padding: 19px;
+
+  box-sizing: border-box;
+
+  border: 1px dashed
+    rgba(115, 123, 137, 0.45);
+
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--ngo-surface-soft),
+      var(--ngo-surface)
+    );
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.file-field:hover {
+  border-color: var(--ngo-coral);
+
+  background: var(--ngo-coral-soft);
+}
+
+.file-field label {
+  display: block;
+
+  margin-bottom: 9px;
+
+  color: var(--ngo-text);
+
+  font-size: 11px;
+
+  font-weight: 750;
+}
+
+.file-field input[type="file"] {
+  min-height: auto;
+
+  padding: 8px;
+
+  border: none;
+
+  background: transparent;
+
+  box-shadow: none;
+
+  color: var(--ngo-muted);
+
+  font-size: 10px;
+
+  cursor: pointer;
+}
+
+.file-field input[type="file"]:focus {
+  border: none;
+
+  box-shadow: none;
+}
+
+.file-field small {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--ngo-muted);
+
+  font-size: 9px;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   SUBMIT
+===================================================== */
+
+.register-submit {
+  width: 100%;
+
+  min-height: 52px;
+
+  margin-top: 7px;
+
+  padding: 14px 18px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: var(--ngo-coral);
+
+  color: white;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 10px 25px
+    rgba(232, 117, 92, 0.2);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.register-submit:hover {
+  transform: translateY(-3px);
+
+  background: var(--ngo-coral-dark);
+
+  box-shadow:
+    0 15px 30px
+    rgba(232, 117, 92, 0.27);
+}
+
+.register-submit:active {
+  transform: translateY(0);
+}
+
+.register-submit:disabled {
+  opacity: 0.6;
+
+  background: #8a9099;
+
+  box-shadow: none;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+
+/* =====================================================
+   FORM SEPARATION
+===================================================== */
+
+.ngo-register-container form::before {
+  content: "ORGANIZATION DETAILS";
+
+  display: block;
+
+  margin-bottom: -4px;
+
+  padding-bottom: 5px;
+
+  border-bottom: 1px solid var(--ngo-border);
+
+  color: var(--ngo-muted);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.5px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .ngo-register-container {
+    padding: 45px 15px 60px;
+  }
+
+  .register-header h1 {
+    font-size: 36px;
+
+    letter-spacing: -1.5px;
+  }
+
+  .register-header p {
+    font-size: 11px;
+  }
+
+  .account-type-buttons {
+    gap: 8px;
+  }
+
+  .account-type {
+    min-height: 50px;
+  }
+
+  .ngo-register-container form {
+    padding: 24px 18px;
+
+    border-radius: 18px;
+  }
+
+  .file-field {
+    padding: 16px;
+  }
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 420px) {
+
+  .ngo-register-container {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .register-header h1 {
+    font-size: 31px;
+  }
+
+  .account-type {
+    font-size: 10px;
+  }
+
+  .ngo-register-container form {
+    padding: 20px 15px;
+  }
+
+  .ngo-register-container input,
+  .ngo-register-container textarea,
+  .ngo-register-container select {
+    font-size: 10px;
+  }
+
+}

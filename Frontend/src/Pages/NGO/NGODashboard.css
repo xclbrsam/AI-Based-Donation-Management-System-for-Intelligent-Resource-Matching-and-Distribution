@@ -1,0 +1,297 @@
+.ngo-dashboard {
+  min-height: 100vh;
+  padding: 40px;
+  background: #f5f7f6;
+}
+
+.ngo-dashboard-header {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.ngo-dashboard-badge {
+  display: inline-block;
+  padding: 7px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.ngo-dashboard-header h1 {
+  margin: 15px 0 8px;
+  font-size: 34px;
+  color: #222;
+}
+
+.ngo-dashboard-header p {
+  color: #666;
+  font-size: 16px;
+}
+
+
+/* =====================================================
+   STATISTICS
+===================================================== */
+
+.ngo-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto 40px;
+}
+
+.ngo-stat-card {
+  background: white;
+  padding: 25px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.ngo-stat-card span {
+  font-size: 28px;
+}
+
+.ngo-stat-card h3 {
+  margin: 10px 0 5px;
+  color: #555;
+}
+
+.ngo-stat-card strong {
+  font-size: 30px;
+  color: #2e7d32;
+}
+
+
+/* =====================================================
+   DONATIONS
+===================================================== */
+
+.ngo-donation-section {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.ngo-donation-section > h2 {
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.ngo-donation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ngo-donation-card {
+  display: flex;
+  gap: 25px;
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.donation-item-image {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.ngo-donation-content {
+  flex: 1;
+}
+
+.donation-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.donation-title-row h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-accepted {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-collected {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+
+/* =====================================================
+   DETAILS
+===================================================== */
+
+.donation-details {
+  margin-top: 15px;
+}
+
+.donation-details p {
+  margin: 7px 0;
+  color: #555;
+}
+
+.donor-information {
+  margin-top: 18px;
+  padding: 15px;
+  border-radius: 10px;
+  background: #f5f5f5;
+}
+
+.donor-information h4 {
+  margin: 0 0 8px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.donation-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.donation-actions button {
+  border: none;
+  padding: 11px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.accept-button {
+  background: #2e7d32;
+  color: white;
+}
+
+.reject-button {
+  background: #c62828;
+  color: white;
+}
+
+.collect-button {
+  background: #1565c0;
+  color: white;
+}
+
+.donation-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+
+.no-donations {
+  background: white;
+  text-align: center;
+  padding: 60px 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.no-donations-icon {
+  font-size: 50px;
+}
+
+.no-donations h3 {
+  margin: 15px 0 8px;
+}
+
+.no-donations p {
+  color: #777;
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.ngo-dashboard-loading {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 800px) {
+
+  .ngo-dashboard {
+    padding: 20px;
+  }
+
+  .ngo-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ngo-donation-card {
+    flex-direction: column;
+  }
+
+  .donation-item-image {
+    width: 100%;
+    height: 220px;
+  }
+
+}
+
+
+@media (max-width: 500px) {
+
+  .ngo-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .donation-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .donation-actions {
+    flex-direction: column;
+  }
+
+}
