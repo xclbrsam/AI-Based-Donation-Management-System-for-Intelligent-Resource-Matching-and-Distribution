@@ -1,162 +1,132 @@
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-    Navigate,
-} from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";
-import Login from "./pages/Login.jsx";
-import Register from "./pages/Register.jsx";
-import Profile from "./pages/Profile.jsx";
-import Donation from "./pages/Donation.jsx";
+import Home from "./Pages/Home/Home";
+import Login from "./Pages/Login/Login";
+import RegisterChoice from "./Pages/RegisterChoice/RegisterChoice";
 
-import DonorDashboard from "./pages/DonorDashboard.jsx";
-import NgoDashboard from "./pages/NgoDashboard.jsx";
+import DonorRegister from "./Pages/Donor/DonorRegister";
+import DonorDashboard from "./Pages/Donor/DonorDashboard";
+import DonateItem from "./Pages/Donor/DonateItem";
+import MyDonations from "./Pages/Donor/MyDonations";
+
+import NGORegister from "./Pages/NGO/NGORegister";
+import NGODashboard from "./Pages/NGO/NGODashboard";
+import NGOProfile from "./Pages/NGO/NGOProfile";
+
+import DonorProfile from "./Pages/Donor/DonorProfile";
 
 
 // =====================================================
-// GET CURRENT USER
+// GET CURRENT USER TYPE
 // =====================================================
 
-function getCurrentUser() {
+const getUserType = () => {
+  return String(
+    localStorage.getItem("user_type") || ""
+  )
+    .trim()
+    .toLowerCase();
+};
 
-    try {
 
-        return JSON.parse(
-            localStorage.getItem("user") || "null"
-        );
+// =====================================================
+// CHECK LOGIN
+// =====================================================
 
-    } catch (error) {
+const isLoggedIn = () => {
+  return Boolean(
+    localStorage.getItem("access")
+  );
+};
 
-        return null;
 
-    }
+// =====================================================
+// DONOR PROTECTED ROUTE
+// =====================================================
 
+function DonorRoute({ children }) {
+
+  // Not logged in
+  if (!isLoggedIn()) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+  const userType = getUserType();
+
+
+  // NGO cannot access donor pages
+  if (userType === "ngo") {
+    return (
+      <Navigate
+        to="/ngo-dashboard"
+        replace
+      />
+    );
+  }
+
+
+  // Invalid user type
+  if (userType !== "donor") {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
+
+
+  return children;
 }
 
 
 // =====================================================
-// PROTECTED ROUTE
+// NGO PROTECTED ROUTE
 // =====================================================
 
-function ProtectedRoute({
-    children,
-    allowedRole = null,
-}) {
+function NGORoute({ children }) {
 
-    const token =
-        localStorage.getItem(
-            "access_token"
-        );
+  // Not logged in
+  if (!isLoggedIn()) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
 
-    const user =
-        getCurrentUser();
-
-
-    // =================================================
-    // NOT LOGGED IN
-    // =================================================
-
-    if (!token || !user) {
-
-        return (
-            <Navigate
-                to="/login"
-                replace
-            />
-        );
-
-    }
+  const userType = getUserType();
 
 
-    // =================================================
-    // ROLE PROTECTION
-    // =================================================
-
-    if (
-        allowedRole &&
-        user.role !== allowedRole
-    ) {
-
-        // Donor trying to access NGO page
-
-        if (
-            user.role === "Donor"
-        ) {
-
-            return (
-                <Navigate
-                    to="/donor-dashboard"
-                    replace
-                />
-            );
-
-        }
+  // Donor cannot access NGO pages
+  if (userType === "donor") {
+    return (
+      <Navigate
+        to="/dashboard"
+        replace
+      />
+    );
+  }
 
 
-        // NGO trying to access Donor page
-
-        if (
-            user.role === "NGO"
-        ) {
-
-            return (
-                <Navigate
-                    to="/ngo-dashboard"
-                    replace
-                />
-            );
-
-        }
+  // Invalid user type
+  if (userType !== "ngo") {
+    return (
+      <Navigate
+        to="/login"
+        replace
+      />
+    );
+  }
 
 
-        // Unknown role
-
-        return (
-            <Navigate
-                to="/login"
-                replace
-            />
-        );
-
-    }
-
-
-    return children;
-
-}
-
-
-// =====================================================
-// PROFILE ROUTE
-// =====================================================
-
-function ProfileRoute() {
-
-    const token =
-        localStorage.getItem(
-            "access_token"
-        );
-
-    const user =
-        getCurrentUser();
-
-
-    if (!token || !user) {
-
-        return (
-            <Navigate
-                to="/login"
-                replace
-            />
-        );
-
-    }
-
-
-    return <Profile />;
-
+  return children;
 }
 
 
@@ -166,130 +136,159 @@ function ProfileRoute() {
 
 function App() {
 
-    return (
+  return (
+    <Routes>
 
-        <BrowserRouter>
+      {/* =================================================
+          HOME
+      ================================================= */}
 
-            <Routes>
-
-
-                {/* =================================================
-                    PUBLIC ROUTES
-                ================================================= */}
-
-                <Route
-                    path="/"
-                    element={<Home />}
-                />
+      <Route
+        path="/"
+        element={<Home />}
+      />
 
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+      {/* =================================================
+          LOGIN
+      ================================================= */}
+
+      <Route
+        path="/login"
+        element={<Login />}
+      />
 
 
-                <Route
-                    path="/register"
-                    element={<Register />}
-                />
+      {/* =================================================
+          REGISTER
+      ================================================= */}
+
+      <Route
+        path="/register"
+        element={<RegisterChoice />}
+      />
 
 
-                {/* =================================================
-                    PROFILE
-                    Both Donor and NGO can access their profile.
-                ================================================= */}
+      {/* =================================================
+          DONOR REGISTER
+      ================================================= */}
 
-                <Route
-                    path="/profile"
-                    element={
-                        <ProfileRoute />
-                    }
-                />
+      <Route
+        path="/register/donor"
+        element={<DonorRegister />}
+      />
 
 
-                {/* =================================================
-                    DONOR DASHBOARD
-                ================================================= */}
+      {/* =================================================
+          NGO REGISTER
+      ================================================= */}
 
-                <Route
-                    path="/donor-dashboard"
-                    element={
-
-                        <ProtectedRoute
-                            allowedRole="Donor"
-                        >
-
-                            <DonorDashboard />
-
-                        </ProtectedRoute>
-
-                    }
-                />
+      <Route
+        path="/register/ngo"
+        element={<NGORegister />}
+      />
 
 
-                {/* =================================================
-                    NGO DASHBOARD
-                ================================================= */}
+      {/* =================================================
+          DONOR DASHBOARD
+      ================================================= */}
 
-                <Route
-                    path="/ngo-dashboard"
-                    element={
-
-                        <ProtectedRoute
-                            allowedRole="NGO"
-                        >
-
-                            <NgoDashboard />
-
-                        </ProtectedRoute>
-
-                    }
-                />
+      <Route
+        path="/dashboard"
+        element={
+          <DonorRoute>
+            <DonorDashboard />
+          </DonorRoute>
+        }
+      />
 
 
-                {/* =================================================
-                    DONATION
-                    ONLY DONORS CAN ACCESS
-                ================================================= */}
+      {/* =================================================
+          DONATE ITEM
+      ================================================= */}
 
-                <Route
-                    path="/donation"
-                    element={
-
-                        <ProtectedRoute
-                            allowedRole="Donor"
-                        >
-
-                            <Donation />
-
-                        </ProtectedRoute>
-
-                    }
-                />
+      <Route
+        path="/donate-item"
+        element={
+          <DonorRoute>
+            <DonateItem />
+          </DonorRoute>
+        }
+      />
 
 
-                {/* =================================================
-                    UNKNOWN URL
-                ================================================= */}
+      {/* =================================================
+          MY DONATIONS
+      ================================================= */}
 
-                <Route
-                    path="*"
-                    element={
-                        <Navigate
-                            to="/"
-                            replace
-                        />
-                    }
-                />
+      <Route
+        path="/my-donations"
+        element={
+          <DonorRoute>
+            <MyDonations />
+          </DonorRoute>
+        }
+      />
 
-            </Routes>
 
-        </BrowserRouter>
+      {/* =================================================
+          DONOR PROFILE
+      ================================================= */}
 
-    );
+      <Route
+        path="/profile"
+        element={
+          <DonorRoute>
+            <DonorProfile />
+          </DonorRoute>
+        }
+      />
 
+
+      {/* =================================================
+          NGO DASHBOARD
+      ================================================= */}
+
+      <Route
+        path="/ngo-dashboard"
+        element={
+          <NGORoute>
+            <NGODashboard />
+          </NGORoute>
+        }
+      />
+
+
+      {/* =================================================
+          NGO PROFILE
+      ================================================= */}
+
+      <Route
+        path="/ngo-profile"
+        element={
+          <NGORoute>
+            <NGOProfile />
+          </NGORoute>
+        }
+      />
+
+
+      {/* =================================================
+          FALLBACK
+      ================================================= */}
+
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to="/"
+            replace
+          />
+        }
+      />
+
+    </Routes>
+  );
 }
-
 
 export default App;
