@@ -89,24 +89,175 @@ def analyze_donation_image(image_path):
 
         image = Image.open(image_path)
 
-        prompt = """
-You are an AI assistant for a donation management system.
+        prompt = prompt = """
+You are an AI assistant for an intelligent donation management system.
 
-Analyze the uploaded image and identify ALL visible
+Analyze the uploaded image carefully and identify ALL visible
 physical items that could reasonably be donated.
 
-Rules:
+IMPORTANT:
+Food donations must be analyzed carefully and separately.
 
-1. Detect every visible donation-relevant item.
-2. If there are 3 books, return quantity as 3.
+=====================================================
+GENERAL DETECTION RULES
+=====================================================
+
+1. Detect every clearly visible donation-relevant item.
+
+2. Count identical visible items.
+
+   Example:
+   If the image contains 3 books:
+   quantity = 3
+
 3. Group identical items together.
-4. Do not invent objects that are not visible.
-5. Ignore people, faces, hands and background objects.
-6. Focus on physical donation items.
-7. Use simple item names.
-8. Assign each item to an appropriate category.
 
-Possible categories:
+4. Do NOT invent objects that are not visible.
+
+5. Ignore:
+   - People
+   - Faces
+   - Hands
+   - Background objects
+   - Decorative objects
+
+6. Focus only on physical items that could reasonably
+   be donated.
+
+7. Use clear and simple item names.
+
+8. Assign every detected item to the most appropriate category.
+
+9. Confidence must be between 0 and 1.
+
+10. If an item is partially visible but can still be identified
+    with reasonable confidence, include it.
+
+=====================================================
+FOOD DETECTION
+=====================================================
+
+For food donations, identify the specific food item whenever
+the image provides enough visual information.
+
+Examples include:
+
+- Rice Bag
+- Wheat Bag
+- Rice Packet
+- Wheat Packet
+- Dal Packet
+- Pulses
+- Flour Bag
+- Flour Packet
+- Sugar Bag
+- Sugar Packet
+- Cooking Oil
+- Oil Bottle
+- Cereal Packet
+- Packaged Food
+- Food Grain
+- Other Food
+
+IMPORTANT:
+
+If a bag or packet clearly represents a food product,
+identify the actual food type instead of returning only
+"Food".
+
+Example:
+
+WRONG:
+item = "Bag"
+category = "Food"
+
+BETTER:
+item = "Rice Bag"
+category = "Food"
+
+Another example:
+
+WRONG:
+item = "Packet"
+category = "Food"
+
+BETTER:
+item = "Wheat Packet"
+category = "Food"
+
+=====================================================
+FOOD QUANTITY
+=====================================================
+
+Count physically visible bags, packets, bottles or containers.
+
+Example:
+
+Image contains:
+3 rice bags
+2 wheat bags
+1 flour bag
+
+Return:
+
+Rice Bag -> quantity 3
+Wheat Bag -> quantity 2
+Flour Bag -> quantity 1
+
+Do NOT estimate quantity from image area.
+
+Only count separately visible items.
+
+=====================================================
+WEIGHT / SIZE
+=====================================================
+
+If the weight or size of a food package is clearly visible
+from its label, use the item name to preserve that information.
+
+Examples:
+
+"25 kg Rice Bag"
+"10 kg Wheat Bag"
+"5 kg Flour Bag"
+
+However:
+
+DO NOT guess the weight if it is not clearly visible.
+
+The quantity field must represent the number of visible
+physical items, NOT kilograms.
+
+Example:
+
+One 25 kg rice bag:
+
+quantity = 1
+
+NOT:
+
+quantity = 25
+
+=====================================================
+NON-FOOD ITEMS
+=====================================================
+
+Possible non-food categories include:
+
+Clothing
+Books
+Education
+Electronics
+Furniture
+Household
+Toys
+Other
+
+=====================================================
+CATEGORY RULES
+=====================================================
+
+Use exactly one of these categories:
 
 Clothing
 Books
@@ -118,9 +269,18 @@ Food
 Toys
 Other
 
-Confidence must be between 0 and 1.
+Food-related items must use:
 
-Return ONLY the requested JSON structure.
+category = "Food"
+
+=====================================================
+FINAL RULES
+=====================================================
+
+- Return ONLY the requested JSON structure.
+- Do not include explanations.
+- Do not include markdown.
+- Do not include text outside JSON.
 """
 
         response = client.models.generate_content(

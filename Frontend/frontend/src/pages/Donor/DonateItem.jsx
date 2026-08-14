@@ -25,7 +25,7 @@ function DonateItem() {
   });
 
   // =====================================================
-  // AI DETECTION DATA
+  // AI DETECTION
   // =====================================================
 
   const [aiItems, setAiItems] = useState([]);
@@ -41,17 +41,49 @@ function DonateItem() {
   const [ngoError, setNgoError] = useState("");
 
   // =====================================================
-  // DONATION LOADING
-  // =====================================================
-
-  const [loading, setLoading] = useState(false);
-
-  // =====================================================
-  // IMAGE PREVIEW
+  // IMAGE
   // =====================================================
 
   const [imagePreview, setImagePreview] = useState(null);
 
+  // =====================================================
+  // DONATION
+  // =====================================================
+
+  const [loading, setLoading] = useState(false);
+
+  // Donation created temporarily before matching
+  const [donationId, setDonationId] = useState(null);
+
+  // =====================================================
+  // MATCHING
+  // =====================================================
+
+  const [matchMode, setMatchMode] = useState("");
+
+  const [matchingLoading, setMatchingLoading] =
+    useState(false);
+
+  const [matchingError, setMatchingError] =
+    useState("");
+
+  const [matchingNGOs, setMatchingNGOs] =
+    useState([]);
+
+  const [aiRecommendation, setAiRecommendation] =
+    useState(null);
+
+  const [selectedMatch, setSelectedMatch] =
+    useState(null);
+
+  // =====================================================
+  // ALLOCATION
+  // =====================================================
+
+  const [allocationLoading, setAllocationLoading] =
+    useState(false);
+const [allocationSuccess, setAllocationSuccess] =
+  useState(null);
   // =====================================================
   // FETCH APPROVED NGOS
   // =====================================================
@@ -62,44 +94,58 @@ function DonateItem() {
         setNgoLoading(true);
         setNgoError("");
 
-        const token = localStorage.getItem("access");
+        const token =
+          localStorage.getItem("access");
 
         if (!token) {
-          setNgoError("Please login first.");
+          setNgoError(
+            "Please login first."
+          );
           return;
         }
 
-        const response = await api.get("ngos/");
+        const response =
+          await api.get("ngos/");
 
-        console.log("NGO Response:", response.data);
+        console.log(
+          "NGO Response:",
+          response.data
+        );
 
-        if (Array.isArray(response.data)) {
+        if (
+          Array.isArray(response.data)
+        ) {
           setNgos(response.data);
         } else {
           setNgoError(
             "Invalid NGO data received from server."
           );
         }
-      } catch (error) {
-        console.error("NGO FETCH ERROR:", error);
 
-        if (error.response?.status === 401) {
+      } catch (error) {
+        console.error(
+          "NGO FETCH ERROR:",
+          error
+        );
+
+        if (
+          error.response?.status === 401
+        ) {
           setNgoError(
             "Your login session has expired. Please login again."
           );
-        } else if (error.response?.status === 403) {
+        } else if (
+          error.response?.status === 403
+        ) {
           setNgoError(
             "You do not have permission to view NGOs."
-          );
-        } else if (error.response?.status === 404) {
-          setNgoError(
-            "NGO API endpoint was not found."
           );
         } else {
           setNgoError(
             "Unable to connect to backend server."
           );
         }
+
       } finally {
         setNgoLoading(false);
       }
@@ -116,7 +162,7 @@ function DonateItem() {
     const {
       name,
       value,
-      files,
+      files
     } = e.target;
 
     if (files) {
@@ -124,12 +170,21 @@ function DonateItem() {
 
       setFormData((prev) => ({
         ...prev,
-        [name]: file,
+        [name]: file
       }));
 
-      // New image = new AI analysis
+      // New image resets everything
       setAiItems([]);
       setAiError("");
+
+      setMatchMode("");
+      setMatchingNGOs([]);
+      setAiRecommendation(null);
+      setSelectedMatch(null);
+      setMatchingError("");
+
+      // New image means new donation
+      setDonationId(null);
 
       if (file) {
         setImagePreview(
@@ -138,16 +193,17 @@ function DonateItem() {
       } else {
         setImagePreview(null);
       }
+
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: value,
+        [name]: value
       }));
     }
   };
 
   // =====================================================
-  // NORMALIZE AI CATEGORY
+  // NORMALIZE CATEGORY
   // =====================================================
 
   const normalizeCategory = (category) => {
@@ -155,9 +211,10 @@ function DonateItem() {
       return "Other";
     }
 
-    const value = String(category)
-      .trim()
-      .toLowerCase();
+    const value =
+      String(category)
+        .trim()
+        .toLowerCase();
 
     const categoryMap = {
       clothing: "Clothing",
@@ -169,6 +226,10 @@ function DonateItem() {
       book: "Books",
 
       food: "Food",
+      rice: "Food",
+      wheat: "Food",
+      grain: "Food",
+      grains: "Food",
 
       electronics: "Electronics",
       electronic: "Electronics",
@@ -176,10 +237,13 @@ function DonateItem() {
       furniture: "Furniture",
 
       medical: "Medical Supplies",
-      "medical supplies": "Medical Supplies",
+      "medical supplies":
+        "Medical Supplies",
 
       school: "School Supplies",
-      "school supplies": "School Supplies",
+      "school supplies":
+        "School Supplies",
+
       education: "School Supplies",
       stationery: "School Supplies",
 
@@ -188,7 +252,10 @@ function DonateItem() {
       toy: "Other",
     };
 
-    return categoryMap[value] || "Other";
+    return (
+      categoryMap[value] ||
+      "Other"
+    );
   };
 
   // =====================================================
@@ -206,68 +273,46 @@ function DonateItem() {
     try {
       setAiLoading(true);
       setAiError("");
+
       setAiItems([]);
 
-      const imageData = new FormData();
+      setMatchMode("");
+      setMatchingNGOs([]);
+      setAiRecommendation(null);
+      setSelectedMatch(null);
+      setMatchingError("");
 
-      /*
-       * IMPORTANT
-       *
-       * Backend team should accept:
-       *
-       * POST /api/donations/analyze-image/
-       *
-       * Field:
-       * image
-       */
+      setDonationId(null);
+
+      const imageData =
+        new FormData();
 
       imageData.append(
         "image",
         formData.item_image
       );
 
-      console.log(
-        "Sending image for AI analysis..."
-      );
-
-      const response = await api.post(
-        "donation/analyze/",
-        imageData,
-        {
-          headers: {
-            "Content-Type":
-              "multipart/form-data",
-          },
-        }
-      );
+      const response =
+        await api.post(
+          "donation/analyze/",
+          imageData,
+          {
+            headers: {
+              "Content-Type":
+                "multipart/form-data"
+            }
+          }
+        );
 
       console.log(
         "AI RESPONSE:",
         response.data
       );
 
-      const data = response.data;
-
-      // =================================================
-      // NORMALIZE AI RESPONSE
-      // =================================================
+      const data =
+        response.data;
 
       let detectedItems = [];
-
-      /*
-       * Expected response:
-       *
-       * {
-       *   items: [
-       *     {
-       *       item: "Shirt",
-       *       category: "Clothing",
-       *       quantity: 3,
-       *       confidence: 0.94
-       *     }
-       *   ]
-       * }
-       */
 
       if (
         Array.isArray(data.items)
@@ -276,10 +321,7 @@ function DonateItem() {
           data.items;
       }
 
-      /*
-       * Backup for single-item response
-       */
-
+      // Backup single item
       if (
         detectedItems.length === 0 &&
         (
@@ -304,14 +346,10 @@ function DonateItem() {
               Number(data.quantity) || 1,
 
             confidence:
-              data.confidence ?? null,
-          },
+              data.confidence ?? null
+          }
         ];
       }
-
-      // =================================================
-      // VALIDATE RESULT
-      // =================================================
 
       if (
         detectedItems.length === 0
@@ -321,10 +359,6 @@ function DonateItem() {
         );
         return;
       }
-
-      // =================================================
-      // CLEAN RESULT
-      // =================================================
 
       const cleanedItems =
         detectedItems.map(
@@ -343,20 +377,17 @@ function DonateItem() {
               ),
 
             quantity:
-              Number(item.quantity) || 1,
+              Number(
+                item.quantity
+              ) || 1,
 
             confidence:
               item.confidence ??
-              null,
+              null
           })
         );
 
       setAiItems(
-        cleanedItems
-      );
-
-      console.log(
-        "Detected items:",
         cleanedItems
       );
 
@@ -367,32 +398,15 @@ function DonateItem() {
       );
 
       console.error(
-        "Status:",
-        error.response?.status
-      );
-
-      console.error(
         "Response:",
         error.response?.data
       );
 
-      if (
-        error.response?.status === 401
-      ) {
-        setAiError(
-          "Your login session has expired. Please login again."
-        );
-      } else if (
-        error.response?.status === 404
-      ) {
-        setAiError(
-          "AI analysis API was not found. Please check with your backend team."
-        );
-      } else {
-        setAiError(
-          "Unable to analyze the image. Please try again."
-        );
-      }
+      setAiError(
+        error.response?.data?.detail ||
+        "Unable to analyze the image. Please try again."
+      );
+
     } finally {
       setAiLoading(false);
     }
@@ -402,111 +416,90 @@ function DonateItem() {
   // TOTAL QUANTITY
   // =====================================================
 
-  const totalQuantity = aiItems.reduce(
-    (total, item) =>
-      total + Number(item.quantity || 0),
-    0
-  );
+  const totalQuantity =
+    aiItems.reduce(
+      (total, item) =>
+        total +
+        Number(
+          item.quantity || 0
+        ),
+      0
+    );
 
   // =====================================================
-  // SUBMIT DONATION
+  // MAIN DETECTED ITEM
   // =====================================================
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const mainDetectedItem =
+    aiItems.length > 0
+      ? aiItems[0]
+      : null;
 
-    // NGO
-    if (!formData.ngo) {
-      alert("Please select an NGO.");
-      return;
-    }
+  // =====================================================
+  // CREATE DONATION FOR MATCHING
+  // =====================================================
 
-    // IMAGE
-    if (!formData.item_image) {
-      alert("Please upload an item image.");
-      return;
-    }
+  const createDonationForMatching =
+    async () => {
 
-    // AI
-    if (aiItems.length === 0) {
-      alert(
-        "Please analyze the image before submitting the donation."
-      );
-      return;
-    }
+      if (donationId) {
+        return donationId;
+      }
 
-    // LOCATION
-    if (!formData.location.trim()) {
-      alert("Please enter the pickup location.");
-      return;
-    }
+      if (!formData.item_image) {
+        throw new Error(
+          "Please upload an item image."
+        );
+      }
 
-    try {
-      setLoading(true);
+      if (aiItems.length === 0) {
+        throw new Error(
+          "Please analyze the image first."
+        );
+      }
 
-      /*
-       * Backend Donation API still expects:
-       *
-       * ngo
-       * item_name
-       * category
-       * quantity
-       * condition
-       * description
-       * location
-       * item_image
-       *
-       * We generate these from AI.
-       */
+      if (!formData.location.trim()) {
+        throw new Error(
+          "Please enter the pickup location first."
+        );
+      }
 
-      const data = new FormData();
+      const data =
+        new FormData();
 
-      data.append(
-        "ngo",
-        formData.ngo
-      );
-
-      /*
-       * If multiple objects are detected,
-       * send the names together.
-       */
+      // -------------------------------------------------
+      // IMPORTANT
+      // -------------------------------------------------
+      // NGO is intentionally NOT sent here.
+      //
+      // Donation is first created as a draft.
+      // After creation we receive donation ID.
+      // Then matching APIs use that ID.
+      // -------------------------------------------------
 
       const itemName =
         aiItems
-          .map((item) => item.item)
+          .map(
+            (item) =>
+              item.item
+          )
           .join(", ");
 
       const categories = [
         ...new Set(
-          aiItems.map((item) =>
-            normalizeCategory(
-              item.category
-            )
+          aiItems.map(
+            (item) =>
+              normalizeCategory(
+                item.category
+              )
           )
-        ),
+        )
       ];
 
-      /*
-       * Backend category is a single-choice field.
-       *
-       * If all detected items belong to one category,
-       * send that category.
-       *
-       * If multiple different categories are detected,
-       * use "Other" instead of sending an invalid value
-       * such as "Clothing, Books".
-       */
       const category =
         categories.length === 1
           ? categories[0]
           : "Other";
-
-      const quantity =
-        totalQuantity;
-
-      /*
-       * Generate description automatically.
-       */
 
       const description =
         aiItems
@@ -528,7 +521,7 @@ function DonateItem() {
 
       data.append(
         "quantity",
-        quantity
+        totalQuantity
       );
 
       data.append(
@@ -551,61 +544,409 @@ function DonateItem() {
         formData.item_image
       );
 
-      console.log(
-        "Submitting AI-based donation..."
-      );
+      // Do NOT send NGO here.
+      // Backend model allows ngo = null.
 
-      const response = await api.post(
-        "donation/",
-        data,
-        {
-          headers: {
-            "Content-Type":
-              "multipart/form-data",
-          },
-        }
-      );
+      const response =
+        await api.post(
+          "donation/",
+          data,
+          {
+            headers: {
+              "Content-Type":
+                "multipart/form-data"
+            }
+          }
+        );
 
       console.log(
-        "Donation Created:",
+        "DRAFT DONATION CREATED:",
         response.data
       );
 
-      alert(
-        "AI-analyzed donation submitted successfully! 🤖📦"
+      const newDonationId =
+        response.data?.id;
+
+      if (!newDonationId) {
+        throw new Error(
+          "Donation was created but donation ID was not returned by backend."
+        );
+      }
+
+      setDonationId(
+        newDonationId
       );
 
-      navigate(
-        "/my-donations"
+      return newDonationId;
+    };
+
+  // =====================================================
+  // START MATCHING
+  // =====================================================
+
+  const handleMatching = async (
+    mode
+  ) => {
+
+    if (
+      aiItems.length === 0
+    ) {
+      alert(
+        "Please analyze the donation image first."
       );
+      return;
+    }
+
+    if (
+      !formData.location.trim()
+    ) {
+      alert(
+        "Please enter the pickup location first."
+      );
+      return;
+    }
+
+    try {
+      setMatchMode(mode);
+      setMatchingLoading(true);
+      setMatchingError("");
+
+      setMatchingNGOs([]);
+      setAiRecommendation(null);
+      setSelectedMatch(null);
+
+      // -------------------------------------------------
+      // STEP 1
+      // Create donation and get ID
+      // -------------------------------------------------
+
+      const id =
+        await createDonationForMatching();
+
+      // -------------------------------------------------
+      // STEP 2
+      // DONOR MATCHING
+      // -------------------------------------------------
+
+      if (mode === "donor") {
+
+        const response =
+          await api.get(
+            `donation/${id}/matching-ngos/`
+          );
+
+        console.log(
+          "DONOR MATCH RESPONSE:",
+          response.data
+        );
+
+        const data =
+          response.data;
+
+        setMatchingNGOs(
+          data.matching_ngos ||
+          data.ngos ||
+          []
+        );
+      }
+
+      // -------------------------------------------------
+      // STEP 3
+      // AI MATCHING
+      // -------------------------------------------------
+
+      if (mode === "ai") {
+
+        const response =
+          await api.get(
+            `donation/${id}/ai-matching/`
+          );
+
+        console.log(
+          "AI MATCH RESPONSE:",
+          response.data
+        );
+
+        const data =
+          response.data;
+
+        setAiRecommendation(
+          data.ai_recommendation ||
+          data.recommended_ngo ||
+          null
+        );
+
+        setMatchingNGOs(
+          data.other_matching_ngos ||
+          []
+        );
+      }
 
     } catch (error) {
+
       console.error(
-        "DONATION ERROR:",
+        "MATCHING ERROR:",
         error
+      );
+
+      console.error(
+        "Response:",
+        error.response?.data
+      );
+
+      setMatchingError(
+        error.response?.data?.message ||
+        error.response?.data?.detail ||
+        error.message ||
+        "Unable to find matching NGOs."
+      );
+
+    } finally {
+      setMatchingLoading(false);
+    }
+  };
+
+  // =====================================================
+  // SELECT NGO
+  // =====================================================
+
+  const handleSelectNGO = (
+    ngo
+  ) => {
+
+    const ngoId =
+      ngo.ngo_id ||
+      ngo.id ||
+      ngo.ngo;
+
+    if (!ngoId) {
+      alert(
+        "NGO ID was not received."
+      );
+      return;
+    }
+
+    setSelectedMatch(
+      ngo
+    );
+
+    setFormData((prev) => ({
+      ...prev,
+      ngo: ngoId
+    }));
+  };
+
+  // =====================================================
+  // SELECTED NGO QUANTITY
+  // =====================================================
+
+  const getSelectedQuantity = () => {
+
+    if (!selectedMatch) {
+      return totalQuantity;
+    }
+
+    const remaining =
+      Number(
+        selectedMatch.remaining_need ??
+        selectedMatch.remaining_quantity ??
+        selectedMatch.required_quantity ??
+        totalQuantity
+      );
+
+    return Math.min(
+      totalQuantity,
+      remaining
+    );
+  };
+
+  // =====================================================
+  // FINAL SUBMIT / ALLOCATION
+  // =====================================================
+
+  const handleSubmit = async (e) => {
+
+    e.preventDefault();
+
+    if (!formData.item_image) {
+      alert(
+        "Please upload an item image."
+      );
+      return;
+    }
+
+    if (aiItems.length === 0) {
+      alert(
+        "Please analyze the image first."
+      );
+      return;
+    }
+
+    if (!formData.location.trim()) {
+      alert(
+        "Please enter the pickup location."
+      );
+      return;
+    }
+
+    if (!selectedMatch) {
+      alert(
+        "Please select an NGO using Donor Match or AI Match."
+      );
+      return;
+    }
+
+    if (!donationId) {
+      alert(
+        "Please select Donor Match or AI Match first."
+      );
+      return;
+    }
+
+    const ngoId =
+      selectedMatch.ngo_id ||
+      selectedMatch.id ||
+      selectedMatch.ngo;
+
+    const allocationQuantity =
+      getSelectedQuantity();
+
+    if (!ngoId) {
+      alert(
+        "Selected NGO ID is missing."
+      );
+      return;
+    }
+
+    if (
+      allocationQuantity <= 0
+    ) {
+      alert(
+        "No quantity can be allocated to this NGO."
+      );
+      return;
+    }
+
+    try {
+
+      setLoading(true);
+      setAllocationLoading(true);
+
+      // =================================================
+      // UPDATE DONATION WITH SELECTED NGO
+      // =================================================
+
+      try {
+
+        await api.patch(
+          `donation/${donationId}/`,
+          {
+            ngo: ngoId
+          }
+        );
+
+      } catch (updateError) {
+
+        console.warn(
+          "Donation NGO update failed:",
+          updateError.response?.data
+        );
+
+        /*
+         * Some backends may already assign NGO
+         * during allocation.
+         *
+         * Therefore we continue to allocation.
+         */
+      }
+
+      // =================================================
+      // ALLOCATE ONLY REQUIRED QUANTITY
+      // =================================================
+
+      const requirementId =
+  selectedMatch.requirement_id;
+
+if (!requirementId) {
+  throw new Error(
+    "Selected NGO requirement ID is missing."
+  );
+}
+
+const allocationResponse =
+  await api.post(
+    `donation/${donationId}/allocate/`,
+    {
+      allocations: [
+        {
+          requirement_id: requirementId,
+          quantity: allocationQuantity
+        }
+      ]
+    }
+  );
+
+      console.log(
+        "ALLOCATION RESPONSE:",
+        allocationResponse.data
+      );
+
+     setAllocationSuccess({
+  ngoName:
+    selectedMatch.ngo_name ||
+    selectedMatch.name ||
+    "Selected NGO",
+
+  quantity: allocationQuantity,
+
+  item:
+    mainDetectedItem?.item ||
+    formData.item_name ||
+    "Donation"
+});
+
+  
+    } catch (error) {
+
+      console.error(
+        "ALLOCATION ERROR:",
+        error
+      );
+
+      console.error(
+        "Response:",
+        error.response?.data
       );
 
       if (
         error.response?.status === 401
       ) {
+
         alert(
           "Your login session has expired. Please login again."
         );
+
       } else if (
         error.response?.data
       ) {
+
         alert(
           JSON.stringify(
             error.response.data
           )
         );
+
       } else {
+
         alert(
-          "Cannot connect to backend server."
+          "Unable to allocate donation."
         );
       }
+
     } finally {
+
       setLoading(false);
+      setAllocationLoading(false);
     }
   };
 
@@ -613,11 +954,159 @@ function DonateItem() {
   // SELECTED NGO
   // =====================================================
 
-  const selectedNGO = ngos.find(
-    (ngo) =>
-      String(ngo.id) ===
-      String(formData.ngo)
-  );
+  const selectedNGO =
+    ngos.find(
+      (ngo) =>
+        String(ngo.id) ===
+        String(formData.ngo)
+    );
+
+  // =====================================================
+  // RENDER NGO CARD
+  // =====================================================
+
+  const renderNGOCard = (
+    ngo,
+    index
+  ) => {
+
+    const ngoId =
+      ngo.ngo_id ||
+      ngo.id ||
+      ngo.ngo;
+
+    const ngoName =
+      ngo.ngo_name ||
+      ngo.name ||
+      "NGO";
+
+    const remaining =
+      ngo.remaining_need ??
+      ngo.remaining_quantity ??
+      ngo.required_quantity ??
+      0;
+
+    const recommended =
+      ngo.recommended_quantity ??
+      Math.min(
+        totalQuantity,
+        Number(remaining)
+      );
+
+    const priority =
+      ngo.priority ||
+      "Normal";
+
+    const isSelected =
+      selectedMatch &&
+      String(
+        selectedMatch.ngo_id ||
+        selectedMatch.id ||
+        selectedMatch.ngo
+      ) ===
+      String(ngoId);
+
+    return (
+      <div
+        className={
+          "matching-ngo-card " +
+          (
+            isSelected
+              ? "selected"
+              : ""
+          )
+        }
+        key={
+          ngoId ||
+          index
+        }
+      >
+
+        <div className="matching-ngo-top">
+
+          <div className="matching-ngo-icon">
+            🏢
+          </div>
+
+          <div>
+
+            <h4>
+              {ngoName}
+            </h4>
+
+            <span>
+              {ngo.city ||
+                "Approved NGO"}
+            </span>
+
+          </div>
+
+        </div>
+
+        <div className="matching-ngo-info">
+
+          <div>
+            <span>
+              Needs
+            </span>
+
+            <strong>
+              {remaining}
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Your donation
+            </span>
+
+            <strong>
+              {totalQuantity}
+            </strong>
+          </div>
+
+          <div>
+            <span>
+              Can receive
+            </span>
+
+            <strong>
+              {recommended}
+            </strong>
+          </div>
+
+        </div>
+
+        <div className="matching-ngo-bottom">
+
+          <span
+            className={
+              `priority-badge priority-${String(
+                priority
+              ).toLowerCase()}`
+            }
+          >
+            {priority}
+          </span>
+
+          <button
+            type="button"
+            onClick={() =>
+              handleSelectNGO(
+                ngo
+              )
+            }
+          >
+            {isSelected
+              ? "✓ Selected"
+              : "Select NGO"}
+          </button>
+
+        </div>
+
+      </div>
+    );
+  };
 
   // =====================================================
   // PAGE
@@ -633,6 +1122,7 @@ function DonateItem() {
       <div className="donate-hero">
 
         <div>
+
           <span className="donate-badge">
             AI POWERED DONATION
           </span>
@@ -640,14 +1130,19 @@ function DonateItem() {
           <h1>
             Donate smarter.
             <br />
-            <span>Create an impact.</span>
+
+            <span>
+              Create an impact.
+            </span>
           </h1>
 
           <p>
-            Upload a photo and let AI identify
-            what you are donating and count the
-            items automatically.
+            Upload a photo and let AI
+            identify what you are donating,
+            count the items and help find
+            the right NGO.
           </p>
+
         </div>
 
         <div className="hero-heart">
@@ -660,10 +1155,82 @@ function DonateItem() {
       {/* =================================================
           FORM
       ================================================= */}
+{allocationSuccess && (
+  <div className="allocation-success">
 
+    <div className="allocation-success-icon">
+      ✓
+    </div>
+
+    <span className="allocation-success-badge">
+      DONATION ALLOCATED
+    </span>
+
+    <h2>
+      Donation Successfully Matched! 🎉
+    </h2>
+
+    <p>
+      Your donation has been successfully
+      allocated to an NGO that needs it.
+    </p>
+
+    <div className="allocation-success-details">
+
+      <div>
+        <span>ITEM</span>
+        <strong>
+          📦 {allocationSuccess.item}
+        </strong>
+      </div>
+
+      <div>
+        <span>QUANTITY</span>
+        <strong>
+          {allocationSuccess.quantity}
+        </strong>
+      </div>
+
+      <div>
+        <span>NGO</span>
+        <strong>
+          🏢 {allocationSuccess.ngoName}
+        </strong>
+      </div>
+
+    </div>
+
+    <div className="allocation-success-actions">
+
+      <button
+        type="button"
+        onClick={() =>
+          navigate("/my-donations")
+        }
+      >
+        📋 View My Donations
+      </button>
+
+      <button
+        type="button"
+        className="secondary"
+        onClick={() =>
+          navigate("/dashboard")
+        }
+      >
+        ← Back to Dashboard
+      </button>
+
+    </div>
+
+  </div>
+)}
       <form
         className="donate-form"
-        onSubmit={handleSubmit}
+        onSubmit={
+         
+          handleSubmit
+        }
       >
 
         {/* =================================================
@@ -679,6 +1246,7 @@ function DonateItem() {
             </div>
 
             <div>
+
               <span>
                 DONOR
               </span>
@@ -686,6 +1254,7 @@ function DonateItem() {
               <h2>
                 Your contribution
               </h2>
+
             </div>
 
           </div>
@@ -693,14 +1262,17 @@ function DonateItem() {
           <div className="donor-information">
 
             <div className="donor-avatar">
+
               {donorName
                 ? donorName
                     .charAt(0)
                     .toUpperCase()
                 : "D"}
+
             </div>
 
             <div>
+
               <strong>
                 {donorName ||
                   "Logged-in donor"}
@@ -710,6 +1282,7 @@ function DonateItem() {
                 {donorEmail ||
                   "Your donation account"}
               </span>
+
             </div>
 
             <div className="verified-label">
@@ -717,101 +1290,6 @@ function DonateItem() {
             </div>
 
           </div>
-
-        </div>
-
-
-        {/* =================================================
-            NGO
-        ================================================= */}
-
-        <div className="donate-card">
-
-          <div className="card-heading">
-
-            <div className="heading-icon coral-icon">
-              🏢
-            </div>
-
-            <div>
-              <span>
-                DESTINATION
-              </span>
-
-              <h2>
-                Where should it go?
-              </h2>
-            </div>
-
-          </div>
-
-          <div className="form-group">
-
-            <label>
-              Select an approved NGO
-            </label>
-
-            <select
-              name="ngo"
-              value={formData.ngo}
-              onChange={handleChange}
-              required
-              disabled={
-                ngoLoading ||
-                ngos.length === 0
-              }
-            >
-
-              <option value="">
-                {ngoLoading
-                  ? "Loading approved NGOs..."
-                  : ngos.length === 0
-                  ? "No approved NGOs available"
-                  : "Choose an NGO"}
-              </option>
-
-              {ngos.map((ngo) => (
-                <option
-                  key={ngo.id}
-                  value={ngo.id}
-                >
-                  {ngo.ngo_name}
-                </option>
-              ))}
-
-            </select>
-
-            {ngoError && (
-              <small className="error-message">
-                {ngoError}
-              </small>
-            )}
-
-          </div>
-
-          {selectedNGO && (
-            <div className="selected-ngo">
-
-              <div className="selected-ngo-icon">
-                🏢
-              </div>
-
-              <div>
-                <strong>
-                  {selectedNGO.ngo_name}
-                </strong>
-
-                <span>
-                  Approved organization
-                </span>
-              </div>
-
-              <span className="approved-badge">
-                ✓ Approved
-              </span>
-
-            </div>
-          )}
 
         </div>
 
@@ -829,6 +1307,7 @@ function DonateItem() {
             </div>
 
             <div>
+
               <span>
                 AI ITEM DETECTION
               </span>
@@ -836,6 +1315,7 @@ function DonateItem() {
               <h2>
                 Show us what you're donating
               </h2>
+
             </div>
 
           </div>
@@ -897,13 +1377,15 @@ function DonateItem() {
               type="file"
               name="item_image"
               accept="image/*"
-              onChange={handleChange}
+              onChange={
+                handleChange
+              }
             />
 
           </label>
 
 
-          {/* ANALYZE BUTTON */}
+          {/* ANALYZE */}
 
           <div className="ai-analyze-wrapper">
 
@@ -920,14 +1402,21 @@ function DonateItem() {
             >
 
               {aiLoading ? (
+
                 <span className="ai-loading">
+
                   <span className="ai-spinner" />
+
                   AI is analyzing...
+
                 </span>
+
               ) : (
+
                 <>
                   🤖 Analyze Image
                 </>
+
               )}
 
             </button>
@@ -935,17 +1424,19 @@ function DonateItem() {
           </div>
 
 
-          {/* AI ERROR */}
+          {/* ERROR */}
 
           {aiError && (
+
             <div className="ai-error">
               ⚠️ {aiError}
             </div>
+
           )}
 
 
           {/* =================================================
-              AI RESULTS
+              AI RESULT
           ================================================= */}
 
           {aiItems.length > 0 && (
@@ -959,6 +1450,7 @@ function DonateItem() {
                 </div>
 
                 <div>
+
                   <span>
                     AI ANALYSIS COMPLETE
                   </span>
@@ -966,16 +1458,16 @@ function DonateItem() {
                   <h3>
                     Detected Donation Items
                   </h3>
+
                 </div>
 
               </div>
 
 
-              {/* TOTAL */}
-
               <div className="ai-total">
 
                 <div>
+
                   <span>
                     ITEMS DETECTED
                   </span>
@@ -983,9 +1475,11 @@ function DonateItem() {
                   <strong>
                     {aiItems.length}
                   </strong>
+
                 </div>
 
                 <div>
+
                   <span>
                     TOTAL QUANTITY
                   </span>
@@ -993,12 +1487,11 @@ function DonateItem() {
                   <strong>
                     {totalQuantity}
                   </strong>
+
                 </div>
 
               </div>
 
-
-              {/* DETECTED ITEMS */}
 
               <div className="detected-items">
 
@@ -1020,6 +1513,7 @@ function DonateItem() {
                         : null;
 
                     return (
+
                       <div
                         className="detected-item"
                         key={item.id}
@@ -1045,7 +1539,6 @@ function DonateItem() {
 
                         </div>
 
-
                         <div className="detected-quantity">
 
                           <span>
@@ -1057,7 +1550,6 @@ function DonateItem() {
                           </strong>
 
                         </div>
-
 
                         {confidence !==
                           null && (
@@ -1084,10 +1576,11 @@ function DonateItem() {
                               <div
                                 className="confidence-fill"
                                 style={{
-                                  width: `${Math.min(
-                                    confidence,
-                                    100
-                                  )}%`,
+                                  width:
+                                    `${Math.min(
+                                      confidence,
+                                      100
+                                    )}%`
                                 }}
                               />
 
@@ -1098,18 +1591,20 @@ function DonateItem() {
                         )}
 
                       </div>
+
                     );
+
                   }
                 )}
 
               </div>
 
-
               <div className="ai-note">
-                ✨ These details were detected
-                automatically by AI. Please
-                review the result before
-                submitting your donation.
+
+                ✨ AI detected the donation.
+                Now choose how you want to
+                find the NGO.
+
               </div>
 
             </div>
@@ -1117,6 +1612,406 @@ function DonateItem() {
           )}
 
         </div>
+
+
+        {/* =================================================
+            MATCHING
+        ================================================= */}
+
+        {aiItems.length > 0 && (
+
+          <div className="donate-card matching-card">
+
+            <div className="card-heading">
+
+              <div className="heading-icon">
+                🎯
+              </div>
+
+              <div>
+
+                <span>
+                  NGO MATCHING
+                </span>
+
+                <h2>
+                  Where should your donation go?
+                </h2>
+
+              </div>
+
+            </div>
+
+
+            {/* MATCH TABS */}
+
+            <div className="match-tabs">
+
+              <button
+                type="button"
+                className={
+                  matchMode === "donor"
+                    ? "match-tab active"
+                    : "match-tab"
+                }
+                onClick={() =>
+                  handleMatching(
+                    "donor"
+                  )
+                }
+                disabled={
+                  matchingLoading ||
+                  allocationLoading
+                }
+              >
+
+                <span>
+                  🧑
+                </span>
+
+                <div>
+
+                  <strong>
+                    Donor Match
+                  </strong>
+
+                  <small>
+                    You choose the NGO
+                  </small>
+
+                </div>
+
+              </button>
+
+
+              <button
+                type="button"
+                className={
+                  matchMode === "ai"
+                    ? "match-tab active ai-tab"
+                    : "match-tab ai-tab"
+                }
+                onClick={() =>
+                  handleMatching(
+                    "ai"
+                  )
+                }
+                disabled={
+                  matchingLoading ||
+                  allocationLoading
+                }
+              >
+
+                <span>
+                  🤖
+                </span>
+
+                <div>
+
+                  <strong>
+                    AI Match
+                  </strong>
+
+                  <small>
+                    AI chooses the best NGO
+                  </small>
+
+                </div>
+
+              </button>
+
+            </div>
+
+
+            {/* DRAFT STATUS */}
+
+            {donationId && (
+
+              <div className="ai-note">
+
+                ✓ Donation created.
+                Now you can choose an NGO
+                for allocation.
+
+              </div>
+
+            )}
+
+
+            {/* LOADING */}
+
+            {matchingLoading && (
+
+              <div className="matching-loading">
+
+                <span className="ai-spinner" />
+
+                {matchMode === "ai"
+                  ? "AI is finding the best NGO..."
+                  : "Finding NGOs that need this item..."}
+
+              </div>
+
+            )}
+
+
+            {/* ERROR */}
+
+            {matchingError && (
+
+              <div className="matching-error">
+
+                ⚠️ {matchingError}
+
+              </div>
+
+            )}
+
+
+            {/* =================================================
+                AI RECOMMENDATION
+            ================================================= */}
+
+            {!matchingLoading &&
+              matchMode === "ai" &&
+              aiRecommendation && (
+
+              <div className="ai-recommendation">
+
+                <div className="recommendation-badge">
+                  🤖 AI RECOMMENDED
+                </div>
+
+                <h3>
+                  {aiRecommendation.ngo_name ||
+                    aiRecommendation.name ||
+                    "Recommended NGO"}
+                </h3>
+
+                <p>
+                  {aiRecommendation.ai_reason ||
+                    "This NGO has the strongest requirement match for your donation."}
+                </p>
+
+                <div className="recommendation-details">
+
+                  <div>
+
+                    <span>
+                      NGO needs
+                    </span>
+
+                    <strong>
+                      {
+                        aiRecommendation.remaining_need ??
+                        aiRecommendation.required_quantity ??
+                        "-"
+                      }
+                    </strong>
+
+                  </div>
+
+                  <div>
+
+                    <span>
+                      Your donation
+                    </span>
+
+                    <strong>
+                      {totalQuantity}
+                    </strong>
+
+                  </div>
+
+                  <div>
+
+                    <span>
+                      Recommended
+                    </span>
+
+                    <strong>
+                      {
+                        aiRecommendation.recommended_quantity ??
+                        Math.min(
+                          totalQuantity,
+                          Number(
+                            aiRecommendation.remaining_need ||
+                            totalQuantity
+                          )
+                        )
+                      }
+                    </strong>
+
+                  </div>
+
+                </div>
+
+                <div className="recommendation-footer">
+
+                  <span
+                    className={
+                      `priority-badge priority-${String(
+                        aiRecommendation.priority ||
+                        "Normal"
+                      ).toLowerCase()}`
+                    }
+                  >
+                    {aiRecommendation.priority ||
+                      "Normal"}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleSelectNGO(
+                        aiRecommendation
+                      )
+                    }
+                  >
+                    Select AI Recommendation →
+                  </button>
+
+                </div>
+
+              </div>
+
+            )}
+
+
+            {/* =================================================
+                DONOR MATCH NGO LIST
+            ================================================= */}
+
+            {!matchingLoading &&
+              matchMode === "donor" &&
+              matchingNGOs.length > 0 && (
+
+              <div className="matching-results">
+
+                <div className="matching-results-header">
+
+                  <span>
+                    MATCHING NGOs
+                  </span>
+
+                  <strong>
+                    {matchingNGOs.length} found
+                  </strong>
+
+                </div>
+
+                {matchingNGOs.map(
+                  renderNGOCard
+                )}
+
+              </div>
+
+            )}
+
+
+            {/* =================================================
+                AI OTHER MATCHES
+            ================================================= */}
+
+            {!matchingLoading &&
+              matchMode === "ai" &&
+              matchingNGOs.length > 0 && (
+
+              <div className="matching-results">
+
+                <div className="matching-results-header">
+
+                  <span>
+                    OTHER MATCHING NGOs
+                  </span>
+
+                  <strong>
+                    {matchingNGOs.length} found
+                  </strong>
+
+                </div>
+
+                {matchingNGOs.map(
+                  renderNGOCard
+                )}
+
+              </div>
+
+            )}
+
+
+            {/* NO RESULTS */}
+
+            {!matchingLoading &&
+              matchMode &&
+              !aiRecommendation &&
+              matchingNGOs.length === 0 &&
+              !matchingError && (
+
+              <div className="no-matches">
+
+                <div>
+                  🔎
+                </div>
+
+                <h3>
+                  No matching NGOs found
+                </h3>
+
+                <p>
+                  Currently no approved NGO
+                  has a requirement matching
+                  this donation.
+                </p>
+
+              </div>
+
+            )}
+
+
+            {/* SELECTED */}
+
+            {selectedMatch && (
+
+              <div className="selected-match">
+
+                <div className="selected-match-icon">
+                  ✓
+                </div>
+
+                <div>
+
+                  <span>
+                    SELECTED NGO
+                  </span>
+
+                  <strong>
+                    {selectedMatch.ngo_name ||
+                      selectedMatch.name ||
+                      "Selected NGO"}
+                  </strong>
+
+                </div>
+
+                <div className="selected-match-quantity">
+
+                  <span>
+                    Quantity
+                  </span>
+
+                  <strong>
+                    {getSelectedQuantity()}
+                  </strong>
+
+                </div>
+
+              </div>
+
+            )}
+
+          </div>
+
+        )}
 
 
         {/* =================================================
@@ -1132,6 +2027,7 @@ function DonateItem() {
             </div>
 
             <div>
+
               <span>
                 DONATION DETAILS
               </span>
@@ -1139,14 +2035,13 @@ function DonateItem() {
               <h2>
                 A few details from you
               </h2>
+
             </div>
 
           </div>
 
 
           <div className="two-column">
-
-            {/* CONDITION */}
 
             <div className="form-group">
 
@@ -1156,8 +2051,12 @@ function DonateItem() {
 
               <select
                 name="condition"
-                value={formData.condition}
-                onChange={handleChange}
+                value={
+                  formData.condition
+                }
+                onChange={
+                  handleChange
+                }
                 required
               >
 
@@ -1181,8 +2080,6 @@ function DonateItem() {
 
             </div>
 
-
-            {/* LOCATION */}
 
             <div className="form-group">
 
@@ -1237,13 +2134,21 @@ function DonateItem() {
               </strong>
 
               <p>
-                {aiItems.length > 0
-                  ? `AI detected ${totalQuantity} item${
-                      totalQuantity > 1
+
+                {selectedMatch
+
+                  ? `Your ${getSelectedQuantity()} item${
+                      getSelectedQuantity() > 1
                         ? "s"
                         : ""
-                    }. Your donation will be sent to the selected NGO for review.`
-                  : "Upload and analyze your donation image before submitting."}
+                    } will be allocated to ${
+                      selectedMatch.ngo_name ||
+                      selectedMatch.name ||
+                      "the selected NGO"
+                    }.`
+
+                  : "Analyze your image and select Donor Match or AI Match."}
+
               </p>
 
             </div>
@@ -1257,23 +2162,30 @@ function DonateItem() {
             disabled={
               loading ||
               ngoLoading ||
-              ngos.length === 0 ||
-              aiItems.length === 0
+              aiItems.length === 0 ||
+              !selectedMatch ||
+              !donationId
             }
           >
 
             {loading ? (
+
               <>
                 <span className="donate-spinner" />
-                Submitting...
+                {allocationLoading
+                  ? "Allocating..."
+                  : "Submitting..."}
               </>
+
             ) : (
+
               <>
                 Donate Item
                 <span>
                   →
                 </span>
               </>
+
             )}
 
           </button>

@@ -1104,3 +1104,429 @@
     padding: 17px;
   }
 }
+
+/* =====================================================
+   NGO REQUIREMENTS
+===================================================== */
+
+.ngo-requirements-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.ngo-requirement-form {
+  padding: 22px;
+  background: var(--ngo-card);
+  border: 1px solid var(--ngo-border);
+  border-radius: 18px;
+  box-shadow: 0 7px 22px rgba(23, 32, 51, 0.05);
+}
+
+.ngo-requirement-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.ngo-requirement-form-header h3 {
+  margin: 0;
+  color: var(--ngo-navy);
+  font-size: 21px;
+}
+
+.ngo-requirement-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.requirement-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+
+.requirement-field label {
+  color: var(--ngo-navy);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.requirement-field input,
+.requirement-field select,
+.requirement-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+
+  border: 1px solid var(--ngo-border);
+  border-radius: 10px;
+
+  background: #fff;
+  color: var(--ngo-navy);
+
+  font-family: inherit;
+  font-size: 12px;
+
+  outline: none;
+}
+
+.requirement-field input,
+.requirement-field select {
+  min-height: 44px;
+  padding: 0 12px;
+}
+
+.requirement-field textarea {
+  min-height: 90px;
+  padding: 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.requirement-field input:focus,
+.requirement-field select:focus,
+.requirement-field textarea:focus {
+  border-color: var(--ngo-coral);
+  box-shadow: 0 0 0 3px rgba(232, 117, 92, 0.1);
+}
+
+.requirement-save-button {
+  min-height: 43px;
+  padding: 0 17px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: var(--ngo-navy);
+  color: #fff;
+
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.requirement-save-button:hover:not(:disabled) {
+  background: var(--ngo-navy-soft);
+  transform: translateY(-1px);
+}
+
+.requirement-save-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.requirement-cancel-button {
+  min-height: 38px;
+  padding: 0 13px;
+
+  border: 1px solid var(--ngo-border);
+  border-radius: 9px;
+
+  background: #fff;
+  color: var(--ngo-navy);
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.requirement-cancel-button:hover {
+  border-color: var(--ngo-coral);
+  color: var(--ngo-coral);
+}
+
+.ngo-requirements-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.ngo-requirement-card {
+  padding: 20px;
+
+  background: var(--ngo-card);
+  border: 1px solid var(--ngo-border);
+  border-radius: 17px;
+
+  box-shadow: 0 7px 22px rgba(23, 32, 51, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.ngo-requirement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 11px 28px rgba(23, 32, 51, 0.08);
+}
+
+.requirement-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.requirement-category {
+  display: inline-block;
+  margin-bottom: 5px;
+
+  color: var(--ngo-coral);
+
+  font-size: 9px;
+  font-weight: 850;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.requirement-card-top h3 {
+  margin: 0;
+  color: var(--ngo-navy);
+  font-size: 22px;
+  letter-spacing: -0.3px;
+}
+
+.requirement-priority {
+  flex: 0 0 auto;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.priority-low {
+  background: #edf5ef;
+  color: var(--ngo-green);
+}
+
+.priority-medium {
+  background: #fff5d9;
+  color: #92701f;
+}
+
+.priority-high {
+  background: #f8e9e7;
+  color: var(--ngo-red);
+}
+
+.priority-urgent {
+  background: #f3d8d4;
+  color: #a53d34;
+}
+
+.requirement-quantities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+  margin-top: 17px;
+}
+
+.requirement-quantities > div {
+  padding: 11px;
+
+  background: #fbfaf7;
+  border: 1px solid #eeeae2;
+  border-radius: 10px;
+}
+
+.requirement-quantities span {
+  display: block;
+
+  margin-bottom: 4px;
+
+  color: var(--ngo-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.5px;
+}
+
+.requirement-quantities strong {
+  color: var(--ngo-navy);
+  font-size: 17px;
+}
+
+.requirement-progress {
+  margin-top: 15px;
+}
+
+.requirement-progress-bar {
+  height: 7px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #ebe8e1;
+}
+
+.requirement-progress-bar span {
+  display: block;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: var(--ngo-green);
+  transition: width 0.3s ease;
+}
+
+.requirement-progress small {
+  display: block;
+  margin-top: 6px;
+
+  color: var(--ngo-muted);
+
+  font-size: 10px;
+}
+
+.requirement-description {
+  margin: 14px 0 0;
+  padding: 11px 13px;
+
+  border-left: 3px solid var(--ngo-coral);
+  border-radius: 0 9px 9px 0;
+
+  background: #fcfaf7;
+  color: #56534d;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.requirement-status {
+  margin-top: 13px;
+
+  color: var(--ngo-green);
+
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.requirement-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.requirement-actions button {
+  min-height: 39px;
+  padding: 0 14px;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.requirement-edit-button {
+  border: 1px solid var(--ngo-border);
+  background: #fff;
+  color: var(--ngo-navy);
+}
+
+.requirement-edit-button:hover {
+  border-color: var(--ngo-coral);
+  color: var(--ngo-coral);
+  transform: translateY(-1px);
+}
+
+.requirement-delete-button {
+  border: 1px solid #e5c4c0;
+  background: #fff;
+  color: var(--ngo-red);
+}
+
+.requirement-delete-button:hover {
+  background: #f8e9e7;
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   REQUIREMENTS RESPONSIVE
+===================================================== */
+
+@media (max-width: 900px) {
+
+  .ngo-requirement-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ngo-requirements-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .ngo-requirement-form {
+    padding: 17px;
+  }
+
+  .ngo-requirement-form-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .ngo-requirement-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .requirement-save-button,
+  .requirement-cancel-button {
+    width: 100%;
+  }
+
+  .ngo-requirement-card {
+    padding: 16px;
+  }
+
+  .requirement-card-top {
+    flex-direction: column;
+  }
+
+  .requirement-priority {
+    align-self: flex-start;
+  }
+
+  .requirement-quantities {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .requirement-actions {
+    flex-direction: column;
+  }
+
+  .requirement-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+
+  .requirement-quantities {
+    grid-template-columns: 1fr;
+  }
+
+}
