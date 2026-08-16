@@ -1,0 +1,425 @@
+/* =====================================================
+   EDIT DONATION PAGE
+   Matches the My Donations navy / ivory / coral theme
+===================================================== */
+
+.edit-donation-page {
+  min-height: 100vh;
+  padding: 42px 24px 70px;
+  background: var(--md-ivory, #f8f5ef);
+  color: var(--md-navy, #14213d);
+}
+
+.edit-donation-header {
+  max-width: 1050px;
+  margin: 0 auto 28px;
+  text-align: center;
+}
+
+.edit-donation-badge {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--md-navy, #14213d);
+  color: var(--md-white, #ffffff);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+.edit-donation-header h1 {
+  margin: 0;
+  color: var(--md-navy, #14213d);
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.edit-donation-header p {
+  max-width: 650px;
+  margin: 10px auto 0;
+  color: var(--md-muted, #6f7480);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.edit-donation-form {
+  width: min(1050px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 20px;
+}
+
+.edit-donation-card {
+  padding: 26px;
+  background: var(--md-white, #ffffff);
+  border: 1px solid var(--md-border, #e7e1d8);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(20, 33, 61, 0.06);
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 22px;
+}
+
+.heading-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--md-navy-soft, #eef1f6);
+  font-size: 19px;
+}
+
+.heading-icon.coral-icon {
+  background: var(--md-coral-soft, #fff0eb);
+}
+
+.card-heading span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--md-coral, #e8755c);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.card-heading h2 {
+  margin: 0;
+  color: var(--md-navy, #14213d);
+  font-size: 21px;
+  font-weight: 850;
+}
+
+/* =====================================================
+   IMAGE
+===================================================== */
+
+.edit-upload-box {
+  position: relative;
+  min-height: 230px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1.5px dashed #cfc8bd;
+  border-radius: 14px;
+  background: #fcfaf7;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.edit-upload-box:hover {
+  border-color: var(--md-coral, #e8755c);
+  background: #fffaf7;
+}
+
+.edit-upload-box input {
+  display: none;
+}
+
+.edit-upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  text-align: center;
+}
+
+.edit-upload-content .upload-icon {
+  margin-bottom: 5px;
+  font-size: 36px;
+}
+
+.edit-upload-content strong {
+  color: var(--md-navy, #14213d);
+  font-size: 15px;
+}
+
+.edit-upload-content span {
+  color: var(--md-muted, #6f7480);
+  font-size: 12px;
+}
+
+.edit-image-preview {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #f2eee8;
+}
+
+.edit-image-preview img {
+  width: 100%;
+  height: 230px;
+  object-fit: contain;
+  display: block;
+}
+
+.edit-image-preview div {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(20, 33, 61, 0.88);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.edit-two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.edit-two-column .form-group {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--md-navy, #14213d);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--md-border, #ddd7ce);
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: var(--md-navy, #14213d);
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input,
+.form-group select {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+
+.form-group textarea {
+  min-height: 110px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--md-coral, #e8755c);
+  box-shadow: 0 0 0 3px rgba(232, 117, 92, 0.1);
+}
+
+.location-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--md-border, #ddd7ce);
+  border-radius: 9px;
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.location-input:focus-within {
+  border-color: var(--md-coral, #e8755c);
+  box-shadow: 0 0 0 3px rgba(232, 117, 92, 0.1);
+}
+
+.location-input span {
+  flex: 0 0 auto;
+}
+
+.location-input input {
+  min-height: 40px;
+  padding: 6px 0;
+  border: none;
+  box-shadow: none;
+}
+
+.location-input input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.edit-donation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 11px;
+  padding-top: 2px;
+}
+
+.edit-cancel-button,
+.edit-save-button {
+  min-height: 42px;
+  padding: 10px 18px;
+  border-radius: 9px;
+  border: 1px solid transparent;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.edit-cancel-button {
+  background: #fff;
+  color: var(--md-navy, #14213d);
+  border-color: var(--md-border, #ddd7ce);
+}
+
+.edit-cancel-button:hover:not(:disabled) {
+  background: #f1eee9;
+  transform: translateY(-1px);
+}
+
+.edit-save-button {
+  background: var(--md-coral, #e8755c);
+  color: var(--md-white, #fff);
+  box-shadow: 0 6px 15px rgba(232, 117, 92, 0.18);
+}
+
+.edit-save-button:hover:not(:disabled) {
+  background: var(--md-coral-dark, #d9634d);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(232, 117, 92, 0.22);
+}
+
+.edit-cancel-button:disabled,
+.edit-save-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* =====================================================
+   LOADING / ERROR
+===================================================== */
+
+.edit-donation-loading,
+.edit-donation-error {
+  width: min(620px, 100%);
+  margin: 80px auto 0;
+  padding: 36px 28px;
+  text-align: center;
+  background: var(--md-white, #fff);
+  border: 1px solid var(--md-border, #e7e1d8);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(20, 33, 61, 0.06);
+}
+
+.loading-icon,
+.error-icon {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+.edit-donation-loading h2,
+.edit-donation-error h2 {
+  margin: 0 0 8px;
+  color: var(--md-navy, #14213d);
+  font-size: 22px;
+}
+
+.edit-donation-loading p,
+.edit-donation-error p {
+  margin: 0;
+  color: var(--md-muted, #6f7480);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.edit-donation-error button {
+  margin-top: 20px;
+  min-height: 40px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 9px;
+  background: var(--md-navy, #14213d);
+  color: #fff;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.inline-error {
+  width: min(1050px, 100%);
+  margin: 0 auto 18px;
+  padding: 12px 15px;
+  box-sizing: border-box;
+  color: #a33a2f;
+  background: #fff0ee;
+  border: 1px solid #f0d0ca;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 700px) {
+  .edit-donation-page {
+    padding: 28px 15px 50px;
+  }
+
+  .edit-donation-card {
+    padding: 20px 16px;
+  }
+
+  .edit-two-column {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .edit-two-column .form-group {
+    margin-bottom: 18px;
+  }
+
+  .edit-donation-actions {
+    flex-direction: column-reverse;
+  }
+
+  .edit-cancel-button,
+  .edit-save-button {
+    width: 100%;
+  }
+}
