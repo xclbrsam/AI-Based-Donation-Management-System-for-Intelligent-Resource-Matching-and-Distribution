@@ -411,43 +411,23 @@
 .input-wrapper {
   position: relative;
 
-  display: flex;
-  align-items: center;
-}
-
-.input-icon {
-  position: absolute;
-  left: 16px;
-
-  color: #969ba5;
-
-  font-size: 15px;
-
-  pointer-events: none;
-}
-
-.input-wrapper input {
   width: 100%;
 
-  height: 54px;
+  display: grid;
 
-  padding: 0 48px;
+  grid-template-columns: 52px minmax(0, 1fr) 48px;
+
+  align-items: center;
 
   box-sizing: border-box;
+
+  min-height: 54px;
 
   border: 1px solid var(--login-border);
 
   border-radius: 12px;
 
-  outline: none;
-
   background: #fff;
-
-  color: var(--login-text);
-
-  font-family: inherit;
-
-  font-size: 14px;
 
   transition:
     border-color 0.2s ease,
@@ -455,15 +435,90 @@
     background 0.2s ease;
 }
 
+
+/* =====================================================
+   INPUT ICON
+===================================================== */
+
+.input-icon {
+  position: static;
+
+  grid-column: 1;
+  grid-row: 1;
+
+  width: 52px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #969ba5;
+
+  font-size: 17px;
+  line-height: 1;
+
+  pointer-events: none;
+  user-select: none;
+
+  z-index: 2;
+}
+
+
+/* =====================================================
+   TEXT INPUT
+===================================================== */
+
+.input-wrapper input {
+  grid-column: 2;
+  grid-row: 1;
+
+  width: 100%;
+  min-width: 0;
+
+  height: 54px;
+
+  box-sizing: border-box;
+
+  padding: 0;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  color: var(--login-text);
+
+  font-family: inherit;
+  font-size: 14px;
+
+  transition: color 0.2s ease;
+}
+
 .input-wrapper input::placeholder {
   color: #a4a8b0;
+  opacity: 1;
 }
 
 .input-wrapper input:hover {
-  border-color: #c9c6c0;
+  border: none;
 }
 
 .input-wrapper input:focus {
+  border: none;
+  outline: none;
+}
+
+
+/* =====================================================
+   WRAPPER HOVER / FOCUS
+===================================================== */
+
+.input-wrapper:hover {
+  border-color: #c9c6c0;
+}
+
+.input-wrapper:focus-within {
   border-color: var(--login-coral);
 
   background: white;
@@ -478,31 +533,56 @@
 ===================================================== */
 
 .password-toggle {
-  position: absolute;
-  right: 13px;
+  grid-column: 3;
+  grid-row: 1;
 
-  width: 32px;
-  height: 32px;
+  position: static;
+
+  width: 48px;
+  height: 54px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  padding: 0;
+
   border: none;
 
-  border-radius: 8px;
+  border-radius: 0 12px 12px 0;
 
   background: transparent;
 
   color: #8b9099;
 
+  font-size: 16px;
+
   cursor: pointer;
+
+  z-index: 3;
 }
 
 .password-toggle:hover {
   background: var(--login-coral-soft);
 
   color: var(--login-coral);
+}
+
+
+/* =====================================================
+   BROWSER AUTOFILL
+===================================================== */
+
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--login-text);
+
+  -webkit-box-shadow:
+    0 0 0 1000px transparent inset;
+
+  transition:
+    background-color 9999s ease-in-out 0s;
 }
 
 
@@ -515,26 +595,28 @@
   height: 54px;
 
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 
   gap: 10px;
 
   margin-top: 4px;
+  padding: 0 18px;
+  box-sizing: border-box;
 
   border: none;
   border-radius: 12px;
 
   background: var(--login-coral);
-
   color: white;
 
   font-family: inherit;
-
   font-size: 14px;
   font-weight: 700;
 
   cursor: pointer;
+  white-space: nowrap;
 
   box-shadow:
     0 10px 25px rgba(232, 117, 92, 0.22);
@@ -547,7 +629,6 @@
 
 .login-submit:hover:not(:disabled) {
   background: var(--login-coral-dark);
-
   transform: translateY(-2px);
 
   box-shadow:
@@ -560,16 +641,36 @@
 
 .login-submit:disabled {
   opacity: 0.7;
-
   cursor: not-allowed;
 }
 
-.button-arrow {
-  font-size: 19px;
-
+.login-submit > span:not(.button-arrow):not(.spinner) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
 }
 
+.button-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  position: static;
+
+  margin: 0;
+  padding: 0;
+
+  font-size: 19px;
+  line-height: 1;
+
+  transform: translateY(-1px);
+}
 
 /* =====================================================
    SPINNER

@@ -11,6 +11,10 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // =====================================================
+  // LOGIN
+  // =====================================================
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,7 +32,27 @@ function Login() {
       );
 
       // =================================================
-      // SAVE LOGIN TOKENS
+      // CHECK RESPONSE
+      // =================================================
+
+      if (!data) {
+        alert("Invalid login response.");
+        return;
+      }
+
+      if (!data.tokens) {
+        alert("Login tokens were not received.");
+
+        console.error(
+          "Tokens missing from login response:",
+          data
+        );
+
+        return;
+      }
+
+      // =================================================
+      // SAVE TOKENS
       // =================================================
 
       localStorage.setItem(
@@ -57,17 +81,25 @@ function Login() {
 
       localStorage.setItem(
         "user_name",
-        data.name
+        data.name || ""
       );
 
       localStorage.setItem(
         "user_email",
-        data.email
+        data.email || ""
       );
 
       // =================================================
       // DEBUG
       // =================================================
+
+      console.log(
+        "================================="
+      );
+
+      console.log(
+        "LOGIN SUCCESS"
+      );
 
       console.log(
         "User Type:",
@@ -89,6 +121,25 @@ function Login() {
         data.email
       );
 
+      console.log(
+        "================================="
+      );
+
+      // =================================================
+      // NORMALIZE USER TYPE
+      // =================================================
+
+      const userType = String(
+        data.user_type || ""
+      )
+        .trim()
+        .toLowerCase();
+
+      console.log(
+        "Normalized User Type:",
+        userType
+      );
+
       // =================================================
       // SUCCESS
       // =================================================
@@ -97,15 +148,66 @@ function Login() {
         "Login Successful!"
       );
 
-      navigate("/dashboard");
+      // =================================================
+      // NGO LOGIN
+      // =================================================
+
+      if (userType === "ngo") {
+
+        console.log(
+          "Redirecting to NGO Dashboard..."
+        );
+
+        navigate(
+          "/ngo-dashboard"
+        );
+
+        return;
+      }
+
+      // =================================================
+      // DONOR LOGIN
+      // =================================================
+
+      if (userType === "donor") {
+
+        console.log(
+          "Redirecting to Donor Dashboard..."
+        );
+
+        navigate(
+          "/dashboard"
+        );
+
+        return;
+      }
+
+      // =================================================
+      // UNKNOWN USER TYPE
+      // =================================================
+
+      console.error(
+        "Unknown user type:",
+        data.user_type
+      );
+
+      alert(
+        "Unknown user type. Please contact the administrator."
+      );
 
     } catch (error) {
+
+      // =================================================
+      // LOGIN ERROR
+      // =================================================
 
       console.log(
         "========== LOGIN ERROR =========="
       );
 
-      console.log(error);
+      console.log(
+        error
+      );
 
       console.log(
         "Status:",
@@ -124,7 +226,8 @@ function Login() {
       if (error.response) {
 
         alert(
-          error.response.data.message ||
+          error.response.data?.message ||
+          error.response.data?.detail ||
           "Login Failed"
         );
 
@@ -143,6 +246,11 @@ function Login() {
     }
   };
 
+
+  // =====================================================
+  // PAGE
+  // =====================================================
+
   return (
     <div className="login-page">
 
@@ -154,7 +262,10 @@ function Login() {
 
         <div className="brand-content">
 
+          {/* LOGO */}
+
           <div className="brand-logo">
+
             <span className="brand-logo-icon">
               ✦
             </span>
@@ -162,8 +273,11 @@ function Login() {
             <span>
               AI Donations
             </span>
+
           </div>
 
+
+          {/* BRAND MESSAGE */}
 
           <div className="brand-message">
 
@@ -176,9 +290,11 @@ function Login() {
               <br />
               Waste less.
               <br />
+
               <span>
                 Create impact.
               </span>
+
             </h1>
 
             <p className="brand-description">
@@ -217,8 +333,15 @@ function Login() {
         </div>
 
 
-        <div className="brand-decoration decoration-one" />
-        <div className="brand-decoration decoration-two" />
+        {/* DECORATIONS */}
+
+        <div
+          className="brand-decoration decoration-one"
+        />
+
+        <div
+          className="brand-decoration decoration-two"
+        />
 
       </section>
 
@@ -231,7 +354,9 @@ function Login() {
 
         <div className="login-card">
 
-          {/* HEADER */}
+          {/* =================================================
+              HEADER
+          ================================================= */}
 
           <div className="login-header">
 
@@ -255,14 +380,18 @@ function Login() {
           </div>
 
 
-          {/* FORM */}
+          {/* =================================================
+              LOGIN FORM
+          ================================================= */}
 
           <form
             onSubmit={handleSubmit}
             className="login-form"
           >
 
-            {/* EMAIL */}
+            {/* =================================================
+                EMAIL
+            ================================================= */}
 
             <div className="form-group">
 
@@ -272,17 +401,21 @@ function Login() {
 
               <div className="input-wrapper">
 
-                <span className="input-icon">
-                  ✉
+                <span className="input-icon" aria-hidden="true">
+                  ✉️
                 </span>
 
                 <input
                   id="email"
+                  name="email"
                   type="email"
+                  autoComplete="username"
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) =>
-                    setEmail(e.target.value)
+                    setEmail(
+                      e.target.value
+                    )
                   }
                   required
                 />
@@ -292,7 +425,9 @@ function Login() {
             </div>
 
 
-            {/* PASSWORD */}
+            {/* =================================================
+                PASSWORD
+            ================================================= */}
 
             <div className="form-group">
 
@@ -325,18 +460,23 @@ function Login() {
 
                 <input
                   id="password"
+                  name="password"
                   type={
                     showPassword
                       ? "text"
                       : "password"
                   }
+                  autoComplete="current-password"
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) =>
-                    setPassword(e.target.value)
+                    setPassword(
+                      e.target.value
+                    )
                   }
                   required
                 />
+
 
                 <button
                   type="button"
@@ -352,7 +492,9 @@ function Login() {
                       : "Show password"
                   }
                 >
-                  {showPassword ? "◉" : "○"}
+                  {showPassword
+                    ? "◉"
+                    : "○"}
                 </button>
 
               </div>
@@ -360,7 +502,9 @@ function Login() {
             </div>
 
 
-            {/* LOGIN BUTTON */}
+            {/* =================================================
+                LOGIN BUTTON
+            ================================================= */}
 
             <button
               type="submit"
@@ -369,17 +513,27 @@ function Login() {
             >
 
               {loading ? (
+
                 <>
                   <span className="spinner" />
-                  Signing in...
+
+                  <span>
+                    Signing in...
+                  </span>
                 </>
+
               ) : (
+
                 <>
-                  Sign In
+                  <span>
+                    Sign In
+                  </span>
+
                   <span className="button-arrow">
                     →
                   </span>
                 </>
+
               )}
 
             </button>
@@ -387,7 +541,9 @@ function Login() {
           </form>
 
 
-          {/* REGISTER */}
+          {/* =================================================
+              REGISTER
+          ================================================= */}
 
           <div className="register-prompt">
 
@@ -407,13 +563,24 @@ function Login() {
           </div>
 
 
-          {/* FOOTER */}
+          {/* =================================================
+              FOOTER
+          ================================================= */}
 
           <p className="login-footer">
+
             By continuing, you agree to our
-            <span> Terms </span>
+
+            <span>
+              {" "}Terms{" "}
+            </span>
+
             and
-            <span> Privacy Policy.</span>
+
+            <span>
+              {" "}Privacy Policy.
+            </span>
+
           </p>
 
         </div>

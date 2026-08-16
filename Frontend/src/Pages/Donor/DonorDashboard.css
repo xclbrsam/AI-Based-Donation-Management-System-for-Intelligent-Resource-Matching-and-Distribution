@@ -176,23 +176,108 @@
 
 
 /* =====================================================
-   HERO BUTTON
+   HERO ACTIONS
+   PROFILE + LOGOUT + DONATE
 ===================================================== */
 
-.dashboard-hero-action {
+.dashboard-hero-actions {
   position: relative;
 
   z-index: 3;
-}
-
-.dashboard-hero-action button {
-  min-height: 49px;
 
   display: flex;
 
   align-items: center;
 
+  justify-content: flex-end;
+
   gap: 9px;
+
+  flex-wrap: wrap;
+}
+
+
+.dashboard-top-button,
+.dashboard-donate-top-button {
+  min-height: 43px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 0 14px;
+
+  border-radius: 10px;
+
+  font-family: inherit;
+
+  font-size: 10px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+.dashboard-top-button span,
+.dashboard-donate-top-button span {
+  font-size: 14px;
+}
+
+
+/* LOGOUT */
+
+.logout-top-button {
+  border: 1px solid
+    var(--dd-coral);
+
+  background:
+    var(--dd-coral);
+
+  color: white;
+
+  box-shadow:
+    0 8px 20px
+    rgba(
+      232,
+      117,
+      92,
+      0.20
+    );
+}
+
+
+.logout-top-button:hover {
+  transform: translateY(-2px);
+
+  background:
+    var(--dd-coral-dark);
+
+  box-shadow:
+    0 11px 25px
+    rgba(
+      232,
+      117,
+      92,
+      0.28
+    );
+}
+
+
+/* DONATE */
+
+.dashboard-donate-top-button {
+  min-height: 49px;
 
   padding: 0 18px;
 
@@ -204,32 +289,27 @@
 
   color: white;
 
-  font-family: inherit;
-
   font-size: 12px;
-  font-weight: 750;
-
-  cursor: pointer;
 
   box-shadow:
-    0 9px 25px rgba(
+    0 9px 25px
+    rgba(
       232,
       117,
       92,
       0.22
     );
-
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease;
 }
 
-.dashboard-hero-action button span {
+
+.dashboard-donate-top-button span {
   font-size: 19px;
 }
 
-.dashboard-hero-action button:hover {
-  background: var(--dd-coral-dark);
+
+.dashboard-donate-top-button:hover {
+  background:
+    var(--dd-coral-dark);
 
   transform: translateY(-2px);
 }
@@ -1142,14 +1222,23 @@
     font-size: 11px;
   }
 
-  .dashboard-hero-action {
+  .dashboard-hero-actions {
     margin-top: 23px;
+
+    justify-content: flex-start;
+
+    width: 100%;
   }
 
-  .dashboard-hero-action button {
-    width: 100%;
+  .dashboard-top-button,
+  .dashboard-donate-top-button {
+    flex: 1;
 
-    justify-content: center;
+    min-width: 100px;
+  }
+
+  .dashboard-donate-top-button {
+    min-height: 43px;
   }
 
   .dashboard-user-card {

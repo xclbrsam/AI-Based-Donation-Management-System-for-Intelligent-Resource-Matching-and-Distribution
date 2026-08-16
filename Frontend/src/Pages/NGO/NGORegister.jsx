@@ -6,10 +6,6 @@ import "./NGORegister.css";
 function NGORegister() {
   const navigate = useNavigate();
 
-  // =====================================================
-  // FORM DATA
-  // =====================================================
-
   const [formData, setFormData] = useState({
     ngo_name: "",
     description: "",
@@ -28,38 +24,24 @@ function NGORegister() {
     logo: null,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  // =====================================================
-  // HANDLE INPUT CHANGE
-  // =====================================================
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (files && files.length > 0) {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files[0],
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        files && files.length > 0
+          ? files[0]
+          : value,
+    }));
   };
-
-  // =====================================================
-  // HANDLE SUBMIT
-  // =====================================================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // ===================================================
-    // PASSWORD CHECK
-    // ===================================================
 
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
@@ -71,36 +53,20 @@ function NGORegister() {
       return;
     }
 
-    // ===================================================
-    // PHONE CHECK
-    // ===================================================
-
     if (!/^\d{10}$/.test(formData.phone)) {
       alert("Phone number must contain exactly 10 digits.");
       return;
     }
-
-    // ===================================================
-    // PINCODE CHECK
-    // ===================================================
 
     if (!/^\d{6}$/.test(formData.pincode)) {
       alert("Pincode must contain exactly 6 digits.");
       return;
     }
 
-    // ===================================================
-    // CERTIFICATE CHECK
-    // ===================================================
-
     if (!formData.certificate) {
       alert("Please upload NGO Certificate.");
       return;
     }
-
-    // ===================================================
-    // LOGO CHECK
-    // ===================================================
 
     if (!formData.logo) {
       alert("Please upload NGO Logo.");
@@ -110,42 +76,17 @@ function NGORegister() {
     try {
       setLoading(true);
 
-      // =================================================
-      // CREATE FORMDATA
-      // =================================================
-
       const data = new FormData();
 
-      // -------------------------------------------------
-      // NGO DETAILS
-      // -------------------------------------------------
-
-      data.append(
-        "ngo_name",
-        formData.ngo_name
-      );
-
-      data.append(
-        "description",
-        formData.description
-      );
-
+      data.append("ngo_name", formData.ngo_name);
+      data.append("description", formData.description);
       data.append(
         "registration_no",
         formData.registration_number
       );
+      data.append("email_id", formData.email);
+      data.append("phone_no", formData.phone);
 
-      data.append(
-        "email_id",
-        formData.email
-      );
-
-      data.append(
-        "phone_no",
-        formData.phone
-      );
-
-      // Website is optional
       if (formData.website) {
         data.append(
           "website_link",
@@ -153,76 +94,30 @@ function NGORegister() {
         );
       }
 
-      data.append(
-        "address",
-        formData.address
-      );
-
-      data.append(
-        "city",
-        formData.city
-      );
-
-      data.append(
-        "state",
-        formData.state
-      );
-
-      data.append(
-        "pincode",
-        formData.pincode
-      );
-
-      data.append(
-        "language",
-        formData.language
-      );
-
-      data.append(
-        "password",
-        formData.password
-      );
-
-      // -------------------------------------------------
-      // NGO CERTIFICATE
-      // -------------------------------------------------
+      data.append("address", formData.address);
+      data.append("city", formData.city);
+      data.append("state", formData.state);
+      data.append("pincode", formData.pincode);
+      data.append("language", formData.language);
+      data.append("password", formData.password);
 
       data.append(
         "certificate_files",
         formData.certificate
       );
 
-      // -------------------------------------------------
-      // NGO LOGO
-      // -------------------------------------------------
-
       data.append(
         "picture",
         formData.logo
       );
-
-      // =================================================
-      // DEBUG
-      // =================================================
 
       console.log(
         "========== NGO REGISTRATION DATA =========="
       );
 
       for (const [key, value] of data.entries()) {
-        console.log(
-          key,
-          value
-        );
+        console.log(key, value);
       }
-
-      console.log(
-        "==========================================="
-      );
-
-      // =================================================
-      // SEND TO BACKEND
-      // =================================================
 
       const response = await registerUser(
         "ngo",
@@ -234,10 +129,6 @@ function NGORegister() {
         response
       );
 
-      // =================================================
-      // SUCCESS
-      // =================================================
-
       alert(
         "NGO Registered Successfully! 🏢📄"
       );
@@ -245,10 +136,6 @@ function NGORegister() {
       navigate("/login");
 
     } catch (error) {
-
-      // =================================================
-      // ERROR
-      // =================================================
 
       console.log(
         "========== NGO REGISTRATION ERROR =========="
@@ -264,10 +151,6 @@ function NGORegister() {
       console.log(
         "Response:",
         error.response?.data
-      );
-
-      console.log(
-        "============================================"
       );
 
       if (error.response?.data) {
@@ -287,330 +170,769 @@ function NGORegister() {
     }
   };
 
-  // =====================================================
-  // PAGE
-  // =====================================================
-
   return (
-    <div className="ngo-register-container">
+    <div className="ngo-register-page">
 
       {/* =================================================
-          HEADER
+          LEFT BRAND PANEL
       ================================================= */}
 
-      <div className="register-header">
+      <section className="ngo-register-brand">
 
-        <h1>
-          NGO Registration
-        </h1>
+        <div className="ngo-brand-content">
 
-        <p>
-          Register your organization and connect with donors.
-        </p>
+          <div className="ngo-brand-logo">
 
-      </div>
+            <span className="ngo-logo-icon">
+              ✦
+            </span>
+
+            <span>
+              AI Donations
+            </span>
+
+          </div>
+
+
+          <div className="ngo-brand-message">
+
+            <p className="ngo-brand-eyebrow">
+              BECOME A PARTNER NGO
+            </p>
+
+            <h1>
+              Your mission
+              <br />
+              can become
+              <br />
+              <span>someone's hope.</span>
+            </h1>
+
+            <p>
+              Connect your organization with meaningful
+              donations and resources that can create
+              real impact in your community.
+            </p>
+
+          </div>
+
+
+          <div className="ngo-impact-points">
+
+            <div className="ngo-impact-item">
+
+              <span>
+                01
+              </span>
+
+              <div>
+                <strong>
+                  Receive useful donations
+                </strong>
+
+                <p>
+                  Get resources your organization needs.
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="ngo-impact-item">
+
+              <span>
+                02
+              </span>
+
+              <div>
+                <strong>
+                  Connect with donors
+                </strong>
+
+                <p>
+                  Build meaningful connections with donors.
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="ngo-impact-item">
+
+              <span>
+                03
+              </span>
+
+              <div>
+                <strong>
+                  Grow your impact
+                </strong>
+
+                <p>
+                  Turn every contribution into community impact.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div className="ngo-decoration ngo-decoration-one" />
+        <div className="ngo-decoration ngo-decoration-two" />
+
+      </section>
 
 
       {/* =================================================
-          ACCOUNT TYPE
+          RIGHT FORM PANEL
       ================================================= */}
 
-      <div className="account-type-section">
+      <section className="ngo-register-section">
 
-        <label>
-          Register As
-        </label>
+        <div className="ngo-register-card">
 
-        <div className="account-type-buttons">
 
-          {/* DONOR */}
+          {/* HEADER */}
 
-          <button
-            type="button"
-            className="account-type"
-            onClick={() =>
-              navigate("/register/donor")
-            }
+          <div className="ngo-register-header">
+
+            <div className="ngo-mobile-logo">
+              ✦ AI Donations
+            </div>
+
+            <p className="ngo-register-eyebrow">
+              CREATE YOUR ORGANIZATION ACCOUNT
+            </p>
+
+            <h2>
+              Join as an NGO
+            </h2>
+
+            <p>
+              Register your organization and start
+              connecting with donors.
+            </p>
+
+          </div>
+
+
+          {/* ACCOUNT TYPE */}
+
+          <div className="ngo-account-switch">
+
+            <p>
+              Register as
+            </p>
+
+            <div className="ngo-account-buttons">
+
+              <button
+                type="button"
+                className="ngo-account-button"
+                onClick={() =>
+                  navigate("/register/donor")
+                }
+              >
+                <span>
+                  👤
+                </span>
+
+                <div>
+                  <strong>
+                    Donor
+                  </strong>
+
+                  <small>
+                    Give useful items
+                  </small>
+                </div>
+              </button>
+
+
+              <button
+                type="button"
+                className="ngo-account-button active"
+              >
+                <span>
+                  🏢
+                </span>
+
+                <div>
+                  <strong>
+                    NGO
+                  </strong>
+
+                  <small>
+                    Receive donations
+                  </small>
+                </div>
+              </button>
+
+            </div>
+
+          </div>
+
+
+          {/* FORM */}
+
+          <form
+            onSubmit={handleSubmit}
+            className="ngo-register-form"
+            encType="multipart/form-data"
           >
-            <span>
-              👤
-            </span>
-
-            <span>
-              Donor
-            </span>
-          </button>
 
 
-          {/* NGO */}
+            {/* =================================================
+                ORGANIZATION INFORMATION
+            ================================================= */}
 
-          <button
-            type="button"
-            className="account-type active"
-          >
-            <span>
-              🏢
-            </span>
+            <div className="ngo-form-section-title">
 
-            <span>
-              NGO
-            </span>
-          </button>
+              <span>
+                01
+              </span>
+
+              <div>
+
+                <h3>
+                  Organization information
+                </h3>
+
+                <p>
+                  Tell us about your NGO.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* NGO NAME */}
+
+            <div className="ngo-form-group full-width">
+
+              <label htmlFor="ngo-name">
+                NGO name
+              </label>
+
+              <div className="ngo-input-wrapper">
+
+                <span>
+                  🏢
+                </span>
+
+                <input
+                  id="ngo-name"
+                  type="text"
+                  name="ngo_name"
+                  placeholder="Enter your NGO name"
+                  value={formData.ngo_name}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* DESCRIPTION */}
+
+            <div className="ngo-form-group full-width">
+
+              <label htmlFor="ngo-description">
+                Organization description
+              </label>
+
+              <textarea
+                id="ngo-description"
+                name="description"
+                placeholder="Describe your NGO and its work"
+                value={formData.description}
+                onChange={handleChange}
+                rows="3"
+                required
+              />
+
+            </div>
+
+
+            {/* REGISTRATION + EMAIL */}
+
+            <div className="ngo-form-grid">
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-registration">
+                  Registration number
+                </label>
+
+                <input
+                  id="ngo-registration"
+                  type="text"
+                  name="registration_number"
+                  placeholder="Registration number"
+                  value={formData.registration_number}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-email">
+                  Email address
+                </label>
+
+                <div className="ngo-input-wrapper">
+
+                  <span>
+                    ✉
+                  </span>
+
+                  <input
+                    id="ngo-email"
+                    type="email"
+                    name="email"
+                    placeholder="ngo@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* PHONE + WEBSITE */}
+
+            <div className="ngo-form-grid">
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-phone">
+                  Phone number
+                </label>
+
+                <div className="ngo-input-wrapper">
+
+                  <span>
+                    ☎
+                  </span>
+
+                  <input
+                    id="ngo-phone"
+                    type="tel"
+                    name="phone"
+                    placeholder="10-digit number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    maxLength="10"
+                    pattern="[0-9]{10}"
+                    required
+                  />
+
+                </div>
+
+              </div>
+
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-website">
+                  Website
+                </label>
+
+                <input
+                  id="ngo-website"
+                  type="url"
+                  name="website"
+                  placeholder="https://example.org"
+                  value={formData.website}
+                  onChange={handleChange}
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* =================================================
+                LOCATION
+            ================================================= */}
+
+            <div className="ngo-form-section-title location-title">
+
+              <span>
+                02
+              </span>
+
+              <div>
+
+                <h3>
+                  Organization location
+                </h3>
+
+                <p>
+                  Help donors connect with your organization.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* ADDRESS */}
+
+            <div className="ngo-form-group full-width">
+
+              <label htmlFor="ngo-address">
+                Address
+              </label>
+
+              <textarea
+                id="ngo-address"
+                name="address"
+                placeholder="Enter complete organization address"
+                value={formData.address}
+                onChange={handleChange}
+                rows="3"
+                required
+              />
+
+            </div>
+
+
+            {/* CITY STATE PINCODE */}
+
+            <div className="ngo-form-grid ngo-location-grid">
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-city">
+                  City
+                </label>
+
+                <input
+                  id="ngo-city"
+                  type="text"
+                  name="city"
+                  placeholder="City"
+                  value={formData.city}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-state">
+                  State
+                </label>
+
+                <input
+                  id="ngo-state"
+                  type="text"
+                  name="state"
+                  placeholder="State"
+                  value={formData.state}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-pincode">
+                  Pincode
+                </label>
+
+                <input
+                  id="ngo-pincode"
+                  type="text"
+                  name="pincode"
+                  placeholder="6 digits"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  maxLength="6"
+                  pattern="[0-9]{6}"
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* LANGUAGE */}
+
+            <div className="ngo-form-group full-width">
+
+              <label htmlFor="ngo-language">
+                Preferred language
+              </label>
+
+              <select
+                id="ngo-language"
+                name="language"
+                value={formData.language}
+                onChange={handleChange}
+                required
+              >
+
+                <option value="English">
+                  English
+                </option>
+
+                <option value="Telugu">
+                  Telugu
+                </option>
+
+                <option value="Hindi">
+                  Hindi
+                </option>
+
+                <option value="Tamil">
+                  Tamil
+                </option>
+
+                <option value="Kannada">
+                  Kannada
+                </option>
+
+              </select>
+
+            </div>
+
+
+            {/* =================================================
+                VERIFICATION
+            ================================================= */}
+
+            <div className="ngo-form-section-title security-title">
+
+              <span>
+                03
+              </span>
+
+              <div>
+
+                <h3>
+                  Verification & security
+                </h3>
+
+                <p>
+                  Verify your organization and secure your account.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* CERTIFICATE */}
+
+            <div className="ngo-file-field">
+
+              <label>
+                📄 NGO Certificate
+              </label>
+
+              <input
+                type="file"
+                name="certificate"
+                onChange={handleChange}
+                accept=".pdf,.jpg,.jpeg,.png"
+                required
+              />
+
+              <small>
+                Upload PDF, JPG, JPEG or PNG.
+              </small>
+
+            </div>
+
+
+            {/* LOGO */}
+
+            <div className="ngo-file-field">
+
+              <label>
+                🖼️ NGO Logo
+              </label>
+
+              <input
+                type="file"
+                name="logo"
+                onChange={handleChange}
+                accept="image/*"
+                required
+              />
+
+              <small>
+                Upload your organization's logo.
+              </small>
+
+            </div>
+
+
+            {/* PASSWORDS */}
+
+            <div className="ngo-form-grid">
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-password">
+                  Password
+                </label>
+
+                <div className="ngo-input-wrapper">
+
+                  <span>
+                    🔒
+                  </span>
+
+                  <input
+                    id="ngo-password"
+                    type={
+                      showPassword
+                        ? "text"
+                        : "password"
+                    }
+                    name="password"
+                    placeholder="Create password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="ngo-password-toggle"
+                    onClick={() =>
+                      setShowPassword(
+                        !showPassword
+                      )
+                    }
+                  >
+                    {showPassword
+                      ? "◉"
+                      : "○"}
+                  </button>
+
+                </div>
+
+              </div>
+
+
+              <div className="ngo-form-group">
+
+                <label htmlFor="ngo-confirm-password">
+                  Confirm password
+                </label>
+
+                <div className="ngo-input-wrapper">
+
+                  <span>
+                    🔒
+                  </span>
+
+                  <input
+                    id="ngo-confirm-password"
+                    type={
+                      showConfirmPassword
+                        ? "text"
+                        : "password"
+                    }
+                    name="confirmPassword"
+                    placeholder="Repeat password"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="ngo-password-toggle"
+                    onClick={() =>
+                      setShowConfirmPassword(
+                        !showConfirmPassword
+                      )
+                    }
+                  >
+                    {showConfirmPassword
+                      ? "◉"
+                      : "○"}
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* SUBMIT */}
+
+            <button
+              type="submit"
+              className="ngo-register-submit"
+              disabled={loading}
+            >
+
+              {loading ? (
+                <>
+                  <span className="ngo-spinner" />
+                  Creating NGO Account...
+                </>
+              ) : (
+                <>
+                  Create NGO Account
+                  <span>
+                    →
+                  </span>
+                </>
+              )}
+
+            </button>
+
+
+            {/* LOGIN */}
+
+            <div className="ngo-login-prompt">
+
+              <span>
+                Already have an account?
+              </span>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/login")
+                }
+              >
+                Sign in
+              </button>
+
+            </div>
+
+          </form>
 
         </div>
 
-      </div>
-
-
-      {/* =================================================
-          FORM
-      ================================================= */}
-
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
-
-        {/* NGO NAME */}
-
-        <input
-          type="text"
-          name="ngo_name"
-          placeholder="NGO Name"
-          value={formData.ngo_name}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* DESCRIPTION */}
-
-        <textarea
-          name="description"
-          placeholder="Describe your NGO"
-          value={formData.description}
-          onChange={handleChange}
-          rows="4"
-          required
-        />
-
-
-        {/* REGISTRATION NUMBER */}
-
-        <input
-          type="text"
-          name="registration_number"
-          placeholder="Registration Number"
-          value={formData.registration_number}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* EMAIL */}
-
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Address"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* PHONE */}
-
-        <input
-          type="tel"
-          name="phone"
-          placeholder="Phone Number"
-          value={formData.phone}
-          onChange={handleChange}
-          maxLength="10"
-          pattern="[0-9]{10}"
-          required
-        />
-
-
-        {/* WEBSITE */}
-
-        <input
-          type="url"
-          name="website"
-          placeholder="Website (optional)"
-          value={formData.website}
-          onChange={handleChange}
-        />
-
-
-        {/* ADDRESS */}
-
-        <textarea
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-          rows="3"
-          required
-        />
-
-
-        {/* CITY */}
-
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={formData.city}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* STATE */}
-
-        <input
-          type="text"
-          name="state"
-          placeholder="State"
-          value={formData.state}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* PINCODE */}
-
-        <input
-          type="text"
-          name="pincode"
-          placeholder="Pincode"
-          value={formData.pincode}
-          onChange={handleChange}
-          maxLength="6"
-          pattern="[0-9]{6}"
-          required
-        />
-
-
-        {/* LANGUAGE */}
-
-        <select
-          name="language"
-          value={formData.language}
-          onChange={handleChange}
-          required
-        >
-          <option value="English">
-            English
-          </option>
-
-          <option value="Telugu">
-            Telugu
-          </option>
-
-          <option value="Hindi">
-            Hindi
-          </option>
-
-          <option value="Tamil">
-            Tamil
-          </option>
-
-          <option value="Kannada">
-            Kannada
-          </option>
-        </select>
-
-
-        {/* =================================================
-            CERTIFICATE
-        ================================================= */}
-
-        <div className="file-field">
-
-          <label>
-            📄 NGO Certificate
-          </label>
-
-          <input
-            type="file"
-            name="certificate"
-            onChange={handleChange}
-            accept=".pdf,.jpg,.jpeg,.png"
-            required
-          />
-
-          <small>
-            Upload PDF, JPG, JPEG or PNG.
-          </small>
-
-        </div>
-
-
-        {/* =================================================
-            LOGO
-        ================================================= */}
-
-        <div className="file-field">
-
-          <label>
-            🖼️ NGO Logo
-          </label>
-
-          <input
-            type="file"
-            name="logo"
-            onChange={handleChange}
-            accept="image/*"
-            required
-          />
-
-          <small>
-            Upload your NGO logo.
-          </small>
-
-        </div>
-
-
-        {/* PASSWORD */}
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* CONFIRM PASSWORD */}
-
-        <input
-          type="password"
-          name="confirmPassword"
-          placeholder="Confirm Password"
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          required
-        />
-
-
-        {/* SUBMIT */}
-
-        <button
-          type="submit"
-          className="register-submit"
-          disabled={loading}
-        >
-          {loading
-            ? "Creating NGO Account..."
-            : "Create NGO Account"}
-        </button>
-
-      </form>
+      </section>
 
     </div>
   );

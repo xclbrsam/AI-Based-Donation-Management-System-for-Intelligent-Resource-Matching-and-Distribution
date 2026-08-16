@@ -151,11 +151,39 @@ function DonorDashboard() {
         </div>
 
 
-        <div className="dashboard-hero-action">
+        <div className="dashboard-hero-actions">
 
+          {/* LOGOUT */}
           <button
+            type="button"
+            className="dashboard-top-button logout-top-button"
+            onClick={() => {
+
+              localStorage.removeItem("access");
+              localStorage.removeItem("refresh");
+
+              localStorage.removeItem("user_type");
+              localStorage.removeItem("user_id");
+              localStorage.removeItem("user_name");
+              localStorage.removeItem("user_email");
+
+              navigate("/login", {
+                replace: true
+              });
+
+            }}
+          >
+            <span>↪</span>
+            Logout
+          </button>
+
+
+          {/* DONATE */}
+          <button
+            type="button"
+            className="dashboard-donate-top-button"
             onClick={() =>
-              navigate("/donate")
+              navigate("/donate-item")
             }
           >
             <span>＋</span>
@@ -350,7 +378,7 @@ function DonorDashboard() {
           <button
             className="quick-action donate-action"
             onClick={() =>
-              navigate("/donate")
+              navigate("/donate-item")
             }
           >
 
@@ -520,7 +548,7 @@ function DonorDashboard() {
 
               <button
                 onClick={() =>
-                  navigate("/donate")
+                  navigate("/donate-item")
                 }
               >
                 Make your first donation →

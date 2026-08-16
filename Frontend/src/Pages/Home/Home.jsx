@@ -1,10 +1,38 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import "./Home.css";
 
 function Home() {
+
+  const [showDonateChoice, setShowDonateChoice] =
+    useState(false);
+
+  const [showNGOChoice, setShowNGOChoice] =
+    useState(false);
+
+
+  // =====================================================
+  // DONOR BUTTON
+  // =====================================================
+
+  const handleDonateClick = () => {
+    setShowDonateChoice(true);
+  };
+
+
+  // =====================================================
+  // NGO BUTTON
+  // =====================================================
+
+  const handleNGOClick = () => {
+    setShowNGOChoice(true);
+  };
+
+
   return (
     <div className="home-page">
+
 
       {/* =================================================
           HERO
@@ -18,11 +46,13 @@ function Home() {
             AI-POWERED DONATION PLATFORM
           </div>
 
+
           <h1>
             Give what matters.
             <br />
             <span>Reach who needs it.</span>
           </h1>
+
 
           <p>
             Connect meaningful donations with trusted NGOs
@@ -30,22 +60,39 @@ function Home() {
             and a platform built around real-world impact.
           </p>
 
+
+          {/* =================================================
+              HERO BUTTONS
+          ================================================= */}
+
           <div className="home-hero-buttons">
 
-            <Link to="/register/donor">
-              <button className="home-primary-btn">
-                Donate an Item
-                <span>→</span>
-              </button>
-            </Link>
 
-            <Link to="/register/ngo">
-              <button className="home-secondary-btn">
-                Register your NGO
-              </button>
-            </Link>
+            {/* DONATE */}
+
+            <button
+              type="button"
+              className="home-primary-btn"
+              onClick={handleDonateClick}
+            >
+              Donate an Item
+              <span>→</span>
+            </button>
+
+
+            {/* NGO */}
+
+            <button
+              type="button"
+              className="home-secondary-btn"
+              onClick={handleNGOClick}
+            >
+              Register your NGO
+            </button>
+
 
           </div>
+
 
           <div className="home-trust-line">
             <span>✓</span>
@@ -62,18 +109,27 @@ function Home() {
         <div className="home-hero-visual">
 
           <div className="hero-orbit orbit-one"></div>
+
           <div className="hero-orbit orbit-two"></div>
+
 
           <div className="hero-impact-card">
 
             <div className="impact-card-top">
-              <span>LIVE IMPACT</span>
+
+              <span>
+                LIVE IMPACT
+              </span>
+
               <span className="impact-dot"></span>
+
             </div>
+
 
             <div className="impact-main-icon">
               ♡
             </div>
+
 
             <h3>
               Every donation
@@ -81,26 +137,45 @@ function Home() {
               can create a ripple.
             </h3>
 
+
             <p>
               From a donor's hands to
               an organization that needs it.
             </p>
 
+
             <div className="impact-mini-stats">
 
               <div>
-                <strong>1K+</strong>
-                <span>Donations</span>
+                <strong>
+                  1K+
+                </strong>
+
+                <span>
+                  Donations
+                </span>
               </div>
 
-              <div>
-                <strong>50+</strong>
-                <span>NGOs</span>
-              </div>
 
               <div>
-                <strong>100+</strong>
-                <span>Donors</span>
+                <strong>
+                  50+
+                </strong>
+
+                <span>
+                  NGOs
+                </span>
+              </div>
+
+
+              <div>
+                <strong>
+                  100+
+                </strong>
+
+                <span>
+                  Donors
+                </span>
               </div>
 
             </div>
@@ -122,10 +197,14 @@ function Home() {
           WHY THIS PLATFORM
         </div>
 
+
         <h2>
           Turning generosity into
-          <span> meaningful action.</span>
+          <span>
+            {" "}meaningful action.
+          </span>
         </h2>
+
 
         <p>
           Finding the right place for a donation should not
@@ -142,6 +221,7 @@ function Home() {
       ================================================= */}
 
       <section className="home-features">
+
 
         <div className="home-feature-card">
 
@@ -235,11 +315,13 @@ function Home() {
             OUR IMPACT
           </div>
 
+
           <h2>
             Small contributions.
             <br />
             Bigger possibilities.
           </h2>
+
 
           <p>
             Every item donated through the platform represents
@@ -253,18 +335,41 @@ function Home() {
         <div className="home-impact-stats">
 
           <div className="home-impact-stat">
-            <strong>100+</strong>
-            <span>Donors</span>
+
+            <strong>
+              100+
+            </strong>
+
+            <span>
+              Donors
+            </span>
+
           </div>
 
-          <div className="home-impact-stat">
-            <strong>50+</strong>
-            <span>NGOs</span>
-          </div>
 
           <div className="home-impact-stat">
-            <strong>1000+</strong>
-            <span>Donations</span>
+
+            <strong>
+              50+
+            </strong>
+
+            <span>
+              NGOs
+            </span>
+
+          </div>
+
+
+          <div className="home-impact-stat">
+
+            <strong>
+              1000+
+            </strong>
+
+            <span>
+              Donations
+            </span>
+
           </div>
 
         </div>
@@ -284,6 +389,7 @@ function Home() {
             HOW IT WORKS
           </div>
 
+
           <h2>
             Three steps.
             <br />
@@ -294,6 +400,7 @@ function Home() {
 
 
         <div className="home-steps">
+
 
           <div className="home-step">
 
@@ -371,6 +478,7 @@ function Home() {
             READY TO MAKE A DIFFERENCE?
           </span>
 
+
           <h2>
             Your unused item could
             <br />
@@ -383,8 +491,13 @@ function Home() {
         <Link to="/register/donor">
 
           <button className="home-final-btn">
+
             Start Donating
-            <span>→</span>
+
+            <span>
+              →
+            </span>
+
           </button>
 
         </Link>
@@ -404,7 +517,9 @@ function Home() {
             AI
           </div>
 
+
           <div>
+
             <strong>
               AI Donations
             </strong>
@@ -412,6 +527,7 @@ function Home() {
             <span>
               Technology with purpose.
             </span>
+
           </div>
 
         </div>
@@ -422,6 +538,190 @@ function Home() {
         </div>
 
       </footer>
+
+
+      {/* =================================================
+          DONOR LOGIN / REGISTER CHOICE
+      ================================================= */}
+
+      {showDonateChoice && (
+
+        <div
+          className="home-donate-overlay"
+          onClick={() =>
+            setShowDonateChoice(false)
+          }
+        >
+
+          <div
+            className="home-donate-choice"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
+
+            <button
+              type="button"
+              className="home-choice-close"
+              onClick={() =>
+                setShowDonateChoice(false)
+              }
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+
+            <div className="home-choice-icon">
+              📦
+            </div>
+
+
+            <span className="home-section-label">
+              READY TO DONATE?
+            </span>
+
+
+            <h2>
+              First, let's get you started.
+            </h2>
+
+
+            <p>
+              Login if you already have an account,
+              or create a donor account to continue
+              with your donation.
+            </p>
+
+
+            <div className="home-choice-buttons">
+
+              <Link
+                to="/login"
+                className="home-choice-login"
+                onClick={() =>
+                  setShowDonateChoice(false)
+                }
+              >
+                Login
+                <span>
+                  →
+                </span>
+              </Link>
+
+
+              <Link
+                to="/register/donor"
+                className="home-choice-register"
+                onClick={() =>
+                  setShowDonateChoice(false)
+                }
+              >
+                Register as Donor
+                <span>
+                  →
+                </span>
+              </Link>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
+
+
+      {/* =================================================
+          NGO LOGIN / REGISTER CHOICE
+      ================================================= */}
+
+      {showNGOChoice && (
+
+        <div
+          className="home-donate-overlay"
+          onClick={() =>
+            setShowNGOChoice(false)
+          }
+        >
+
+          <div
+            className="home-donate-choice"
+            onClick={(e) =>
+              e.stopPropagation()
+            }
+          >
+
+            <button
+              type="button"
+              className="home-choice-close"
+              onClick={() =>
+                setShowNGOChoice(false)
+              }
+              aria-label="Close"
+            >
+              ×
+            </button>
+
+
+            <div className="home-choice-icon">
+              🏢
+            </div>
+
+
+            <span className="home-section-label">
+              JOIN AS AN NGO
+            </span>
+
+
+            <h2>
+              First, let's get you started.
+            </h2>
+
+
+            <p>
+              Login if your NGO already has an account,
+              or register your organization to join
+              the donation platform.
+            </p>
+
+
+            <div className="home-choice-buttons">
+
+              <Link
+                to="/login"
+                className="home-choice-login"
+                onClick={() =>
+                  setShowNGOChoice(false)
+                }
+              >
+                Login
+                <span>
+                  →
+                </span>
+              </Link>
+
+
+              <Link
+                to="/register/ngo"
+                className="home-choice-register"
+                onClick={() =>
+                  setShowNGOChoice(false)
+                }
+              >
+                Register as NGO
+                <span>
+                  →
+                </span>
+              </Link>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
     </div>
   );
