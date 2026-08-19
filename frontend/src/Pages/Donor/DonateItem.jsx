@@ -19,10 +19,34 @@ function DonateItem() {
 
   const [formData, setFormData] = useState({
     ngo: "",
-    condition: "Good",
     location: "",
     item_image: null,
   });
+
+  // Location selection
+  const [locationMode, setLocationMode] = useState("registered");
+  const [registeredLocation, setRegisteredLocation] = useState("");
+
+  useEffect(() => {
+    const savedLocation =
+      localStorage.getItem("user_location") ||
+      localStorage.getItem("location") ||
+      localStorage.getItem("user_address") ||
+      localStorage.getItem("address") ||
+      "";
+
+    setRegisteredLocation(savedLocation);
+
+    if (savedLocation) {
+      setFormData((prev) => ({
+        ...prev,
+        location: savedLocation,
+      }));
+      setLocationMode("registered");
+    } else {
+      setLocationMode("different");
+    }
+  }, []);
 
   // =====================================================
   // AI DETECTION
@@ -153,6 +177,35 @@ const [allocationSuccess, setAllocationSuccess] =
 
     fetchNGOs();
   }, []);
+
+  // =====================================================
+  // LOCATION
+  // =====================================================
+
+  const handleLocationModeChange = (mode) => {
+    setLocationMode(mode);
+
+    if (mode === "registered") {
+      if (!registeredLocation) {
+        setLocationMode("different");
+        setFormData((prev) => ({
+          ...prev,
+          location: "",
+        }));
+        return;
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        location: registeredLocation,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        location: "",
+      }));
+    }
+  };
 
   // =====================================================
   // HANDLE INPUT
@@ -516,27 +569,29 @@ const [allocationSuccess, setAllocationSuccess] =
 
       data.append(
         "category",
-        category
+        category || "Other"
       );
 
       data.append(
         "quantity",
-        totalQuantity
+        String(Number(totalQuantity) || 1)
       );
 
+      // Backend requires condition.
+      // Use a valid Donation condition choice.
       data.append(
         "condition",
-        formData.condition
+        "Good"
       );
 
       data.append(
         "description",
-        description
+        description || "Donation item"
       );
 
       data.append(
         "location",
-        formData.location
+        formData.location.trim()
       );
 
       data.append(
@@ -643,10 +698,16 @@ const [allocationSuccess, setAllocationSuccess] =
         const data =
           response.data;
 
-        setMatchingNGOs(
+        const matches =
           data.matching_ngos ||
           data.ngos ||
-          []
+          data.results ||
+          [];
+
+        setMatchingNGOs(
+          Array.isArray(matches)
+            ? matches
+            : []
         );
       }
 
@@ -676,30 +737,103 @@ const [allocationSuccess, setAllocationSuccess] =
           null
         );
 
-        setMatchingNGOs(
+        const otherMatches =
           data.other_matching_ngos ||
-          []
+          data.matching_ngos ||
+          data.ngos ||
+          data.results ||
+          [];
+
+        setMatchingNGOs(
+          Array.isArray(otherMatches)
+            ? otherMatches
+            : []
         );
       }
 
     } catch (error) {
 
       console.error(
-        "MATCHING ERROR:",
-        error
+        "========== MATCHING ERROR =========="
       );
 
       console.error(
-        "Response:",
+        "STATUS:",
+        error.response?.status
+      );
+
+      console.error(
+        "URL:",
+        error.config?.url
+      );
+
+      console.error(
+        "METHOD:",
+        error.config?.method
+      );
+
+      console.error(
+        "RESPONSE:",
         error.response?.data
       );
 
-      setMatchingError(
-        error.response?.data?.message ||
-        error.response?.data?.detail ||
-        error.message ||
-        "Unable to find matching NGOs."
+      console.error(
+        "FULL ERROR:",
+        error
       );
+
+      const responseData =
+        error.response?.data;
+
+      let message =
+        "Unable to find matching NGOs.";
+
+      if (typeof responseData === "string") {
+
+        message = responseData;
+
+      } else if (responseData?.detail) {
+
+        message = responseData.detail;
+
+      } else if (responseData?.message) {
+
+        message = responseData.message;
+
+      } else if (
+        responseData &&
+        typeof responseData === "object"
+      ) {
+
+        message =
+          Object.entries(responseData)
+            .map(([field, value]) => {
+
+              const valueText =
+                Array.isArray(value)
+                  ? value.join(", ")
+                  : typeof value === "object" &&
+                    value !== null
+                    ? JSON.stringify(value)
+                    : String(value);
+
+              return `${field}: ${valueText}`;
+            })
+            .join(" | ");
+
+      } else if (error.response?.status) {
+
+        message =
+          `Request failed with status code ${error.response.status}`;
+
+      } else {
+
+        message =
+          error.message ||
+          message;
+      }
+
+      setMatchingError(message);
 
     } finally {
       setMatchingLoading(false);
@@ -1403,12 +1537,32 @@ const allocationResponse =
 
               {aiLoading ? (
 
-                <span className="ai-loading">
+                <span
+                  className="ai-loading"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <span
+                    className="ai-spinner"
+                    aria-hidden="true"
+                  />
 
-                  <span className="ai-spinner" />
+                  <span>AI is analyzing...</span>
 
-                  AI is analyzing...
-
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      display: "inline-flex",
+                      gap: "2px",
+                    }}
+                  >
+                    <span>•</span>
+                    <span>•</span>
+                    <span>•</span>
+                  </span>
                 </span>
 
               ) : (
@@ -2015,7 +2169,7 @@ const allocationResponse =
 
 
         {/* =================================================
-            CONDITION + LOCATION
+            LOCATION
         ================================================= */}
 
         <div className="donate-card">
@@ -2023,86 +2177,93 @@ const allocationResponse =
           <div className="card-heading">
 
             <div className="heading-icon coral-icon">
-              📋
+              📍
             </div>
 
             <div>
-
-              <span>
-                DONATION DETAILS
-              </span>
+              <span>PICKUP LOCATION</span>
 
               <h2>
-                A few details from you
+                Where should we collect your donation?
               </h2>
-
             </div>
 
           </div>
 
+          <div className="location-choice-grid">
 
-          <div className="two-column">
+            <button
+              type="button"
+              className={
+                locationMode === "registered"
+                  ? "location-choice active"
+                  : "location-choice"
+              }
+              onClick={() =>
+                handleLocationModeChange("registered")
+              }
+            >
+              <span className="location-choice-icon">🏠</span>
 
-            <div className="form-group">
+              <span>
+                <strong>Use registered location</strong>
 
-              <label>
-                Condition
-              </label>
+                <small>
+                  {registeredLocation
+                    ? registeredLocation
+                    : "No registered location found"}
+                </small>
+              </span>
+            </button>
 
-              <select
-                name="condition"
-                value={
-                  formData.condition
-                }
-                onChange={
-                  handleChange
-                }
-                required
-              >
+            <button
+              type="button"
+              className={
+                locationMode === "different"
+                  ? "location-choice active"
+                  : "location-choice"
+              }
+              onClick={() =>
+                handleLocationModeChange("different")
+              }
+            >
+              <span className="location-choice-icon">✏️</span>
 
-                <option value="New">
-                  New
-                </option>
+              <span>
+                <strong>Enter a different location</strong>
 
-                <option value="Like New">
-                  Like New
-                </option>
+                <small>
+                  Choose another pickup location
+                </small>
+              </span>
+            </button>
 
-                <option value="Good">
-                  Good
-                </option>
+          </div>
 
-                <option value="Used">
-                  Used
-                </option>
+          {locationMode === "registered" &&
+          registeredLocation ? (
 
-              </select>
-
+            <div className="location-selected">
+              ✓ Using your registered location:
+              <strong>{registeredLocation}</strong>
             </div>
 
+          ) : (
 
-            <div className="form-group">
+            <div className="form-group location-manual-group">
 
-              <label>
-                Pickup / Location
-              </label>
+              <label>Pickup / Location</label>
 
               <div className="location-input">
 
-                <span>
-                  📍
-                </span>
+                <span>📍</span>
 
                 <input
                   type="text"
                   name="location"
                   placeholder="Example: Vijayawada"
-                  value={
-                    formData.location
-                  }
-                  onChange={
-                    handleChange
-                  }
+                  value={formData.location}
+                  onChange={handleChange}
                   required
                 />
 
@@ -2110,7 +2271,7 @@ const allocationResponse =
 
             </div>
 
-          </div>
+          )}
 
         </div>
 

@@ -25,9 +25,38 @@
 
   --dd-yellow: #a47735;
   --dd-yellow-soft: #f8f1df;
+  --dd-icon-bg: #f0f0ed;
 
   --dd-shadow:
     0 14px 45px rgba(23, 32, 51, 0.07);
+}
+
+
+/* =====================================================
+   DARK MODE VARIABLES
+===================================================== */
+
+body.dark-theme {
+  --dd-navy: #0b1220;
+  --dd-navy-light: #172033;
+
+  --dd-ivory: #0f1724;
+  --dd-white: #182231;
+
+  --dd-text: #f3f5f8;
+  --dd-muted: #a5afbd;
+
+  --dd-border: #303b4d;
+
+  --dd-coral-soft: #3a2420;
+
+  --dd-green-soft: #1b2d24;
+
+  --dd-yellow-soft: #332a1b;
+  --dd-icon-bg: #202938;
+
+  --dd-shadow:
+    0 14px 45px rgba(0, 0, 0, 0.28);
 }
 
 
@@ -338,7 +367,7 @@
 
   border-radius: 15px;
 
-  background: white;
+  background: var(--dd-white);
 
   box-shadow: var(--dd-shadow);
 }
@@ -400,7 +429,7 @@
 
   border-radius: 8px;
 
-  background: white;
+  background: var(--dd-white);
 
   color: var(--dd-text);
 
@@ -422,7 +451,7 @@
 
   color: var(--dd-coral);
 
-  background: #fffaf8;
+  background: var(--dd-coral-soft);
 }
 
 
@@ -460,7 +489,7 @@
 
   border-radius: 17px;
 
-  background: white;
+  background: var(--dd-white);
 
   box-shadow: var(--dd-shadow);
 
@@ -544,7 +573,7 @@
 
   margin-top: 5px;
 
-  color: #999da5;
+  color: var(--dd-muted);
 
   font-size: 9px;
 }
@@ -644,7 +673,7 @@
 
   border-radius: 17px;
 
-  background: white;
+  background: var(--dd-white);
 
   text-align: left;
 
@@ -661,7 +690,7 @@
 .quick-action:hover {
   transform: translateY(-4px);
 
-  border-color: #ddd7d0;
+  border-color: var(--dd-border);
 
   box-shadow:
     0 18px 40px rgba(
@@ -684,7 +713,7 @@
 
   border-radius: 12px;
 
-  background: #f0f0ed;
+  background: var(--dd-icon-bg);
 
   font-size: 17px;
 }
@@ -743,7 +772,7 @@
 
   border-radius: 17px;
 
-  background: white;
+  background: var(--dd-white);
 
   box-shadow: var(--dd-shadow);
 }
@@ -771,7 +800,7 @@
 
   padding: 12px 18px;
 
-  border-bottom: 1px solid #eeeae4;
+  border-bottom: 1px solid var(--dd-border);
 
   transition:
     background 0.2s ease;
@@ -797,7 +826,7 @@
 
   border-radius: 11px;
 
-  background: #f2f1ed;
+  background: var(--dd-icon-bg);
 
   font-size: 18px;
 }
@@ -886,7 +915,7 @@
 }
 
 .recent-date {
-  color: #999da5;
+  color: var(--dd-muted);
 
   font-size: 9px;
 
@@ -986,7 +1015,7 @@
 
   margin-bottom: 10px;
 
-  border: 3px solid #eee9e3;
+  border: 3px solid var(--dd-border);
 
   border-top-color: var(--dd-coral);
 
@@ -1361,4 +1390,129 @@
     justify-self: start;
   }
 
+}
+
+
+/* =====================================================
+   DARK MODE OVERRIDES
+   Keeps all existing dashboard components readable
+===================================================== */
+
+body.dark-theme .donor-dashboard-page {
+  background: var(--dd-ivory);
+  color: var(--dd-text);
+}
+
+body.dark-theme .dashboard-hero {
+  background: linear-gradient(
+    135deg,
+    var(--dd-navy) 0%,
+    var(--dd-navy-light) 100%
+  );
+
+  box-shadow:
+    0 18px 50px rgba(0, 0, 0, 0.30);
+}
+
+body.dark-theme .dashboard-user-card,
+body.dark-theme .stat-card,
+body.dark-theme .quick-action,
+body.dark-theme .recent-donations-card {
+  background: var(--dd-white);
+  color: var(--dd-text);
+  border-color: var(--dd-border);
+}
+
+body.dark-theme .profile-button {
+  background: var(--dd-white);
+  color: var(--dd-text);
+  border-color: var(--dd-border);
+}
+
+body.dark-theme .profile-button:hover {
+  background: var(--dd-coral-soft);
+}
+
+body.dark-theme .stat-icon {
+  background: var(--dd-coral-soft);
+}
+
+body.dark-theme .pending-icon {
+  background: var(--dd-yellow-soft);
+}
+
+body.dark-theme .accepted-icon {
+  background: var(--dd-green-soft);
+}
+
+body.dark-theme .collected-icon {
+  background: #352735;
+  color: #d99ab7;
+}
+
+body.dark-theme .quick-action-icon {
+  background: var(--dd-icon-bg);
+}
+
+body.dark-theme .donate-action .quick-action-icon {
+  background: var(--dd-coral-soft);
+}
+
+body.dark-theme .quick-action:hover {
+  border-color: var(--dd-border);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.30);
+}
+
+body.dark-theme .recent-donation {
+  border-bottom-color: var(--dd-border);
+}
+
+body.dark-theme .recent-donation:hover {
+  background: #1d2838;
+}
+
+body.dark-theme .recent-image {
+  background: var(--dd-icon-bg);
+}
+
+body.dark-theme .dashboard-status.collected {
+  background: #352735;
+  color: #d99ab7;
+}
+
+body.dark-theme .dashboard-status.rejected {
+  background: #3a2422;
+  color: #f09b91;
+}
+
+body.dark-theme .dashboard-loading {
+  border-color: var(--dd-border);
+  border-top-color: var(--dd-coral);
+}
+
+body.dark-theme .dashboard-impact {
+  background: linear-gradient(
+    135deg,
+    var(--dd-navy),
+    var(--dd-navy-light)
+  );
+
+  box-shadow:
+    0 22px 55px rgba(0, 0, 0, 0.30);
+}
+
+/* Smooth theme transition */
+.donor-dashboard-page,
+.dashboard-user-card,
+.stat-card,
+.quick-action,
+.recent-donations-card,
+.recent-donation,
+.profile-button {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }

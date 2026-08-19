@@ -24,6 +24,31 @@
     0 25px 70px rgba(23, 32, 51, 0.1);
 }
 
+/* =====================================================
+   DARK MODE VARIABLES
+===================================================== */
+
+body.dark-theme {
+  --dr-navy: #0b1220;
+  --dr-navy-light: #172033;
+
+  --dr-ivory: #0d111b;
+  --dr-white: #151c2a;
+
+  --dr-coral-soft: #3a2420;
+
+  --dr-text: #f3f5f8;
+  --dr-muted: #a5afbd;
+
+  --dr-border: #303b4d;
+
+  --dr-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.30);
+
+  --dr-input-bg: #111927;
+  --dr-switch-bg: #202938;
+}
+
 
 /* =====================================================
    PAGE
@@ -990,4 +1015,133 @@
     gap: 10px;
   }
 
+}
+
+
+/* =====================================================
+   DARK MODE OVERRIDES
+===================================================== */
+
+body.dark-theme .donor-register-page {
+  background: var(--dr-ivory);
+  color: var(--dr-text);
+}
+
+body.dark-theme .donor-register-brand {
+  background: linear-gradient(
+    135deg,
+    var(--dr-navy),
+    var(--dr-navy-light)
+  );
+}
+
+body.dark-theme .donor-register-section {
+  background: var(--dr-ivory);
+}
+
+body.dark-theme .donor-register-card {
+  background: var(--dr-white);
+  border-color: var(--dr-border);
+  box-shadow: var(--dr-shadow);
+}
+
+body.dark-theme .donor-register-header h2,
+body.dark-theme .donor-form-group label,
+body.dark-theme .form-section-title h3 {
+  color: var(--dr-text);
+}
+
+body.dark-theme .donor-register-header > p:last-child,
+body.dark-theme .form-section-title p,
+body.dark-theme .donor-account-switch > p,
+body.dark-theme .donor-account-button small,
+body.dark-theme .donor-login-prompt {
+  color: var(--dr-muted);
+}
+
+body.dark-theme .donor-account-switch {
+  background: var(--dr-switch-bg);
+  border-color: var(--dr-border);
+}
+
+body.dark-theme .donor-account-button {
+  background: var(--dr-input-bg);
+  color: var(--dr-text);
+  border-color: var(--dr-border);
+}
+
+body.dark-theme .donor-account-button > span {
+  background: #293446;
+}
+
+body.dark-theme .donor-account-button:hover {
+  border-color: #536076;
+}
+
+body.dark-theme .donor-account-button.active {
+  border-color: var(--dr-coral);
+}
+
+body.dark-theme .donor-input-wrapper input,
+body.dark-theme .donor-form-group > input,
+body.dark-theme .donor-form-group textarea,
+body.dark-theme .donor-form-group select {
+  background: var(--dr-input-bg);
+  color: var(--dr-text);
+  border-color: var(--dr-border);
+}
+
+body.dark-theme .donor-input-wrapper input::placeholder,
+body.dark-theme .donor-form-group input::placeholder,
+body.dark-theme .donor-form-group textarea::placeholder {
+  color: #778397;
+}
+
+body.dark-theme .donor-input-wrapper > span {
+  color: #9aa5b5;
+}
+
+body.dark-theme .donor-password-toggle {
+  color: #9aa5b5;
+}
+
+body.dark-theme .donor-password-toggle:hover {
+  background: var(--dr-coral-soft);
+  color: var(--dr-coral);
+}
+
+body.dark-theme .form-section-title {
+  border-top-color: var(--dr-border);
+}
+
+body.dark-theme .donor-login-prompt button {
+  color: var(--dr-coral);
+}
+
+/* Keep white text/icons on coral and navy areas */
+body.dark-theme .donor-register-submit,
+body.dark-theme .donor-register-submit span {
+  color: #ffffff;
+}
+
+body.dark-theme .donor-register-brand {
+  color: #ffffff;
+}
+
+/* Smooth transitions */
+.donor-register-page,
+.donor-register-brand,
+.donor-register-section,
+.donor-register-card,
+.donor-account-switch,
+.donor-account-button,
+.donor-input-wrapper input,
+.donor-form-group > input,
+.donor-form-group textarea,
+.donor-form-group select {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }

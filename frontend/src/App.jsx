@@ -1,5 +1,7 @@
 import { Navigate, Routes, Route } from "react-router-dom";
 
+import Navbar from "./components/Navbar/Navbar";
+
 import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
 import RegisterChoice from "./Pages/RegisterChoice/RegisterChoice";
@@ -9,6 +11,7 @@ import DonorDashboard from "./Pages/Donor/DonorDashboard";
 import DonateItem from "./Pages/Donor/DonateItem";
 import MyDonations from "./Pages/Donor/MyDonations";
 import EditDonation from "./Pages/Donor/EditDonation";
+
 import NGORegister from "./Pages/NGO/NGORegister";
 import NGODashboard from "./Pages/NGO/NGODashboard";
 import NGOProfile from "./Pages/NGO/NGOProfile";
@@ -46,7 +49,6 @@ const isLoggedIn = () => {
 
 function DonorRoute({ children }) {
 
-  // Not logged in
   if (!isLoggedIn()) {
     return (
       <Navigate
@@ -57,7 +59,6 @@ function DonorRoute({ children }) {
   }
 
   const userType = getUserType();
-
 
   // NGO cannot access donor pages
   if (userType === "ngo") {
@@ -69,7 +70,6 @@ function DonorRoute({ children }) {
     );
   }
 
-
   // Invalid user type
   if (userType !== "donor") {
     return (
@@ -79,7 +79,6 @@ function DonorRoute({ children }) {
       />
     );
   }
-
 
   return children;
 }
@@ -91,7 +90,6 @@ function DonorRoute({ children }) {
 
 function NGORoute({ children }) {
 
-  // Not logged in
   if (!isLoggedIn()) {
     return (
       <Navigate
@@ -103,7 +101,6 @@ function NGORoute({ children }) {
 
   const userType = getUserType();
 
-
   // Donor cannot access NGO pages
   if (userType === "donor") {
     return (
@@ -114,7 +111,6 @@ function NGORoute({ children }) {
     );
   }
 
-
   // Invalid user type
   if (userType !== "ngo") {
     return (
@@ -124,7 +120,6 @@ function NGORoute({ children }) {
       />
     );
   }
-
 
   return children;
 }
@@ -137,168 +132,186 @@ function NGORoute({ children }) {
 function App() {
 
   return (
-    <Routes>
-
+    <>
       {/* =================================================
-          HOME
+          GLOBAL NAVBAR
+          Contains ThemeToggle
       ================================================= */}
 
-      <Route
-        path="/"
-        element={<Home />}
-      />
+      <Navbar />
 
 
       {/* =================================================
-          LOGIN
+          ROUTES
       ================================================= */}
 
-      <Route
-        path="/login"
-        element={<Login />}
-      />
+      <Routes>
+
+        {/* =================================================
+            HOME
+        ================================================= */}
+
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
 
-      {/* =================================================
-          REGISTER
-      ================================================= */}
+        {/* =================================================
+            LOGIN
+        ================================================= */}
 
-      <Route
-        path="/register"
-        element={<RegisterChoice />}
-      />
-
-
-      {/* =================================================
-          DONOR REGISTER
-      ================================================= */}
-
-      <Route
-        path="/register/donor"
-        element={<DonorRegister />}
-      />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
 
-      {/* =================================================
-          NGO REGISTER
-      ================================================= */}
+        {/* =================================================
+            REGISTER
+        ================================================= */}
 
-      <Route
-        path="/register/ngo"
-        element={<NGORegister />}
-      />
-
-
-      {/* =================================================
-          DONOR DASHBOARD
-      ================================================= */}
-
-      <Route
-        path="/dashboard"
-        element={
-          <DonorRoute>
-            <DonorDashboard />
-          </DonorRoute>
-        }
-      />
+        <Route
+          path="/register"
+          element={<RegisterChoice />}
+        />
 
 
-      {/* =================================================
-          DONATE ITEM
-      ================================================= */}
+        {/* =================================================
+            DONOR REGISTER
+        ================================================= */}
 
-      <Route
-        path="/donate-item"
-        element={
-          <DonorRoute>
-            <DonateItem />
-          </DonorRoute>
-        }
-      />
-{/* =================================================
-    EDIT DONATION
-================================================= */}
-
-<Route
-  path="/edit-donation/:id"
-  element={
-    <DonorRoute>
-      <EditDonation />
-    </DonorRoute>
-  }
-/>
-
-      {/* =================================================
-          MY DONATIONS
-      ================================================= */}
-
-      <Route
-        path="/my-donations"
-        element={
-          <DonorRoute>
-            <MyDonations />
-          </DonorRoute>
-        }
-      />
+        <Route
+          path="/register/donor"
+          element={<DonorRegister />}
+        />
 
 
-      {/* =================================================
-          DONOR PROFILE
-      ================================================= */}
+        {/* =================================================
+            NGO REGISTER
+        ================================================= */}
 
-      <Route
-        path="/profile"
-        element={
-          <DonorRoute>
-            <DonorProfile />
-          </DonorRoute>
-        }
-      />
+        <Route
+          path="/register/ngo"
+          element={<NGORegister />}
+        />
 
 
-      {/* =================================================
-          NGO DASHBOARD
-      ================================================= */}
+        {/* =================================================
+            DONOR DASHBOARD
+        ================================================= */}
 
-      <Route
-        path="/ngo-dashboard"
-        element={
-          <NGORoute>
-            <NGODashboard />
-          </NGORoute>
-        }
-      />
-
-
-      {/* =================================================
-          NGO PROFILE
-      ================================================= */}
-
-      <Route
-        path="/ngo-profile"
-        element={
-          <NGORoute>
-            <NGOProfile />
-          </NGORoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <DonorRoute>
+              <DonorDashboard />
+            </DonorRoute>
+          }
+        />
 
 
-      {/* =================================================
-          FALLBACK
-      ================================================= */}
+        {/* =================================================
+            DONATE ITEM
+        ================================================= */}
 
-      <Route
-        path="*"
-        element={
-          <Navigate
-            to="/"
-            replace
-          />
-        }
-      />
+        <Route
+          path="/donate-item"
+          element={
+            <DonorRoute>
+              <DonateItem />
+            </DonorRoute>
+          }
+        />
 
-    </Routes>
+
+        {/* =================================================
+            EDIT DONATION
+        ================================================= */}
+
+        <Route
+          path="/edit-donation/:id"
+          element={
+            <DonorRoute>
+              <EditDonation />
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            MY DONATIONS
+        ================================================= */}
+
+        <Route
+          path="/my-donations"
+          element={
+            <DonorRoute>
+              <MyDonations />
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            DONOR PROFILE
+        ================================================= */}
+
+        <Route
+          path="/profile"
+          element={
+            <DonorRoute>
+              <DonorProfile />
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            NGO DASHBOARD
+        ================================================= */}
+
+        <Route
+          path="/ngo-dashboard"
+          element={
+            <NGORoute>
+              <NGODashboard />
+            </NGORoute>
+          }
+        />
+
+
+        {/* =================================================
+            NGO PROFILE
+        ================================================= */}
+
+        <Route
+          path="/ngo-profile"
+          element={
+            <NGORoute>
+              <NGOProfile />
+            </NGORoute>
+          }
+        />
+
+
+        {/* =================================================
+            FALLBACK
+        ================================================= */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
+
+      </Routes>
+
+    </>
   );
 }
 

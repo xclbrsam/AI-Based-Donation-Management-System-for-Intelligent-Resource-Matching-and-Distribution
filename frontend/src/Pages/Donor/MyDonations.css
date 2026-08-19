@@ -36,6 +36,28 @@
     0 14px 45px rgba(23, 32, 51, 0.07);
 }
 
+/* =====================================================
+   DARK MODE VARIABLES
+===================================================== */
+
+body.dark-theme {
+  --md-ivory: #0d111b;
+  --md-white: #151c2a;
+
+  --md-text: #f3f5f8;
+  --md-muted: #a5afbd;
+
+  --md-border: #303b4d;
+
+  --md-green-soft: #1b2d24;
+  --md-yellow-soft: #332a1b;
+  --md-blue-soft: #202d3a;
+  --md-red-soft: #3a2422;
+
+  --md-shadow:
+    0 14px 45px rgba(0, 0, 0, 0.28);
+}
+
 
 /* =====================================================
    PAGE
@@ -756,4 +778,131 @@
     flex: 1;
     min-height: 40px;
   }
+}
+
+
+/* =====================================================
+   DARK MODE OVERRIDES
+===================================================== */
+
+body.dark-theme .my-donations-page {
+  background: var(--md-ivory);
+  color: var(--md-text);
+}
+
+body.dark-theme .my-donations-header h1,
+body.dark-theme .my-donation-title h2,
+body.dark-theme .donation-info strong {
+  color: var(--md-text);
+}
+
+body.dark-theme .my-donations-header p,
+body.dark-theme .donation-info p {
+  color: var(--md-muted);
+}
+
+body.dark-theme .my-donation-card {
+  background: var(--md-white);
+  border-color: var(--md-border);
+  box-shadow: var(--md-shadow);
+}
+
+body.dark-theme .my-donation-card:hover {
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.30);
+}
+
+body.dark-theme .my-donation-image {
+  background: #202938;
+}
+
+body.dark-theme .status-pending {
+  background: var(--md-yellow-soft);
+  color: #e0ad58;
+}
+
+body.dark-theme .status-accepted {
+  background: var(--md-green-soft);
+  color: #7dcc9d;
+}
+
+body.dark-theme .status-rejected {
+  background: var(--md-red-soft);
+  color: #f09b91;
+}
+
+body.dark-theme .status-collected {
+  background: var(--md-blue-soft);
+  color: #8eb6d8;
+}
+
+body.dark-theme .donation-info p:first-child {
+  border-bottom-color: var(--md-border);
+}
+
+body.dark-theme .donation-date {
+  color: #8792a3;
+}
+
+body.dark-theme .status-timeline {
+  background: #151e2b;
+  border-color: var(--md-border);
+}
+
+body.dark-theme .timeline-step {
+  color: #7d8796;
+}
+
+body.dark-theme .timeline-step span {
+  background: #303a4b;
+  color: #aab4c3;
+}
+
+body.dark-theme .timeline-line {
+  background: #3a4454;
+}
+
+body.dark-theme .empty-donations {
+  background: var(--md-white);
+  border-color: var(--md-border);
+  box-shadow: var(--md-shadow);
+}
+
+body.dark-theme .empty-donations h2 {
+  color: var(--md-text);
+}
+
+body.dark-theme .empty-donations p {
+  color: var(--md-muted);
+}
+
+body.dark-theme .my-donations-loading {
+  background: var(--md-ivory);
+  color: var(--md-muted);
+}
+
+body.dark-theme .my-donations-loading::before {
+  border-color: #303a4b;
+  border-top-color: var(--md-coral);
+}
+
+body.dark-theme .delete-donation-button {
+  background: var(--md-red-soft);
+  color: #f09b91;
+  border-color: #633b37;
+}
+
+/* Smooth theme transition */
+.my-donations-page,
+.my-donation-card,
+.empty-donations,
+.status-timeline,
+.my-donation-image,
+.delete-donation-button,
+.timeline-step span {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }

@@ -22,6 +22,29 @@
     0 25px 70px rgba(23, 32, 51, 0.12);
 }
 
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+body.dark-theme {
+  --login-navy: #0b1220;
+  --login-navy-light: #172033;
+
+  --login-ivory: #0d111b;
+  --login-white: #151c2a;
+
+  --login-coral: #e8755c;
+  --login-coral-dark: #f08a72;
+  --login-coral-soft: #3a2420;
+
+  --login-text: #f3f5f8;
+  --login-muted: #a5afbd;
+  --login-border: #303b4d;
+
+  --login-shadow:
+    0 25px 70px rgba(0, 0, 0, 0.30);
+}
+
 
 /* =====================================================
    PAGE
@@ -897,4 +920,138 @@
     font-size: 29px;
   }
 
+}
+
+
+/* =====================================================
+   DARK MODE OVERRIDES
+===================================================== */
+
+body.dark-theme .login-page,
+body.dark-theme .login-section {
+  background: var(--login-ivory);
+  color: var(--login-text);
+}
+
+body.dark-theme .login-brand {
+  background: linear-gradient(
+    135deg,
+    var(--login-navy),
+    var(--login-navy-light)
+  );
+}
+
+body.dark-theme .login-card {
+  background: var(--login-white);
+  border-color: var(--login-border);
+
+  box-shadow: var(--login-shadow);
+}
+
+body.dark-theme .input-wrapper {
+  background: #111927;
+  border-color: var(--login-border);
+}
+
+body.dark-theme .input-wrapper:hover {
+  border-color: #536076;
+}
+
+body.dark-theme .input-wrapper:focus-within {
+  background: #111927;
+  border-color: var(--login-coral);
+}
+
+body.dark-theme .input-wrapper input {
+  color: var(--login-text);
+}
+
+body.dark-theme .input-wrapper input::placeholder {
+  color: #778397;
+}
+
+body.dark-theme .input-icon {
+  color: #9aa5b5;
+}
+
+body.dark-theme .password-toggle {
+  color: #9aa5b5;
+}
+
+body.dark-theme .password-toggle:hover {
+  background: var(--login-coral-soft);
+  color: var(--login-coral);
+}
+
+body.dark-theme .login-header h2,
+body.dark-theme .form-group label {
+  color: var(--login-text);
+}
+
+body.dark-theme .login-header > p:last-child,
+body.dark-theme .register-prompt {
+  color: var(--login-muted);
+}
+
+body.dark-theme .forgot-button,
+body.dark-theme .register-prompt button {
+  color: var(--login-coral);
+}
+
+body.dark-theme .login-footer {
+  color: #7f8a9c;
+}
+
+body.dark-theme .login-footer span {
+  color: #a0aab8;
+}
+
+body.dark-theme .impact-card {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+body.dark-theme .brand-description {
+  color: #b9c0cc;
+}
+
+body.dark-theme .brand-eyebrow {
+  color: #e8a395;
+}
+
+body.dark-theme .impact-card span {
+  color: #aeb6c4;
+}
+
+/* Keep white text on navy/coral surfaces */
+body.dark-theme .login-brand,
+body.dark-theme .login-submit {
+  color: #ffffff;
+}
+
+/* Browser autofill */
+body.dark-theme .input-wrapper input:-webkit-autofill,
+body.dark-theme .input-wrapper input:-webkit-autofill:hover,
+body.dark-theme .input-wrapper input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--login-text);
+
+  -webkit-box-shadow:
+    0 0 0 1000px #111927 inset;
+}
+
+/* Smooth theme transition */
+.login-page,
+.login-brand,
+.login-section,
+.login-card,
+.input-wrapper,
+.input-wrapper input,
+.password-toggle,
+.login-footer {
+  transition:
+    background-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }

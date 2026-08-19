@@ -1,0 +1,102 @@
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-card: #ffffff;
+
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+
+  --border-color: #e5e7eb;
+
+  --input-bg: #ffffff;
+  --input-text: #1f2937;
+
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+
+  --danger: #dc2626;
+  --success: #16a34a;
+
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-secondary: #111827;
+  --bg-card: #1e293b;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+
+  --border-color: #334155;
+
+  --input-bg: #0f172a;
+  --input-text: #f8fafc;
+
+  --primary: #60a5fa;
+  --primary-hover: #93c5fd;
+
+  --danger: #f87171;
+  --success: #4ade80;
+
+  --shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+/* ================================
+   GLOBAL DARK MODE
+================================ */
+
+[data-theme="dark"] body {
+  background: #111827 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .navbar {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .navbar a {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] .nav-links a {
+  color: #f9fafb !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}
+
+[data-theme="dark"] button {
+  color: #f9fafb;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .donate-card,
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .dashboard-card,
+[data-theme="dark"] .form-card {
+  background: #1f2937 !important;
+  color: #f9fafb !important;
+  border-color: #374151 !important;
+}

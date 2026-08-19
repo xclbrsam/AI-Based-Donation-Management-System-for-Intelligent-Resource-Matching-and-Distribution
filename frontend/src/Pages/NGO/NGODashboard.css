@@ -1530,3 +1530,209 @@
   }
 
 }
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+body.dark-theme .ngo-dashboard {
+  --ngo-navy: #eef2f7;
+  --ngo-navy-soft: #cbd5e1;
+  --ngo-ivory: #0d111b;
+  --ngo-coral: #f08a72;
+  --ngo-green: #70b58f;
+  --ngo-red: #ef8c82;
+  --ngo-blue: #82afd2;
+  --ngo-border: #303b4d;
+  --ngo-muted: #9ca8b8;
+  --ngo-card: #151c2a;
+
+  background: var(--ngo-ivory);
+  color: var(--ngo-navy);
+}
+
+/* Main surfaces */
+body.dark-theme .ngo-stat-card,
+body.dark-theme .ngo-donation-card,
+body.dark-theme .no-donations,
+body.dark-theme .ngo-loading-card,
+body.dark-theme .ngo-requirement-form,
+body.dark-theme .ngo-requirement-card,
+body.dark-theme .ngo-profile-popup {
+  background: var(--ngo-card);
+  border-color: var(--ngo-border);
+  color: var(--ngo-navy);
+}
+
+/* Tabs and buttons */
+body.dark-theme .ngo-tabs {
+  background: #202938;
+  border-color: var(--ngo-border);
+}
+
+body.dark-theme .ngo-tab:hover {
+  background: #2a3445;
+  color: var(--ngo-navy);
+}
+
+body.dark-theme .refresh-button,
+body.dark-theme .ngo-header-action,
+body.dark-theme .ngo-profile-close,
+body.dark-theme .ngo-profile-popup-close-button,
+body.dark-theme .requirement-cancel-button,
+body.dark-theme .requirement-edit-button,
+body.dark-theme .requirement-delete-button {
+  background: var(--ngo-card);
+  color: var(--ngo-navy);
+  border-color: var(--ngo-border);
+}
+
+/* Inner detail surfaces */
+body.dark-theme .ngo-stat-icon {
+  background: #202938;
+}
+
+body.dark-theme .donation-item-image,
+body.dark-theme .donation-image-placeholder {
+  background: #202938;
+}
+
+body.dark-theme .donation-detail,
+body.dark-theme .donation-description,
+body.dark-theme .donor-information,
+body.dark-theme .ngo-profile-detail,
+body.dark-theme .requirement-quantities > div,
+body.dark-theme .requirement-description {
+  background: #1b2432;
+  border-color: var(--ngo-border);
+}
+
+body.dark-theme .donor-icon {
+  background: #263044;
+}
+
+body.dark-theme .donor-contact strong,
+body.dark-theme .donation-description p,
+body.dark-theme .requirement-description {
+  color: #c4ccd8;
+}
+
+/* Status badges */
+body.dark-theme .status-pending,
+body.dark-theme .priority-medium {
+  background: #3a301c;
+  color: #e4c875;
+  border-color: #66552b;
+}
+
+body.dark-theme .status-accepted,
+body.dark-theme .priority-low {
+  background: #1c3025;
+  color: #8fd0a8;
+  border-color: #31533f;
+}
+
+body.dark-theme .status-rejected,
+body.dark-theme .priority-high {
+  background: #382523;
+  color: #ef9c93;
+  border-color: #633b37;
+}
+
+body.dark-theme .status-collected {
+  background: #1d2c3a;
+  color: #94bad8;
+  border-color: #38536b;
+}
+
+body.dark-theme .priority-urgent {
+  background: #3b2421;
+  color: #f0a098;
+}
+
+body.dark-theme .history-status-message.status-accepted {
+  background: #1c3025;
+}
+
+body.dark-theme .history-status-message.status-rejected {
+  background: #382523;
+}
+
+body.dark-theme .history-status-message.status-collected {
+  background: #1d2c3a;
+}
+
+/* Forms */
+body.dark-theme .requirement-field input,
+body.dark-theme .requirement-field select,
+body.dark-theme .requirement-field textarea {
+  background: #111927;
+  color: var(--ngo-navy);
+  border-color: var(--ngo-border);
+}
+
+body.dark-theme .requirement-field input::placeholder,
+body.dark-theme .requirement-field textarea::placeholder {
+  color: #778397;
+}
+
+body.dark-theme .requirement-cancel-button:hover,
+body.dark-theme .requirement-edit-button:hover {
+  background: #202938;
+}
+
+/* Progress */
+body.dark-theme .requirement-progress-bar {
+  background: #303948;
+}
+
+/* Empty/loading */
+body.dark-theme .no-donations-icon {
+  background: #202938;
+}
+
+body.dark-theme .ngo-loading-card {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.28);
+}
+
+body.dark-theme .ngo-loading-card h2 {
+  color: var(--ngo-navy);
+}
+
+body.dark-theme .ngo-loading-card p {
+  color: var(--ngo-muted);
+}
+
+/* Popup overlay */
+body.dark-theme .ngo-profile-overlay {
+  background: rgba(0, 0, 0, 0.70);
+}
+
+/* Smooth theme transition */
+.ngo-dashboard,
+.ngo-stat-card,
+.ngo-donation-card,
+.no-donations,
+.ngo-loading-card,
+.ngo-requirement-form,
+.ngo-requirement-card,
+.ngo-profile-popup,
+.ngo-tabs,
+.refresh-button,
+.ngo-header-action,
+.requirement-field input,
+.requirement-field select,
+.requirement-field textarea,
+.donation-detail,
+.donation-description,
+.donor-information,
+.ngo-profile-detail,
+.requirement-quantities > div {
+  transition:
+    background-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}

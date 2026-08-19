@@ -1141,3 +1141,81 @@ body.dark-theme {
   }
 
 }
+
+
+/* =====================================================
+   NGO PROFILE - DARK MODE FINAL FIX
+===================================================== */
+
+body.dark-theme .ngo-status-pending {
+  background: #3a301c;
+  color: #e4c875 !important;
+}
+
+body.dark-theme .ngo-status-rejected {
+  background: #382523;
+  color: #ef9c93 !important;
+}
+
+body.dark-theme .ngo-profile-page::before {
+  border-color: rgba(240, 138, 114, 0.12);
+}
+
+body.dark-theme .ngo-profile-page::after {
+  background:
+    radial-gradient(
+      circle,
+      rgba(130, 175, 210, 0.08),
+      transparent 70%
+    );
+}
+
+body.dark-theme .ngo-logo {
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-theme .ngo-logo-placeholder {
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.40);
+}
+
+body.dark-theme .ngo-edit-group input::placeholder,
+body.dark-theme .ngo-edit-group textarea::placeholder {
+  color: #778397;
+}
+
+/* Make select dropdowns and editable fields clearly dark */
+body.dark-theme .ngo-edit-group input,
+body.dark-theme .ngo-edit-group textarea,
+body.dark-theme .ngo-edit-group select {
+  background: var(--profile-surface-soft);
+  color: var(--profile-text);
+  border-color: var(--profile-border);
+}
+
+body.dark-theme .ngo-edit-group input:focus,
+body.dark-theme .ngo-edit-group textarea:focus,
+body.dark-theme .ngo-edit-group select:focus {
+  background: var(--profile-surface);
+}
+
+/* Smooth theme transition */
+.ngo-profile-page,
+.ngo-profile-card,
+.ngo-dashboard-back-button,
+.ngo-profile-field,
+.ngo-certificate-section,
+.ngo-refresh-button,
+.ngo-edit-group input,
+.ngo-edit-group textarea,
+.ngo-edit-group select,
+.ngo-cancel-button {
+  transition:
+    background-color 0.3s ease,
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
