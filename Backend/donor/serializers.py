@@ -7,6 +7,7 @@ from .models import (
     Donation,
     NGORequirement,
     DonationAllocation,
+    PickupRequest,
 )
 
 
@@ -509,3 +510,115 @@ class SingleRegistrationSerializer(
     )
 
     data = serializers.DictField()
+
+
+# =========================================================
+# PICKUP REQUEST SERIALIZER
+# =========================================================
+
+class PickupRequestSerializer(
+    serializers.ModelSerializer
+):
+
+    # -----------------------------------------------------
+    # DERIVED FIELDS (read-only)
+    # -----------------------------------------------------
+
+    donor_name = serializers.CharField(
+        source="allocation.donation.donor.name",
+        read_only=True
+    )
+
+    donor_phone = serializers.CharField(
+        source="allocation.donation.donor.phone",
+        read_only=True
+    )
+
+    donor_email = serializers.EmailField(
+        source="allocation.donation.donor.email",
+        read_only=True
+    )
+
+    item_name = serializers.CharField(
+        source="allocation.donation.item_name",
+        read_only=True
+    )
+
+    category = serializers.CharField(
+        source="allocation.donation.category",
+        read_only=True
+    )
+
+    allocated_quantity = serializers.IntegerField(
+        source="allocation.allocated_quantity",
+        read_only=True
+    )
+
+    ngo_name = serializers.CharField(
+        source="allocation.ngo.ngo_name",
+        read_only=True
+    )
+
+    donation_id = serializers.IntegerField(
+        source="allocation.donation.id",
+        read_only=True
+    )
+
+    allocation_id = serializers.IntegerField(
+        source="allocation.id",
+        read_only=True
+    )
+
+    class Meta:
+
+        model = PickupRequest
+
+        fields = [
+            "id",
+
+            # ------- ALLOCATION -------
+            "allocation",
+            "allocation_id",
+            "donation_id",
+
+            # ------- DONOR INFO -------
+            "donor_name",
+            "donor_phone",
+            "donor_email",
+
+            # ------- ITEM INFO -------
+            "item_name",
+            "category",
+            "allocated_quantity",
+
+            # ------- NGO INFO -------
+            "ngo_name",
+
+            # ------- PICKUP DETAILS -------
+            "pickup_address",
+            "scheduled_time",
+            "notes",
+
+            # ------- STATUS -------
+            "status",
+
+            # ------- DATES -------
+            "created_at",
+            "updated_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "allocation_id",
+            "donation_id",
+            "donor_name",
+            "donor_phone",
+            "donor_email",
+            "item_name",
+            "category",
+            "allocated_quantity",
+            "ngo_name",
+            "status",
+            "created_at",
+            "updated_at",
+        ]

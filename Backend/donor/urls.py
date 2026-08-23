@@ -58,6 +58,15 @@ from .views import (
     profile,
     upload_profile_image,
     upload_ngo_certificate,
+
+    # =====================================================
+    # PICKUP
+    # =====================================================
+    PickupCreateView,
+    DonorPickupListView,
+    NGOPickupListView,
+    PickupStatusUpdateView,
+    DonorPickupCancelView,
 )
 
 
@@ -324,6 +333,45 @@ urlpatterns = [
         "my-donations/",
         DonorDonationListView.as_view(),
         name="my-donations"
+    ),
+
+    # =====================================================
+    # PICKUP REQUESTS
+    # =====================================================
+
+    # Donor creates a pickup request after allocation
+    path(
+        "pickup/",
+        PickupCreateView.as_view(),
+        name="pickup-create"
+    ),
+
+    # Donor views all their pickup requests
+    path(
+        "pickup/my/",
+        DonorPickupListView.as_view(),
+        name="pickup-my"
+    ),
+
+    # Donor cancels a pickup request
+    path(
+        "pickup/<int:pk>/cancel/",
+        DonorPickupCancelView.as_view(),
+        name="pickup-cancel"
+    ),
+
+    # NGO views all pickup requests for their allocations
+    path(
+        "pickup/ngo/",
+        NGOPickupListView.as_view(),
+        name="pickup-ngo-list"
+    ),
+
+    # NGO updates pickup status (Confirmed/Dispatched/Delivered/Cancelled)
+    path(
+        "pickup/<int:pk>/status/",
+        PickupStatusUpdateView.as_view(),
+        name="pickup-status-update"
     ),
 
 ]

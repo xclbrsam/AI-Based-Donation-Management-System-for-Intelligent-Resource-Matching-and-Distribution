@@ -13,7 +13,7 @@ from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Donor, NGO, Donation, NGORequirement, DonationAllocation
+from .models import Donor, NGO, Donation, NGORequirement, DonationAllocation, PickupRequest
 
 from .serializers import (
     DonorSerializer,
@@ -23,6 +23,7 @@ from .serializers import (
     SingleRegistrationSerializer,
     NGORequirementSerializer,
     DonationAllocationSerializer,
+    PickupRequestSerializer,
 )
 
 
@@ -1796,6 +1797,7 @@ def normalize_item_name(name):
         rice  -> rice
     """
     name = str(name or "").strip().lower()
+    name = " ".join(name.replace("-", " ").split())
 
     if name.endswith("ies") and len(name) > 3:
         return name[:-3] + "y"
@@ -1810,6 +1812,51 @@ def normalize_item_name(name):
         return name[:-1]
 
     return name
+
+
+def item_names_match(donation_name, requirement_name):
+    """Allow a donation containing several AI-detected items to match."""
+    donation_items = [
+        normalize_item_name(item)
+        for item in str(donation_name or "").split(",")
+    ]
+    requirement_item = normalize_item_name(requirement_name)
+
+    return requirement_item in donation_items
+
+
+def normalize_category(category):
+    """Normalize common category labels returned by image analysis."""
+    value = str(category or "").strip().lower()
+
+    aliases = {
+        "clothes": "clothing",
+        "cloth": "clothing",
+        "apparel": "clothing",
+        "stationery": "school supplies",
+        "school": "school supplies",
+        "education": "school supplies",
+        "medical": "medical supplies",
+        "electronic": "electronics",
+    }
+
+    return aliases.get(value, value)
+
+
+def categories_match(
+    donation_category,
+    requirement_category,
+    donation_name=""
+):
+    normalized_donation = normalize_category(donation_category)
+    normalized_requirement = normalize_category(requirement_category)
+
+    # The frontend stores mixed AI categories as Other. The item-name
+    # check still limits this fallback to an actual detected item.
+    if normalized_donation == "other" and "," in str(donation_name):
+        return True
+
+    return normalized_donation == normalized_requirement
 
 
 # User-requested AI priority order:
@@ -1871,7 +1918,6 @@ class MatchingNGOView(APIView):
         requirements = (
             NGORequirement.objects
             .filter(
-                category=donation.category,
                 is_active=True,
                 ngo__status="Approved"
             )
@@ -1880,18 +1926,20 @@ class MatchingNGOView(APIView):
 
         matches = []
 
-        donation_item = normalize_item_name(
-            donation.item_name
-        )
-
         for requirement in requirements:
 
-            requirement_item = normalize_item_name(
-                requirement.item_name
-            )
-
             # Book == Books after normalization
-            if donation_item != requirement_item:
+            if not item_names_match(
+                donation.item_name,
+                requirement.item_name
+            ):
+                continue
+
+            if not categories_match(
+                donation.category,
+                requirement.category,
+                donation.item_name
+            ):
                 continue
 
             remaining_need = (
@@ -2031,15 +2079,10 @@ class AIMatchView(APIView):
         requirements = (
             NGORequirement.objects
             .filter(
-                category=donation.category,
                 is_active=True,
                 ngo__status="Approved"
             )
             .select_related("ngo")
-        )
-
-        donation_item = normalize_item_name(
-            donation.item_name
         )
 
         matches = []
@@ -2050,12 +2093,18 @@ class AIMatchView(APIView):
 
         for requirement in requirements:
 
-            requirement_item = normalize_item_name(
-                requirement.item_name
-            )
-
             # Book == Books
-            if donation_item != requirement_item:
+            if not item_names_match(
+                donation.item_name,
+                requirement.item_name
+            ):
+                continue
+
+            if not categories_match(
+                donation.category,
+                requirement.category,
+                donation.item_name
+            ):
                 continue
 
             remaining_need = (
@@ -2458,17 +2507,16 @@ class DonationAllocationView(APIView):
             # -------------------------------------------------
 
             if (
-                normalize_item_name(
+                not item_names_match(
+                    donation.item_name,
                     requirement.item_name
                 )
-                !=
-                normalize_item_name(
+                or
+                not categories_match(
+                    requirement.category,
+                    donation.category,
                     donation.item_name
                 )
-                or
-                requirement.category
-                !=
-                donation.category
             ):
 
                 return Response(
@@ -2628,5 +2676,433 @@ class NGODonationAllocationListView(APIView):
 
         return Response(
             serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+# =========================================================
+# SCHEDULE PICKUP — DONOR CREATES PICKUP REQUEST
+# =========================================================
+#
+# POST /api/pickup/
+#
+# Body:
+#   allocation_id   int       required
+#   pickup_address  string    required
+#   scheduled_time  datetime  required  (ISO 8601)
+#   notes           string    optional
+#
+# Only the donor who owns the allocation can create.
+# One allocation can only have one pickup request.
+# =========================================================
+
+class PickupCreateView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def post(self, request):
+
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
+
+        # -------------------------------------------------
+        # ONLY DONORS
+        # -------------------------------------------------
+
+        if user_type != "Donor":
+            return Response(
+                {
+                    "message":
+                        "Only donors can schedule a pickup."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # -------------------------------------------------
+        # VALIDATE FIELDS
+        # -------------------------------------------------
+
+        allocation_id  = request.data.get("allocation_id")
+        pickup_address = request.data.get("pickup_address", "").strip()
+        scheduled_time = request.data.get("scheduled_time")
+        notes          = request.data.get("notes", "").strip()
+
+        if not allocation_id:
+            return Response(
+                {"message": "allocation_id is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not pickup_address:
+            return Response(
+                {"message": "pickup_address is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if not scheduled_time:
+            return Response(
+                {"message": "scheduled_time is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # -------------------------------------------------
+        # FIND ALLOCATION — must belong to this donor
+        # -------------------------------------------------
+
+        try:
+            allocation = (
+                DonationAllocation.objects
+                .select_related(
+                    "donation",
+                    "donation__donor",
+                    "ngo"
+                )
+                .get(
+                    id=allocation_id,
+                    donation__donor_id=user_id
+                )
+            )
+        except DonationAllocation.DoesNotExist:
+            return Response(
+                {"message": "Allocation not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        # -------------------------------------------------
+        # NO DUPLICATE PICKUP FOR SAME ALLOCATION
+        # -------------------------------------------------
+
+        if hasattr(allocation, "pickup_request"):
+            return Response(
+                {"message": "A pickup request already exists for this allocation."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # -------------------------------------------------
+        # PARSE DATETIME
+        # -------------------------------------------------
+
+        from django.utils.dateparse import parse_datetime
+        from django.utils import timezone as tz
+
+        parsed_time = parse_datetime(str(scheduled_time))
+
+        if parsed_time is None:
+            return Response(
+                {"message": "Invalid scheduled_time format. Use ISO 8601 (e.g. 2026-09-01T10:00:00)."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Make timezone-aware if naive
+        if tz.is_naive(parsed_time):
+            parsed_time = tz.make_aware(parsed_time)
+
+        # Must be in the future
+        if parsed_time <= tz.now():
+            return Response(
+                {"message": "Scheduled pickup time must be in the future."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # -------------------------------------------------
+        # CREATE PICKUP REQUEST
+        # -------------------------------------------------
+
+        pickup = PickupRequest.objects.create(
+            allocation=allocation,
+            pickup_address=pickup_address,
+            scheduled_time=parsed_time,
+            notes=notes,
+            status="Pending"
+        )
+
+        serializer = PickupRequestSerializer(pickup)
+
+        return Response(
+            {
+                "message": "Pickup scheduled successfully.",
+                "pickup": serializer.data
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+
+# =========================================================
+# DONOR — MY PICKUP REQUESTS
+# =========================================================
+#
+# GET /api/pickup/my/
+#
+# Returns all pickup requests created by the logged-in donor,
+# ordered newest first.
+# =========================================================
+
+class DonorPickupListView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
+
+        if user_type != "Donor":
+            return Response(
+                {"message": "Only donors can view their pickup requests."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        pickups = (
+            PickupRequest.objects
+            .filter(
+                allocation__donation__donor_id=user_id
+            )
+            .select_related(
+                "allocation",
+                "allocation__donation",
+                "allocation__donation__donor",
+                "allocation__ngo"
+            )
+            .order_by("-created_at")
+        )
+
+        serializer = PickupRequestSerializer(
+            pickups,
+            many=True
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+# =========================================================
+# NGO — VIEW INCOMING PICKUP REQUESTS
+# =========================================================
+#
+# GET  /api/pickup/ngo/         → list all pickup requests for this NGO
+# POST /api/pickup/ngo/{id}/status/  → update status
+#
+# Status transitions allowed by NGO:
+#   Pending    → Confirmed  (NGO accepts)
+#   Pending    → Cancelled  (NGO rejects)
+#   Confirmed  → Dispatched (NGO dispatches)
+#   Dispatched → Delivered  (NGO marks delivered)
+#   Any        → Cancelled  (NGO cancels)
+# =========================================================
+
+class NGOPickupListView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
+
+        if user_type != "NGO":
+            return Response(
+                {"message": "Only NGOs can view pickup requests."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        pickups = (
+            PickupRequest.objects
+            .filter(
+                allocation__ngo_id=user_id
+            )
+            .select_related(
+                "allocation",
+                "allocation__donation",
+                "allocation__donation__donor",
+                "allocation__ngo"
+            )
+            .order_by("-created_at")
+        )
+
+        serializer = PickupRequestSerializer(
+            pickups,
+            many=True
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
+
+# =========================================================
+# NGO — UPDATE PICKUP STATUS
+# =========================================================
+#
+# PATCH /api/pickup/{id}/status/
+#
+# Body:  { "status": "Confirmed" | "Dispatched" | "Delivered" | "Cancelled" }
+# =========================================================
+
+class PickupStatusUpdateView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    # Valid NGO-initiated transitions
+    VALID_TRANSITIONS = {
+        "Pending":    ["Confirmed", "Cancelled"],
+        "Confirmed":  ["Dispatched", "Cancelled"],
+        "Dispatched": ["Delivered",  "Cancelled"],
+        "Delivered":  [],
+        "Cancelled":  [],
+    }
+
+    def patch(self, request, pk):
+
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
+
+        if user_type != "NGO":
+            return Response(
+                {"message": "Only NGOs can update pickup status."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # -------------------------------------------------
+        # FIND PICKUP — must belong to this NGO
+        # -------------------------------------------------
+
+        try:
+            pickup = (
+                PickupRequest.objects
+                .select_related(
+                    "allocation",
+                    "allocation__donation",
+                    "allocation__donation__donor",
+                    "allocation__ngo"
+                )
+                .get(
+                    id=pk,
+                    allocation__ngo_id=user_id
+                )
+            )
+        except PickupRequest.DoesNotExist:
+            return Response(
+                {"message": "Pickup request not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        new_status = request.data.get("status", "").strip()
+
+        allowed = self.VALID_TRANSITIONS.get(
+            pickup.status,
+            []
+        )
+
+        if new_status not in allowed:
+            return Response(
+                {
+                    "message":
+                        f"Cannot transition from '{pickup.status}' to '{new_status}'. "
+                        f"Allowed: {allowed or 'none (terminal state)'}."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        pickup.status = new_status
+        pickup.save(update_fields=["status", "updated_at"])
+
+        # -------------------------------------------------
+        # When NGO confirms, also update DonationAllocation
+        # status to "Accepted" so the donor dashboard
+        # existing status fields stay consistent.
+        # When delivered, mark allocation Collected.
+        # -------------------------------------------------
+
+        allocation = pickup.allocation
+
+        if new_status == "Confirmed":
+            allocation.status = "Accepted"
+            allocation.save(update_fields=["status"])
+
+        elif new_status == "Delivered":
+            allocation.status = "Collected"
+            allocation.save(update_fields=["status"])
+
+        elif new_status == "Cancelled":
+            allocation.status = "Rejected"
+            allocation.save(update_fields=["status"])
+
+        serializer = PickupRequestSerializer(pickup)
+
+        return Response(
+            {
+                "message": f"Pickup status updated to '{new_status}'.",
+                "pickup": serializer.data
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+# =========================================================
+# DONOR — CANCEL PICKUP REQUEST
+# =========================================================
+#
+# DELETE /api/pickup/{id}/cancel/
+#
+# Donor can cancel a Pending pickup.
+# =========================================================
+
+class DonorPickupCancelView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def patch(self, request, pk):
+
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
+
+        if user_type != "Donor":
+            return Response(
+                {"message": "Only donors can cancel pickup requests."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        try:
+            pickup = (
+                PickupRequest.objects
+                .select_related("allocation")
+                .get(
+                    id=pk,
+                    allocation__donation__donor_id=user_id
+                )
+            )
+        except PickupRequest.DoesNotExist:
+            return Response(
+                {"message": "Pickup request not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if pickup.status not in ["Pending"]:
+            return Response(
+                {
+                    "message":
+                        f"Cannot cancel a pickup that is already '{pickup.status}'."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        pickup.status = "Cancelled"
+        pickup.save(update_fields=["status", "updated_at"])
+
+        return Response(
+            {"message": "Pickup request cancelled."},
             status=status.HTTP_200_OK
         )

@@ -7,21 +7,13 @@ from django.db import models
 
 class Donor(models.Model):
 
-    name = models.CharField(
-        max_length=100
-    )
+    name = models.CharField(max_length=100)
 
-    email = models.EmailField(
-        unique=True
-    )
+    email = models.EmailField(unique=True)
 
-    phone = models.CharField(
-        max_length=10
-    )
+    phone = models.CharField(max_length=10)
 
-    password = models.CharField(
-        max_length=128
-    )
+    password = models.CharField(max_length=128)
 
     picture = models.ImageField(
         upload_to="donor_pictures/",
@@ -29,31 +21,19 @@ class Donor(models.Model):
         blank=True
     )
 
-    language_preference = models.CharField(
-        max_length=50
-    )
+    language_preference = models.CharField(max_length=50)
 
     address = models.TextField()
 
-    city = models.CharField(
-        max_length=100
-    )
+    city = models.CharField(max_length=100)
 
-    state = models.CharField(
-        max_length=100
-    )
+    state = models.CharField(max_length=100)
 
-    pincode = models.CharField(
-        max_length=6
-    )
+    pincode = models.CharField(max_length=6)
 
-    status_active = models.BooleanField(
-        default=True
-    )
+    status_active = models.BooleanField(default=True)
 
-    registered_date = models.DateTimeField(
-        auto_now_add=True
-    )
+    registered_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -69,9 +49,7 @@ class Donor(models.Model):
 
 class NGO(models.Model):
 
-    ngo_name = models.CharField(
-        max_length=200
-    )
+    ngo_name = models.CharField(max_length=200)
 
     picture = models.ImageField(
         upload_to="ngo_pictures/",
@@ -86,35 +64,19 @@ class NGO(models.Model):
         unique=True
     )
 
-    email_id = models.EmailField(
-        unique=True
-    )
+    email_id = models.EmailField(unique=True)
 
-    phone_no = models.CharField(
-        max_length=10
-    )
+    phone_no = models.CharField(max_length=10)
 
-    website_link = models.URLField(
-        blank=True
-    )
+    website_link = models.URLField(blank=True)
 
     address = models.TextField()
 
-    state = models.CharField(
-        max_length=100
-    )
+    state = models.CharField(max_length=100)
 
-    city = models.CharField(
-        max_length=100
-    )
+    city = models.CharField(max_length=100)
 
-    pincode = models.CharField(
-        max_length=6
-    )
-
-    # -----------------------------------------------------
-    # NGO STATUS
-    # -----------------------------------------------------
+    pincode = models.CharField(max_length=6)
 
     STATUS_CHOICES = [
         ("Pending", "Pending"),
@@ -128,17 +90,7 @@ class NGO(models.Model):
         default="Pending"
     )
 
-    # -----------------------------------------------------
-    # LANGUAGE
-    # -----------------------------------------------------
-
-    language = models.CharField(
-        max_length=50
-    )
-
-    # -----------------------------------------------------
-    # CERTIFICATE
-    # -----------------------------------------------------
+    language = models.CharField(max_length=50)
 
     certificate_files = models.FileField(
         upload_to="ngo_certificates/",
@@ -146,25 +98,11 @@ class NGO(models.Model):
         blank=True
     )
 
-    # -----------------------------------------------------
-    # REGISTRATION DATE
-    # -----------------------------------------------------
-
     registered_at = models.DateTimeField(
         auto_now_add=True
     )
 
-    # -----------------------------------------------------
-    # PASSWORD
-    # -----------------------------------------------------
-
-    password = models.CharField(
-        max_length=128
-    )
-
-    # -----------------------------------------------------
-    # STRING
-    # -----------------------------------------------------
+    password = models.CharField(max_length=128)
 
     def __str__(self):
         return self.ngo_name
@@ -198,32 +136,18 @@ class NGORequirement(models.Model):
         ("Urgent", "Urgent"),
     ]
 
-    # -----------------------------------------------------
-    # NGO
-    # -----------------------------------------------------
-
     ngo = models.ForeignKey(
         NGO,
         on_delete=models.CASCADE,
         related_name="requirements"
     )
 
-    # -----------------------------------------------------
-    # REQUIRED ITEM
-    # -----------------------------------------------------
-
-    item_name = models.CharField(
-        max_length=200
-    )
+    item_name = models.CharField(max_length=200)
 
     category = models.CharField(
         max_length=50,
         choices=CATEGORY_CHOICES
     )
-
-    # -----------------------------------------------------
-    # QUANTITY
-    # -----------------------------------------------------
 
     required_quantity = models.PositiveIntegerField()
 
@@ -231,35 +155,15 @@ class NGORequirement(models.Model):
         default=0
     )
 
-    # -----------------------------------------------------
-    # PRIORITY
-    # -----------------------------------------------------
-
     priority = models.CharField(
         max_length=20,
         choices=PRIORITY_CHOICES,
         default="Medium"
     )
 
-    # -----------------------------------------------------
-    # DESCRIPTION
-    # -----------------------------------------------------
+    description = models.TextField(blank=True)
 
-    description = models.TextField(
-        blank=True
-    )
-
-    # -----------------------------------------------------
-    # ACTIVE / INACTIVE
-    # -----------------------------------------------------
-
-    is_active = models.BooleanField(
-        default=True
-    )
-
-    # -----------------------------------------------------
-    # DATE
-    # -----------------------------------------------------
+    is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(
         auto_now_add=True
@@ -269,10 +173,6 @@ class NGORequirement(models.Model):
         auto_now=True
     )
 
-    # -----------------------------------------------------
-    # REMAINING QUANTITY
-    # -----------------------------------------------------
-
     @property
     def remaining_quantity(self):
 
@@ -281,14 +181,7 @@ class NGORequirement(models.Model):
             - self.fulfilled_quantity
         )
 
-        return max(
-            remaining,
-            0
-        )
-
-    # -----------------------------------------------------
-    # CHECK WHETHER REQUIREMENT IS COMPLETED
-    # -----------------------------------------------------
+        return max(remaining, 0)
 
     @property
     def is_fulfilled(self):
@@ -297,10 +190,6 @@ class NGORequirement(models.Model):
             self.fulfilled_quantity
             >= self.required_quantity
         )
-
-    # -----------------------------------------------------
-    # STRING
-    # -----------------------------------------------------
 
     def __str__(self):
 
@@ -354,12 +243,6 @@ class Donation(models.Model):
 
     # -----------------------------------------------------
     # NGO
-    #
-    # Kept for backward compatibility with your
-    # existing project.
-    #
-    # For new intelligent matching, DonationAllocation
-    # will be used.
     # -----------------------------------------------------
 
     ngo = models.ForeignKey(
@@ -374,9 +257,7 @@ class Donation(models.Model):
     # ITEM DETAILS
     # -----------------------------------------------------
 
-    item_name = models.CharField(
-        max_length=200
-    )
+    item_name = models.CharField(max_length=200)
 
     category = models.CharField(
         max_length=50,
@@ -392,9 +273,11 @@ class Donation(models.Model):
 
     description = models.TextField()
 
-    location = models.CharField(
-        max_length=200
-    )
+    # -----------------------------------------------------
+    # PICKUP LOCATION
+    # -----------------------------------------------------
+
+    location = models.CharField(max_length=500)
 
     # -----------------------------------------------------
     # ITEM IMAGE
@@ -416,6 +299,36 @@ class Donation(models.Model):
         default="Pending"
     )
 
+    # =====================================================
+    # DONATION PICKUP
+    # =====================================================
+
+    PICKUP_STATUS_CHOICES = [
+        ("Not Scheduled", "Not Scheduled"),
+        ("Scheduled", "Scheduled"),
+        ("Accepted", "Accepted"),
+        ("Picked Up", "Picked Up"),
+        ("Cancelled", "Cancelled"),
+    ]
+
+    pickup_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    pickup_time = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    pickup_status = models.CharField(
+        max_length=20,
+        choices=PICKUP_STATUS_CHOICES,
+        default="Not Scheduled",
+        blank=True
+    )
+
     # -----------------------------------------------------
     # DATE
     # -----------------------------------------------------
@@ -423,10 +336,6 @@ class Donation(models.Model):
     donation_date = models.DateTimeField(
         auto_now_add=True
     )
-
-    # -----------------------------------------------------
-    # STRING
-    # -----------------------------------------------------
 
     def __str__(self):
 
@@ -439,22 +348,6 @@ class Donation(models.Model):
 # =========================================================
 # DONATION ALLOCATION
 # =========================================================
-#
-# This is the important model for your new requirement.
-#
-# Example:
-#
-# Donor donates 10 Books
-#
-# NGO A needs 3  → allocation = 3
-# NGO B needs 5  → allocation = 5
-# NGO C needs 2  → allocation = 2
-#
-# Total = 10
-#
-# One Donation can therefore be distributed to
-# multiple NGOs.
-# =========================================================
 
 class DonationAllocation(models.Model):
 
@@ -466,7 +359,7 @@ class DonationAllocation(models.Model):
     ]
 
     # -----------------------------------------------------
-    # DONATION
+    # RELATIONSHIPS
     # -----------------------------------------------------
 
     donation = models.ForeignKey(
@@ -475,19 +368,11 @@ class DonationAllocation(models.Model):
         related_name="allocations"
     )
 
-    # -----------------------------------------------------
-    # NGO
-    # -----------------------------------------------------
-
     ngo = models.ForeignKey(
         NGO,
         on_delete=models.CASCADE,
         related_name="donation_allocations"
     )
-
-    # -----------------------------------------------------
-    # NGO REQUIREMENT
-    # -----------------------------------------------------
 
     requirement = models.ForeignKey(
         NGORequirement,
@@ -498,19 +383,45 @@ class DonationAllocation(models.Model):
     )
 
     # -----------------------------------------------------
-    # ALLOCATED QUANTITY
+    # ALLOCATION
     # -----------------------------------------------------
 
     allocated_quantity = models.PositiveIntegerField()
-
-    # -----------------------------------------------------
-    # STATUS
-    # -----------------------------------------------------
 
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
         default="Pending"
+    )
+
+    # =====================================================
+    # PICKUP STATUS
+    # =====================================================
+
+    PICKUP_STATUS_CHOICES = [
+        ("Not Scheduled", "Not Scheduled"),
+        ("Scheduled", "Scheduled"),
+        ("Accepted", "Accepted"),
+        ("Picked Up", "Picked Up"),
+        ("Cancelled", "Cancelled"),
+    ]
+
+    pickup_date = models.DateField(
+        null=True,
+        blank=True
+    )
+
+    pickup_time = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    pickup_status = models.CharField(
+        max_length=20,
+        choices=PICKUP_STATUS_CHOICES,
+        default="Not Scheduled",
+        blank=True
     )
 
     # -----------------------------------------------------
@@ -521,14 +432,62 @@ class DonationAllocation(models.Model):
         auto_now_add=True
     )
 
-    # -----------------------------------------------------
-    # STRING
-    # -----------------------------------------------------
-
     def __str__(self):
 
         return (
             f"{self.donation.item_name} → "
             f"{self.ngo.ngo_name} "
             f"({self.allocated_quantity})"
+        )
+
+
+# =========================================================
+# PICKUP REQUEST
+# =========================================================
+
+class PickupRequest(models.Model):
+
+    PICKUP_STATUS_CHOICES = [
+        ("Pending", "Pending"),
+        ("Confirmed", "Confirmed"),
+        ("Dispatched", "Dispatched"),
+        ("Delivered", "Delivered"),
+        ("Cancelled", "Cancelled"),
+    ]
+
+    allocation = models.OneToOneField(
+        DonationAllocation,
+        on_delete=models.CASCADE,
+        related_name="pickup_request"
+    )
+
+    pickup_address = models.TextField()
+
+    scheduled_time = models.DateTimeField()
+
+    notes = models.TextField(
+        blank=True,
+        default=""
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=PICKUP_STATUS_CHOICES,
+        default="Pending"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+
+        return (
+            f"Pickup #{self.id} — "
+            f"{self.allocation.donation.item_name} — "
+            f"{self.status}"
         )
