@@ -8,6 +8,8 @@ from .models import (
     NGORequirement,
     DonationAllocation,
     PickupRequest,
+    normalize_requirement_item_name,
+    normalize_requirement_category,
 )
 
 
@@ -138,6 +140,24 @@ class NGORequirementSerializer(
         read_only=True
     )
 
+    def validate_item_name(self, value):
+        normalized = normalize_requirement_item_name(value)
+
+        if not normalized:
+            raise serializers.ValidationError(
+                "Item name is required."
+            )
+
+        # Store a clean, human-readable value while keeping the original
+        # item meaning intact for backend matching.
+        return " ".join(
+            word.capitalize()
+            for word in normalized.split()
+        )
+
+    def validate_category(self, value):
+        return normalize_requirement_category(value)
+
     class Meta:
 
         model = NGORequirement
@@ -240,6 +260,66 @@ class DonationSerializer(
 
     remaining_quantity = serializers.SerializerMethodField()
 
+    # -----------------------------------------------------
+    # PICKUP DETAILS
+    # -----------------------------------------------------
+
+    pickup_date = serializers.SerializerMethodField()
+    pickup_time = serializers.SerializerMethodField()
+    pickup_status = serializers.SerializerMethodField()
+
+    def _get_donation_pickup(self, obj):
+        """
+        Find the pickup request belonging to this donation.
+        Prefer the allocation connected to the donation's selected NGO.
+        """
+        allocations = obj.allocations.select_related(
+            "pickup_request",
+            "ngo",
+        )
+
+        allocation = (
+            allocations.filter(ngo=obj.ngo).first()
+            if obj.ngo_id
+            else allocations.first()
+        )
+
+        if not allocation:
+            return None
+
+        try:
+            return allocation.pickup_request
+        except Exception:
+            return None
+
+    def get_pickup_date(self, obj):
+        pickup = self._get_donation_pickup(obj)
+        return pickup.scheduled_time if pickup else None
+
+    def get_pickup_time(self, obj):
+        pickup = self._get_donation_pickup(obj)
+        return pickup.scheduled_time if pickup else None
+
+    def get_pickup_status(self, obj):
+        pickup = self._get_donation_pickup(obj)
+        return pickup.status if pickup else "Not Scheduled"
+
+    def validate_item_name(self, value):
+        normalized = normalize_requirement_item_name(value)
+
+        if not normalized:
+            raise serializers.ValidationError(
+                "Item name is required."
+            )
+
+        return " ".join(
+            word.capitalize()
+            for word in normalized.split()
+        )
+
+    def validate_category(self, value):
+        return normalize_requirement_category(value)
+
     class Meta:
 
         model = Donation
@@ -276,6 +356,11 @@ class DonationSerializer(
 
             # ---------------- DATE ----------------
             "donation_date",
+
+            # ---------------- PICKUP ----------------
+            "pickup_date",
+            "pickup_time",
+            "pickup_status",
         ]
 
         read_only_fields = [
@@ -295,6 +380,10 @@ class DonationSerializer(
             "remaining_quantity",
 
             "donation_date",
+
+            "pickup_date",
+            "pickup_time",
+            "pickup_status",
         ]
 
     # =====================================================
@@ -334,7 +423,8 @@ class DonationSerializer(
 
         allocations = obj.allocations.select_related(
             "ngo",
-            "requirement"
+            "requirement",
+            "pickup_request",
         ).all()
 
         result = []
@@ -344,7 +434,14 @@ class DonationSerializer(
             if allocation.status == "Rejected":
                 continue
 
+            try:
+                pickup = allocation.pickup_request
+            except Exception:
+                pickup = None
+
             result.append({
+                "allocation_id": allocation.id,
+
                 "ngo_id": allocation.ngo.id,
 
                 "ngo_name": allocation.ngo.ngo_name,
@@ -359,6 +456,13 @@ class DonationSerializer(
                     allocation.requirement.id
                     if allocation.requirement
                     else None,
+
+                "pickup": {
+                    "id": pickup.id,
+                    "pickup_address": pickup.pickup_address,
+                    "scheduled_time": pickup.scheduled_time,
+                    "status": pickup.status,
+                } if pickup else None,
             })
 
         return result
@@ -420,6 +524,41 @@ class DonationAllocationSerializer(
 
     remaining_requirement = serializers.SerializerMethodField()
 
+    # -----------------------------------------------------
+    # PICKUP DETAILS
+    # -----------------------------------------------------
+    #
+    # PickupRequest is the source of truth for:
+    #   - pickup_address
+    #   - scheduled_time
+    #   - pickup_status
+    #
+    # The legacy pickup_date/pickup_time fields on Donation and
+    # DonationAllocation are not used for scheduling.
+    #
+
+    pickup_address = serializers.SerializerMethodField()
+    scheduled_time = serializers.SerializerMethodField()
+    pickup_status = serializers.SerializerMethodField()
+
+    def get_pickup_request(self, obj):
+        try:
+            return obj.pickup_request
+        except Exception:
+            return None
+
+    def get_pickup_address(self, obj):
+        pickup = self.get_pickup_request(obj)
+        return pickup.pickup_address if pickup else None
+
+    def get_scheduled_time(self, obj):
+        pickup = self.get_pickup_request(obj)
+        return pickup.scheduled_time if pickup else None
+
+    def get_pickup_status(self, obj):
+        pickup = self.get_pickup_request(obj)
+        return pickup.status if pickup else "Not Scheduled"
+
     class Meta:
 
         model = DonationAllocation
@@ -451,6 +590,11 @@ class DonationAllocationSerializer(
 
             # ---------------- DATE ----------------
             "allocated_at",
+
+            # ---------------- PICKUP ----------------
+            "pickup_address",
+            "scheduled_time",
+            "pickup_status",
         ]
 
         read_only_fields = [
@@ -467,6 +611,10 @@ class DonationAllocationSerializer(
             "remaining_requirement",
 
             "allocated_at",
+
+            "pickup_address",
+            "scheduled_time",
+            "pickup_status",
         ]
 
     # =====================================================

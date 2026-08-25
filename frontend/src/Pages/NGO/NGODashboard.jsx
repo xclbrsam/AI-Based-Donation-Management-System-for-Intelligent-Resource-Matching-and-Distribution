@@ -8,6 +8,7 @@ function NGODashboard() {
   const [donations, setDonations] = useState([]);
   const [allocations, setAllocations] = useState([]);
   const [requirements, setRequirements] = useState([]);
+  const [pickups, setPickups] = useState([]);
 
   const [loading, setLoading] = useState(true);
   const [allocationLoading, setAllocationLoading] = useState(false);
@@ -113,6 +114,70 @@ function NGODashboard() {
 
 
   // =====================================================
+  // FETCH NGO PICKUP REQUESTS
+  // =====================================================
+
+  const fetchPickups = async () => {
+    try {
+      const response = await api.get("pickup/ngo/");
+
+      const data = Array.isArray(response.data)
+        ? response.data
+        : response.data?.results || response.data?.pickups || [];
+
+      console.log("NGO Pickups:", data);
+      setPickups(data);
+    } catch (error) {
+      console.error("========== NGO PICKUPS ERROR ==========");
+      console.error(error);
+      console.error("Status:", error.response?.status);
+      console.error("Response:", error.response?.data);
+      setPickups([]);
+    }
+  };
+
+
+  // =====================================================
+  // UPDATE PICKUP STATUS
+  // =====================================================
+
+  const updatePickupStatus = async (pickupId, newStatus) => {
+    if (!pickupId) {
+      alert("Pickup request ID is missing.");
+      return;
+    }
+
+    try {
+      setUpdatingId(`pickup-${pickupId}`);
+
+      await api.patch(
+        `pickup/${pickupId}/status/`,
+        { status: newStatus }
+      );
+
+      await Promise.all([
+        fetchPickups(),
+        fetchAllocations(),
+        fetchDonations(),
+      ]);
+
+      alert(`Pickup ${newStatus.toLowerCase()} successfully.`);
+    } catch (error) {
+      console.error("PICKUP STATUS UPDATE ERROR", error);
+      console.error(error.response?.data);
+
+      alert(
+        error.response?.data
+          ? JSON.stringify(error.response.data)
+          : "Unable to update pickup status."
+      );
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+
+  // =====================================================
   // FETCH NGO REQUIREMENTS
   // =====================================================
 
@@ -169,6 +234,7 @@ function NGODashboard() {
     fetchDonations();
     fetchAllocations();
     fetchRequirements();
+    fetchPickups();
 
   }, []);
 
@@ -199,10 +265,15 @@ function NGODashboard() {
       );
 
 
-      // Refresh donation list
-
-      await fetchDonations();
-
+      // Refresh both donations and requirements.
+      // Requirement quantities should change only after the backend
+      // confirms an Accepted donation.
+      await Promise.all([
+        fetchDonations(),
+        fetchRequirements(),
+        fetchAllocations(),
+        fetchPickups(),
+      ]);
 
       alert(
         `Donation ${newStatus.toLowerCase()} successfully.`
@@ -777,6 +848,7 @@ function NGODashboard() {
               fetchDonations();
               fetchAllocations();
               fetchRequirements();
+              fetchPickups();
             }}
             disabled={
               loading ||
@@ -1249,6 +1321,44 @@ function NGODashboard() {
                 const donorName = allocation.donor_name || donation.donor_name || "Not available";
                 const donorEmail = allocation.donor_email || donation.donor_email || "Not available";
                 const donorPhone = allocation.donor_phone || donation.donor_phone || "Not available";
+                const pickup =
+                  pickups.find(
+                    (item) =>
+                      Number(item.allocation_id) === Number(allocation.id) ||
+                      Number(item.allocation?.id) === Number(allocation.id) ||
+                      Number(item.allocation_id) === Number(allocationId) ||
+                      Number(item.allocation?.id) === Number(allocationId)
+                  ) ||
+                  allocation.pickup ||
+                  null;
+
+                const scheduledTime =
+                  pickup?.scheduled_time ||
+                  allocation.scheduled_time ||
+                  null;
+
+                const pickupDate = scheduledTime
+                  ? new Date(scheduledTime).toLocaleDateString()
+                  : "Not scheduled";
+
+                const pickupTime = scheduledTime
+                  ? new Date(scheduledTime).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Not scheduled";
+
+                const pickupStatus =
+                  pickup?.status ||
+                  allocation.pickup_status ||
+                  "Not Scheduled";
+
+                const location =
+                  pickup?.pickup_address ||
+                  allocation.pickup_address ||
+                  allocation.location ||
+                  donation.location ||
+                  "Not available";
                 const status = allocation.status || "Allocated";
                 const image = allocation.item_image || donation.item_image;
                 const remaining = allocation.remaining_quantity ?? allocation.remaining;
@@ -1274,6 +1384,140 @@ function NGODashboard() {
                           <p><strong>Remaining Requirement:</strong> {remaining}</p>
                         )}
                       </div>
+
+                      <div className="pickup-information">
+                        <h4>🚚 Pickup Details</h4>
+                        <p><strong>📍 Pickup Location:</strong> {location}</p>
+                        <p>
+                          <strong>📅 Pickup Date:</strong>{" "}
+                          {pickupDate
+                            ? new Date(pickupDate).toLocaleDateString()
+                            : "Not scheduled"}
+                        </p>
+                        <p><strong>🕐 Pickup Time:</strong> {pickupTime || "Not scheduled"}</p>
+                        <p><strong>Status:</strong> {pickupStatus}</p>
+                      
+                        {pickup && (
+                          <div className="pickup-status-actions">
+
+                            {pickup.status === "Pending" && (
+                              <>
+                                <button
+                                  type="button"
+                                  className="accept-button"
+                                  disabled={
+                                    updatingId === `pickup-${pickup.id}`
+                                  }
+                                  onClick={() =>
+                                    updatePickupStatus(
+                                      pickup.id,
+                                      "Confirmed"
+                                    )
+                                  }
+                                >
+                                  {updatingId === `pickup-${pickup.id}`
+                                    ? "Updating..."
+                                    : "✅ Confirm Pickup"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  className="reject-button"
+                                  disabled={
+                                    updatingId === `pickup-${pickup.id}`
+                                  }
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Cancel this pickup request? The donation will remain accepted."
+                                      )
+                                    ) {
+                                      updatePickupStatus(
+                                        pickup.id,
+                                        "Cancelled"
+                                      );
+                                    }
+                                  }}
+                                >
+                                  ❌ Cancel Pickup
+                                </button>
+                              </>
+                            )}
+
+                            {pickup.status === "Confirmed" && (
+                              <button
+                                type="button"
+                                className="collect-button"
+                                disabled={
+                                  updatingId === `pickup-${pickup.id}`
+                                }
+                                onClick={() =>
+                                  updatePickupStatus(
+                                    pickup.id,
+                                    "Dispatched"
+                                  )
+                                }
+                              >
+                                {updatingId === `pickup-${pickup.id}`
+                                  ? "Updating..."
+                                  : "📦 Mark Dispatched"}
+                              </button>
+                            )}
+
+                            {pickup.status === "Dispatched" && (
+                              <button
+                                type="button"
+                                className="collect-button"
+                                disabled={
+                                  updatingId === `pickup-${pickup.id}`
+                                }
+                                onClick={() =>
+                                  updatePickupStatus(
+                                    pickup.id,
+                                    "Delivered"
+                                  )
+                                }
+                              >
+                                {updatingId === `pickup-${pickup.id}`
+                                  ? "Updating..."
+                                  : "🚚 Mark Delivered"}
+                              </button>
+                            )}
+
+                            {pickup.status === "Delivered" && (
+                              <div className="history-status-message">
+                                <span>✅ Pickup delivered successfully.</span>
+                              </div>
+                            )}
+
+                            {pickup.status === "Cancelled" && (
+                              <div className="history-status-message">
+                                <span>
+                                  ❌ Pickup cancelled. The accepted donation
+                                  remains accepted.
+                                </span>
+                              </div>
+                            )}
+
+                          </div>
+                        )}
+
+                        {!pickup && (
+                          <div className="history-status-message">
+                            <span>⏳ Pickup has not been scheduled yet.</span>
+                          </div>
+                        )}
+
+                      </div>
+
+                      {donation.status === "Pending" && (
+                        <div className="history-status-message">
+                          <span>
+                            ⏳ Pending approval. This donation does not
+                            fulfill the NGO requirement until accepted.
+                          </span>
+                        </div>
+                      )}
 
                       <div className="donor-information">
                         <h4>👤 Donor Information</h4>
@@ -1328,9 +1572,150 @@ function NGODashboard() {
                       <p><strong>Category:</strong> {donation.category}</p>
                       <p><strong>Quantity:</strong> {donation.quantity}</p>
                       <p><strong>Condition:</strong> {donation.condition}</p>
-                      <p><strong>Location:</strong> {donation.location}</p>
+                      <p><strong>Location:</strong> {donation.location || "Not available"}</p>
                       <p><strong>Description:</strong> {donation.description || "Not available"}</p>
                       <p><strong>Donation Date:</strong> {donation.donation_date ? new Date(donation.donation_date).toLocaleString() : "Not available"}</p>
+                    </div>
+
+                    <div className="pickup-information">
+                      {(() => {
+                        const donationAllocations = Array.isArray(
+                          donation.allocated_ngos
+                        )
+                          ? donation.allocated_ngos
+                          : [];
+
+                        const allocationWithPickup =
+                          donationAllocations.find(
+                            (allocation) =>
+                              allocation?.pickup?.scheduled_time ||
+                              allocation?.pickup?.status
+                          );
+
+                        const pickup =
+                          pickups.find(
+                            (item) =>
+                              Number(item.donation_id) === Number(donation.id) ||
+                              Number(item.donation?.id) === Number(donation.id) ||
+                              Number(item.allocation?.donation_id) === Number(donation.id) ||
+                              Number(item.allocation?.donation?.id) === Number(donation.id)
+                          ) ||
+                          allocationWithPickup?.pickup ||
+                          null;
+
+                        const scheduledTime = pickup?.scheduled_time || null;
+
+                        return (
+                          <>
+                            <h4>🚚 Pickup Details</h4>
+                            <p>
+                              <strong>📍 Location:</strong>{" "}
+                              {pickup?.pickup_address ||
+                                donation.location ||
+                                "Not available"}
+                            </p>
+                            <p>
+                              <strong>📅 Pickup Date:</strong>{" "}
+                              {scheduledTime
+                                ? new Date(scheduledTime).toLocaleDateString()
+                                : "Not scheduled"}
+                            </p>
+                            <p>
+                              <strong>🕐 Pickup Time:</strong>{" "}
+                              {scheduledTime
+                                ? new Date(scheduledTime).toLocaleTimeString([], {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })
+                                : "Not scheduled"}
+                            </p>
+                            <p>
+                              <strong>📦 Pickup Status:</strong>{" "}
+                              {pickup?.status || "Not Scheduled"}
+                            </p>
+                            {pickup && pickup.status === "Pending" && (
+                              <div className="pickup-status-actions">
+                                <button
+                                  type="button"
+                                  className="accept-button"
+                                  disabled={
+                                    updatingId === `pickup-${pickup.id}`
+                                  }
+                                  onClick={() =>
+                                    updatePickupStatus(
+                                      pickup.id,
+                                      "Confirmed"
+                                    )
+                                  }
+                                >
+                                  {updatingId === `pickup-${pickup.id}`
+                                    ? "Updating..."
+                                    : "✅ Confirm Pickup"}
+                                </button>
+
+                                <button
+                                  type="button"
+                                  className="reject-button"
+                                  disabled={
+                                    updatingId === `pickup-${pickup.id}`
+                                  }
+                                  onClick={() => {
+                                    if (
+                                      window.confirm(
+                                        "Cancel this pickup request? The donation will remain accepted."
+                                      )
+                                    ) {
+                                      updatePickupStatus(
+                                        pickup.id,
+                                        "Cancelled"
+                                      );
+                                    }
+                                  }}
+                                >
+                                  ❌ Cancel Pickup
+                                </button>
+                              </div>
+                            )}
+
+                            {pickup && pickup.status === "Confirmed" && (
+                              <button
+                                type="button"
+                                className="collect-button"
+                                disabled={
+                                  updatingId === `pickup-${pickup.id}`
+                                }
+                                onClick={() =>
+                                  updatePickupStatus(
+                                    pickup.id,
+                                    "Dispatched"
+                                  )
+                                }
+                              >
+                                📦 Mark Dispatched
+                              </button>
+                            )}
+
+                            {pickup && pickup.status === "Dispatched" && (
+                              <button
+                                type="button"
+                                className="collect-button"
+                                disabled={
+                                  updatingId === `pickup-${pickup.id}`
+                                }
+                                onClick={() =>
+                                  updatePickupStatus(
+                                    pickup.id,
+                                    "Delivered"
+                                  )
+                                }
+                              >
+                                🚚 Mark Delivered
+                              </button>
+                            )}
+
+                          </>
+                        );
+                      })()}
                     </div>
 
                     <div className="donor-information">
@@ -1346,18 +1731,52 @@ function NGODashboard() {
                         <button className="accept-button" disabled={updatingId === donation.id} onClick={() => updateStatus(donation.id, "Accepted")}>
                           {updatingId === donation.id ? "Updating..." : "✅ Accept"}
                         </button>
-                        <button className="reject-button" disabled={updatingId === donation.id} onClick={() => updateStatus(donation.id, "Rejected")}>
+                        <button
+                          className="reject-button"
+                          disabled={updatingId === donation.id}
+                          onClick={() => {
+                            const confirmed = window.confirm(
+                              "Reject this donation? The NGO requirement will not be fulfilled by a rejected donation."
+                            );
+
+                            if (confirmed) {
+                              updateStatus(
+                                donation.id,
+                                "Rejected"
+                              );
+                            }
+                          }}
+                        >
                           ❌ Reject
                         </button>
                       </div>
                     )}
 
                     {donation.status === "Accepted" && (
-                      <div className="donation-actions">
-                        <button className="collect-button" disabled={updatingId === donation.id} onClick={() => updateStatus(donation.id, "Collected")}>
-                          🚚 Mark as Collected
-                        </button>
-                      </div>
+                      <>
+                        <div className="donation-actions">
+                          <button
+                            className="collect-button"
+                            disabled={
+                              updatingId === donation.id
+                            }
+                            onClick={() =>
+                              updateStatus(
+                                donation.id,
+                                "Collected"
+                              )
+                            }
+                          >
+                            🚚 Mark as Collected
+                          </button>
+                        </div>
+
+                        <div className="history-status-message">
+                          <span>
+                            🔒 Accepted donation. Donor cannot delete it.
+                          </span>
+                        </div>
+                      </>
                     )}
 
                     {activeTab === "history" && (

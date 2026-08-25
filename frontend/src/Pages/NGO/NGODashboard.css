@@ -1736,3 +1736,73 @@ body.dark-theme .ngo-profile-overlay {
     border-color 0.3s ease,
     box-shadow 0.3s ease;
 }
+/* =====================================================
+   PICKUP DETAILS
+===================================================== */
+
+.pickup-information {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.pickup-information::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #10b981;
+  border-radius: 4px 0 0 4px;
+}
+
+.pickup-information h4 {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.pickup-information p {
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.pickup-information p strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Pickup status emphasis */
+
+.pickup-information p:last-child {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+/* =====================================================
+   PICKUP RESPONSIVE
+===================================================== */
+
+@media (max-width: 768px) {
+  .pickup-information {
+    padding: 15px;
+  }
+
+  .pickup-information h4 {
+    font-size: 15px;
+  }
+
+  .pickup-information p {
+    font-size: 13px;
+  }
+}

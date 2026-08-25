@@ -2,6 +2,7 @@ import os
 import tempfile
 
 from django.http import JsonResponse
+from django.db import transaction
 from django.db.models import Sum
 from django.contrib.auth.hashers import check_password
 
@@ -13,7 +14,16 @@ from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import Donor, NGO, Donation, NGORequirement, DonationAllocation, PickupRequest
+from .models import (
+    Donor,
+    NGO,
+    Donation,
+    NGORequirement,
+    DonationAllocation,
+    PickupRequest,
+    normalize_requirement_item_name,
+    normalize_requirement_category,
+)
 
 from .serializers import (
     DonorSerializer,
@@ -677,6 +687,126 @@ class DonationDetailView(
     ).all()
 
     serializer_class = DonationSerializer
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    # -----------------------------------------------------
+    # DONOR OWNERSHIP
+    # -----------------------------------------------------
+
+    def get_queryset(self):
+        user_id = self.request.auth.get("user_id")
+        user_type = self.request.auth.get("user_type")
+
+        if user_type == "Donor":
+            return self.queryset.filter(
+                donor_id=user_id
+            )
+
+        return self.queryset.none()
+
+    # -----------------------------------------------------
+    # DELETE DONATION
+    # -----------------------------------------------------
+    #
+    # A donor can delete only Pending/Rejected donations.
+    #
+    # IMPORTANT:
+    # Deleting the Donation must also remove everything that
+    # was created for that donation on the NGO side:
+    #
+    #   Donation
+    #       ↓
+    #   DonationAllocation(s)
+    #       ↓
+    #   PickupRequest(s)
+    #
+    # Accepted/Collected donations are locked and cannot be
+    # deleted because the NGO may already have fulfilled the
+    # requirement and started the pickup process.
+    # -----------------------------------------------------
+
+    def destroy(self, request, *args, **kwargs):
+
+        donation = self.get_object()
+
+        if donation.status in [
+            "Accepted",
+            "Collected"
+        ]:
+            return Response(
+                {
+                    "message":
+                        "Accepted or collected donations cannot be deleted."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        with transaction.atomic():
+
+            # -------------------------------------------------
+            # GET ALL ALLOCATIONS FOR THIS DONATION
+            # -------------------------------------------------
+            #
+            # Do this explicitly instead of relying only on
+            # database CASCADE so that all related pickup
+            # requests are removed first and no orphaned NGO
+            # pickup data can remain.
+            # -------------------------------------------------
+
+            allocations = list(
+                DonationAllocation.objects.filter(
+                    donation=donation
+                ).only("id")
+            )
+
+            allocation_ids = [
+                allocation.id
+                for allocation in allocations
+            ]
+
+            # -------------------------------------------------
+            # DELETE PICKUP REQUESTS
+            # -------------------------------------------------
+            #
+            # Pickup belongs to an allocation. If the donor
+            # deletes the donation, its pickup must disappear
+            # from both donor and NGO pickup screens.
+            # -------------------------------------------------
+
+            if allocation_ids:
+                PickupRequest.objects.filter(
+                    allocation_id__in=allocation_ids
+                ).delete()
+
+            # -------------------------------------------------
+            # DELETE DONATION ALLOCATIONS
+            # -------------------------------------------------
+            #
+            # This removes the NGO-side donation request.
+            # The NGO itself is NOT deleted.
+            # -------------------------------------------------
+
+            DonationAllocation.objects.filter(
+                donation=donation
+            ).delete()
+
+            # -------------------------------------------------
+            # DELETE DONATION
+            # -------------------------------------------------
+
+            donation.delete()
+
+        return Response(
+            {
+                "message":
+                    "Donation deleted successfully. "
+                    "Related NGO allocation and pickup request were also removed."
+            },
+            status=status.HTTP_200_OK
+        )
 
 
 # =========================================================
@@ -1364,86 +1494,322 @@ class DonationStatusUpdateView(APIView):
             )
 
         # -------------------------------------------------
-        # FIND DONATION
-        # -------------------------------------------------
-
-        try:
-
-            donation = Donation.objects.get(
-                id=pk
-            )
-
-        except Donation.DoesNotExist:
-
-            return Response(
-                {
-                    "message":
-                        "Donation not found."
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        # -------------------------------------------------
-        # NGO CAN UPDATE ONLY ITS OWN DONATION
-        # -------------------------------------------------
-
-        if donation.ngo_id != ngo.id:
-
-            return Response(
-                {
-                    "message":
-                        "You are not authorized to update this donation."
-                },
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        # -------------------------------------------------
         # GET NEW STATUS
         # -------------------------------------------------
 
-        new_status = request.data.get(
-            "status"
-        )
-
-        # -------------------------------------------------
-        # VALID STATUSES
-        # -------------------------------------------------
+        new_status = str(
+            request.data.get(
+                "status",
+                ""
+            )
+        ).strip()
 
         if new_status not in [
             "Accepted",
-            "Rejected",
-            "Collected"
+            "Rejected"
         ]:
 
             return Response(
                 {
                     "message":
-                        "Invalid donation status."
+                        "Only Accepted or Rejected is allowed here."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         # -------------------------------------------------
-        # UPDATE
+        # ACCEPT / REJECT IN ONE TRANSACTION
         # -------------------------------------------------
 
-        donation.status = new_status
+        with transaction.atomic():
 
-        donation.save()
+            try:
 
-        return Response(
-            {
-                "message":
-                    f"Donation {new_status.lower()} successfully.",
+                # Do not use select_for_update() in this endpoint.
+                # Donation.ngo is nullable and this endpoint previously
+                # triggered PostgreSQL's nullable-side FOR UPDATE error.
+                # The whole accept/reject operation is still protected by
+                # transaction.atomic().
+                donation = Donation.objects.get(
+                    id=pk
+                )
 
-                "donation_id":
-                    donation.id,
+            except Donation.DoesNotExist:
 
-                "status":
-                    donation.status
-            },
-            status=status.HTTP_200_OK
-        )
+                return Response(
+                    {
+                        "message":
+                            "Donation not found."
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # -------------------------------------------------
+            # NGO OWNERSHIP
+            # -------------------------------------------------
+            #
+            # IMPORTANT:
+            # New donations are linked to NGOs through
+            # DonationAllocation. The legacy Donation.ngo field
+            # can be NULL, because the frontend may create the
+            # allocation without setting donation.ngo.
+            #
+            # Therefore NGO ownership MUST be checked using the
+            # pending allocation, not only donation.ngo_id.
+            # -------------------------------------------------
+
+            if donation.ngo_id is not None and donation.ngo_id != ngo.id:
+                return Response(
+                    {
+                        "message":
+                            "You are not authorized to update this donation."
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # -------------------------------------------------
+            # DONATION MUST STILL BE PENDING
+            # -------------------------------------------------
+
+            if donation.status != "Pending":
+
+                return Response(
+                    {
+                        "message":
+                            f"Donation is already '{donation.status}' "
+                            "and cannot be changed."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # -------------------------------------------------
+            # FIND THIS NGO'S PENDING ALLOCATIONS
+            # -------------------------------------------------
+
+            allocations = list(
+                DonationAllocation.objects.filter(
+                    donation=donation,
+                    ngo=ngo,
+                    status="Pending"
+                )
+            )
+
+            # The allocation is the source of truth for the selected
+            # NGO in the new donation-matching flow.
+            if allocations and donation.ngo_id != ngo.id:
+                donation.ngo = ngo
+                donation.save(
+                    update_fields=["ngo"]
+                )
+
+            # A donation selected for an NGO must have an
+            # allocation before that NGO can accept it.
+            if not allocations:
+
+                return Response(
+                    {
+                        "message":
+                            "No pending donation allocation exists for this NGO."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # -------------------------------------------------
+            # REJECT
+            # -------------------------------------------------
+
+            if new_status == "Rejected":
+
+                pending_allocations = list(
+                    DonationAllocation.objects.filter(
+                        donation=donation,
+                        status="Pending"
+                    )
+                )
+
+                # If the donor already scheduled a pickup for an
+                # allocation that the NGO rejects, cancel that pickup
+                # request as well. The pickup must never remain active
+                # for a rejected allocation.
+                pending_allocation_ids = [
+                    allocation.id
+                    for allocation in pending_allocations
+                ]
+
+                if pending_allocation_ids:
+                    PickupRequest.objects.filter(
+                        allocation_id__in=pending_allocation_ids,
+                        status="Pending"
+                    ).update(
+                        status="Cancelled"
+                    )
+
+                DonationAllocation.objects.filter(
+                    donation=donation,
+                    status="Pending"
+                ).update(
+                    status="Rejected"
+                )
+
+                donation.status = "Rejected"
+
+                donation.save(
+                    update_fields=[
+                        "status"
+                    ]
+                )
+
+                return Response(
+                    {
+                        "message":
+                            "Donation rejected successfully.",
+                        "donation_id":
+                            donation.id,
+                        "status":
+                            donation.status
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+            # -------------------------------------------------
+            # ACCEPT
+            # -------------------------------------------------
+            #
+            # IMPORTANT:
+            # Requirement fulfillment happens HERE, not when
+            # the donor creates/selects an allocation.
+            # -------------------------------------------------
+
+            for allocation in allocations:
+
+                try:
+                    requirement = NGORequirement.objects.get(
+                        id=allocation.requirement_id
+                    )
+                except NGORequirement.DoesNotExist:
+                    requirement = None
+
+                if requirement is None:
+
+                    return Response(
+                        {
+                            "message":
+                                "The selected NGO requirement no longer exists."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # Re-check the remaining quantity while locked.
+                remaining_need = (
+                    requirement.required_quantity
+                    - requirement.fulfilled_quantity
+                )
+
+                if remaining_need <= 0:
+
+                    return Response(
+                        {
+                            "message":
+                                f"The requirement for "
+                                f"{requirement.item_name} is already fulfilled."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                if allocation.allocated_quantity > remaining_need:
+
+                    return Response(
+                        {
+                            "message":
+                                f"The NGO currently needs only "
+                                f"{remaining_need} units of "
+                                f"{requirement.item_name}."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                # -------------------------------------------------
+                # FULFILL ONLY NOW
+                # -------------------------------------------------
+
+                requirement.fulfilled_quantity += (
+                    allocation.allocated_quantity
+                )
+
+                requirement.save(
+                    update_fields=[
+                        "fulfilled_quantity",
+                        "updated_at"
+                    ]
+                )
+
+                allocation.status = "Accepted"
+
+                allocation.save(
+                    update_fields=[
+                        "status"
+                    ]
+                )
+
+            # -------------------------------------------------
+            # ONE NGO ACCEPTS -> OTHER PENDING ALLOCATIONS
+            # ARE NO LONGER VALID.
+            # -------------------------------------------------
+
+            other_pending_allocations = list(
+                DonationAllocation.objects.filter(
+                    donation=donation,
+                    status="Pending"
+                ).exclude(
+                    ngo=ngo
+                )
+            )
+
+            other_pending_allocation_ids = [
+                allocation.id
+                for allocation in other_pending_allocations
+            ]
+
+            if other_pending_allocation_ids:
+                PickupRequest.objects.filter(
+                    allocation_id__in=other_pending_allocation_ids,
+                    status="Pending"
+                ).update(
+                    status="Cancelled"
+                )
+
+            DonationAllocation.objects.filter(
+                donation=donation,
+                status="Pending"
+            ).exclude(
+                ngo=ngo
+            ).update(
+                status="Rejected"
+            )
+
+            # -------------------------------------------------
+            # LOCK DONATION
+            # -------------------------------------------------
+
+            donation.status = "Accepted"
+            donation.save(
+                update_fields=[
+                    "status"
+                ]
+            )
+
+            return Response(
+                {
+                    "message":
+                        "Donation accepted successfully. "
+                        "Requirement quantity has been updated.",
+                    "donation_id":
+                        donation.id,
+                    "status":
+                        donation.status
+                },
+                status=status.HTTP_200_OK
+            )
 
 
 # =========================================================
@@ -1788,59 +2154,74 @@ class NGORequirementDetailView(APIView):
 
 def normalize_item_name(name):
     """
-    Normalize item names so singular/plural variants match.
+    Normalize an item name for requirement matching.
 
-    Examples:
-        Book  -> book
-        Books -> book
-        Rice  -> rice
-        rice  -> rice
+    This is intentionally item-agnostic. It does not contain a list of
+    donation items. It only removes formatting differences such as:
+        "Blankets" -> "blanket"
+        "BOOKS"    -> "book"
+        "Rice Bag" -> "rice bag"
     """
-    name = str(name or "").strip().lower()
-    name = " ".join(name.replace("-", " ").split())
+    value = normalize_requirement_item_name(name)
 
-    if name.endswith("ies") and len(name) > 3:
-        return name[:-3] + "y"
+    if not value:
+        return ""
 
-    # Do not remove the final "s" from words such as:
-    # glass, class, bus, etc.
-    if (
-        name.endswith("s")
-        and not name.endswith(("ss", "us", "is"))
-        and len(name) > 3
+    # Remove punctuation that commonly appears in AI-generated names.
+    value = "".join(
+        char if char.isalnum() or char.isspace() else " "
+        for char in value
+    )
+
+    value = " ".join(value.split())
+
+    # Generic singular/plural normalization.
+    if value.endswith("ies") and len(value) > 3:
+        value = value[:-3] + "y"
+    elif (
+        value.endswith("s")
+        and not value.endswith(("ss", "us", "is"))
+        and len(value) > 3
     ):
-        return name[:-1]
+        value = value[:-1]
 
-    return name
+    return value
 
 
 def item_names_match(donation_name, requirement_name):
-    """Allow a donation containing several AI-detected items to match."""
+    """
+    Match a requirement against any item detected in a donation.
+
+    Donation item_name may contain multiple comma-separated AI detections.
+    """
+    requirement_item = normalize_item_name(requirement_name)
+
+    if not requirement_item:
+        return False
+
     donation_items = [
         normalize_item_name(item)
         for item in str(donation_name or "").split(",")
     ]
-    requirement_item = normalize_item_name(requirement_name)
 
-    return requirement_item in donation_items
+    donation_items = [
+        item for item in donation_items
+        if item
+    ]
+
+    return any(
+        item == requirement_item
+        or item.startswith(requirement_item + " ")
+        or requirement_item.startswith(item + " ")
+        for item in donation_items
+    )
 
 
 def normalize_category(category):
-    """Normalize common category labels returned by image analysis."""
-    value = str(category or "").strip().lower()
-
-    aliases = {
-        "clothes": "clothing",
-        "cloth": "clothing",
-        "apparel": "clothing",
-        "stationery": "school supplies",
-        "school": "school supplies",
-        "education": "school supplies",
-        "medical": "medical supplies",
-        "electronic": "electronics",
-    }
-
-    return aliases.get(value, value)
+    """
+    Normalize category labels without changing the stored database value.
+    """
+    return normalize_requirement_category(category).lower()
 
 
 def categories_match(
@@ -1848,15 +2229,24 @@ def categories_match(
     requirement_category,
     donation_name=""
 ):
-    normalized_donation = normalize_category(donation_category)
-    normalized_requirement = normalize_category(requirement_category)
+    """
+    Category is a secondary check.
 
-    # The frontend stores mixed AI categories as Other. The item-name
-    # check still limits this fallback to an actual detected item.
-    if normalized_donation == "other" and "," in str(donation_name):
+    If both sides have a meaningful category, they must agree.
+    If either side is Other/blank, item-name matching is allowed to decide
+    the match. This prevents valid new donation items from disappearing
+    merely because the frontend/AI does not know a category yet.
+    """
+    donation = normalize_category(donation_category)
+    requirement = normalize_category(requirement_category)
+
+    if not donation or donation == "other":
         return True
 
-    return normalized_donation == normalized_requirement
+    if not requirement or requirement == "other":
+        return True
+
+    return donation == requirement
 
 
 # User-requested AI priority order:
@@ -1926,9 +2316,22 @@ class MatchingNGOView(APIView):
 
         matches = []
 
+        print(
+            "========== DONATION REQUIREMENT MATCHING =========="
+        )
+        print("Donation item:", donation.item_name)
+        print("Donation category:", donation.category)
+
         for requirement in requirements:
 
-            # Book == Books after normalization
+            print(
+                "Checking requirement:",
+                requirement.id,
+                requirement.item_name,
+                requirement.category,
+            )
+
+            # Generic item-name matching
             if not item_names_match(
                 donation.item_name,
                 requirement.item_name
@@ -2087,13 +2490,26 @@ class AIMatchView(APIView):
 
         matches = []
 
+        print(
+            "========== AI DONATION MATCHING =========="
+        )
+        print("Donation item:", donation.item_name)
+        print("Donation category:", donation.category)
+
         # -------------------------------------------------
         # CHECK NGO REQUIREMENTS
         # -------------------------------------------------
 
         for requirement in requirements:
 
-            # Book == Books
+            print(
+                "Checking requirement:",
+                requirement.id,
+                requirement.item_name,
+                requirement.category,
+            )
+
+            # Generic item-name matching
             if not item_names_match(
                 donation.item_name,
                 requirement.item_name
@@ -2394,6 +2810,17 @@ class DonationAllocationView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+        if donation.status != "Pending":
+
+            return Response(
+                {
+                    "message":
+                        f"Cannot allocate a donation that is already "
+                        f"'{donation.status}'."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         allocations = request.data.get(
             "allocations"
         )
@@ -2557,17 +2984,14 @@ class DonationAllocationView(APIView):
                 donation=donation,
                 ngo=requirement.ngo,
                 requirement=requirement,
-                allocated_quantity=quantity
+                allocated_quantity=quantity,
+                status="Pending"
             )
 
-            requirement.fulfilled_quantity += quantity
-
-            requirement.save(
-                update_fields=[
-                    "fulfilled_quantity",
-                    "updated_at"
-                ]
-            )
+            # IMPORTANT:
+            # Do NOT update fulfilled_quantity here.
+            # The requirement is fulfilled only after the NGO
+            # explicitly accepts the donation.
 
             created_allocations.append(
                 allocation
@@ -2575,6 +2999,9 @@ class DonationAllocationView(APIView):
 
         # -------------------------------------------------
         # Keep old Donation.ngo field compatible.
+        #
+        # The donation remains Pending until the NGO accepts.
+        # This NGO link lets the NGO see the pending request.
         # -------------------------------------------------
 
         if len(created_allocations) == 1:
@@ -2693,6 +3120,8 @@ class NGODonationAllocationListView(APIView):
 #   notes           string    optional
 #
 # Only the donor who owns the allocation can create.
+# The donor can schedule the pickup before NGO acceptance.
+# The pickup remains Pending until the NGO accepts.
 # One allocation can only have one pickup request.
 # =========================================================
 
@@ -2768,6 +3197,50 @@ class PickupCreateView(APIView):
             return Response(
                 {"message": "Allocation not found."},
                 status=status.HTTP_404_NOT_FOUND
+            )
+
+        # -------------------------------------------------
+        # PICKUP CAN BE SCHEDULED BEFORE NGO ACCEPTS
+        # -------------------------------------------------
+        #
+        # The donor selects the pickup date/time while creating
+        # the donation. The pickup request stays Pending until
+        # the selected NGO accepts the donation.
+        #
+        # Valid flow:
+        #
+        # Donation Pending
+        # Allocation Pending
+        # Pickup Pending
+        #       ↓
+        # NGO accepts
+        #       ↓
+        # Donation Accepted
+        # Allocation Accepted
+        # Pickup Pending
+        #
+        # We intentionally do NOT require the allocation or
+        # donation to be Accepted at this stage.
+        # -------------------------------------------------
+
+        if allocation.status not in ["Pending", "Accepted"]:
+            return Response(
+                {
+                    "message":
+                        f"Pickup cannot be scheduled for an allocation with status "
+                        f"'{allocation.status}'."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if allocation.donation.status not in ["Pending", "Accepted"]:
+            return Response(
+                {
+                    "message":
+                        f"Pickup cannot be scheduled for a donation with status "
+                        f"'{allocation.donation.status}'."
+                },
+                status=status.HTTP_400_BAD_REQUEST
             )
 
         # -------------------------------------------------
@@ -2916,7 +3389,9 @@ class NGOPickupListView(APIView):
         pickups = (
             PickupRequest.objects
             .filter(
-                allocation__ngo_id=user_id
+                allocation__ngo_id=user_id,
+                allocation__status="Accepted",
+                allocation__donation__status="Accepted",
             )
             .select_related(
                 "allocation",
@@ -3018,25 +3493,18 @@ class PickupStatusUpdateView(APIView):
         pickup.save(update_fields=["status", "updated_at"])
 
         # -------------------------------------------------
-        # When NGO confirms, also update DonationAllocation
-        # status to "Accepted" so the donor dashboard
-        # existing status fields stay consistent.
-        # When delivered, mark allocation Collected.
+        # IMPORTANT:
+        # Pickup status is independent from donation/allocation
+        # acceptance status.
+        #
+        # Donation/Allocation become Accepted when the NGO accepts
+        # the donation. A pickup can then move independently through:
+        #
+        # Pending -> Confirmed -> Dispatched -> Delivered
+        #
+        # If a pickup is cancelled, the donation/allocation must NOT
+        # be changed to Rejected. The donation was already accepted.
         # -------------------------------------------------
-
-        allocation = pickup.allocation
-
-        if new_status == "Confirmed":
-            allocation.status = "Accepted"
-            allocation.save(update_fields=["status"])
-
-        elif new_status == "Delivered":
-            allocation.status = "Collected"
-            allocation.save(update_fields=["status"])
-
-        elif new_status == "Cancelled":
-            allocation.status = "Rejected"
-            allocation.save(update_fields=["status"])
 
         serializer = PickupRequestSerializer(pickup)
 
@@ -3099,6 +3567,9 @@ class DonorPickupCancelView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
+        # Cancel only the pickup request.
+        # The donation/allocation remains Accepted because the NGO has
+        # already accepted the donation.
         pickup.status = "Cancelled"
         pickup.save(update_fields=["status", "updated_at"])
 

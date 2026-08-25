@@ -116,6 +116,64 @@ class NGO(models.Model):
 # NGO REQUIREMENT
 # =========================================================
 
+def normalize_requirement_item_name(value):
+    """
+    Normalize item names for requirement/donation matching without
+    hard-coding individual donation items.
+    """
+    if not value:
+        return ""
+
+    return (
+        str(value)
+        .strip()
+        .lower()
+        .replace("-", " ")
+        .replace("_", " ")
+    )
+
+
+def normalize_requirement_category(value):
+    """
+    Normalize category values while keeping the model's existing
+    CATEGORY_CHOICES unchanged.
+    """
+    if not value:
+        return "Other"
+
+    value = (
+        str(value)
+        .strip()
+        .lower()
+        .replace("-", " ")
+        .replace("_", " ")
+    )
+
+    category_aliases = {
+        "clothes": "Clothing",
+        "cloth": "Clothing",
+        "dress": "Clothing",
+        "books": "Books",
+        "book": "Books",
+        "food": "Food",
+        "groceries": "Food",
+        "grocery": "Food",
+        "electronics": "Electronics",
+        "electronic": "Electronics",
+        "furniture": "Furniture",
+        "medical": "Medical Supplies",
+        "medicine": "Medical Supplies",
+        "medicines": "Medical Supplies",
+        "medical supplies": "Medical Supplies",
+        "school": "School Supplies",
+        "school supplies": "School Supplies",
+        "stationery": "School Supplies",
+        "education": "School Supplies",
+    }
+
+    return category_aliases.get(value, str(value).strip())
+
+
 class NGORequirement(models.Model):
 
     CATEGORY_CHOICES = [

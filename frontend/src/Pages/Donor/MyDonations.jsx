@@ -72,6 +72,88 @@ function MyDonations() {
     }
   };
 
+  const getAcceptedAllocation = (donation) => {
+    const allocations = Array.isArray(donation.allocated_ngos)
+      ? donation.allocated_ngos
+      : [];
+
+    return allocations.find(
+      (allocation) =>
+        String(allocation.status || "").toLowerCase() === "accepted" &&
+        Boolean(allocation.allocation_id)
+    );
+  };
+
+  const getPickupForDonation = (donation) => {
+    // Preferred source: DonationSerializer.pickup_details
+    if (Array.isArray(donation.pickup_details)) {
+      const pickup = donation.pickup_details.find(
+        (item) => item?.status !== "Cancelled"
+      );
+
+      if (pickup) {
+        return pickup;
+      }
+    }
+
+    // Fallback: pickup information may be nested inside allocated_ngos.
+    const allocations = Array.isArray(donation.allocated_ngos)
+      ? donation.allocated_ngos
+      : [];
+
+    for (const allocation of allocations) {
+      if (allocation?.pickup && allocation.pickup.status !== "Cancelled") {
+        return {
+          allocation_id: allocation.allocation_id,
+          pickup_address: allocation.pickup.pickup_address,
+          scheduled_time: allocation.pickup.scheduled_time,
+          status: allocation.pickup.status,
+        };
+      }
+    }
+
+    // Final fallback for a response that exposes the fields directly.
+    if (
+      donation.pickup_address ||
+      donation.scheduled_time ||
+      donation.pickup_date ||
+      donation.pickup_time
+    ) {
+      return {
+        pickup_address: donation.pickup_address || donation.location,
+        scheduled_time:
+          donation.scheduled_time ||
+          (
+            donation.pickup_date && donation.pickup_time
+              ? `${donation.pickup_date}T${donation.pickup_time}`
+              : null
+          ),
+        status: donation.pickup_status || "Not Scheduled",
+      };
+    }
+
+    return null;
+  };
+
+  const formatPickupDate = (scheduledTime) => {
+    if (!scheduledTime) return "Not scheduled";
+    const date = new Date(scheduledTime);
+    return Number.isNaN(date.getTime())
+      ? "Not scheduled"
+      : date.toLocaleDateString();
+  };
+
+  const formatPickupTime = (scheduledTime) => {
+    if (!scheduledTime) return "Not scheduled";
+    const date = new Date(scheduledTime);
+    return Number.isNaN(date.getTime())
+      ? "Not scheduled"
+      : date.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+  };
+
   // =====================================================
   // LOAD DATA
   // =====================================================
@@ -85,8 +167,37 @@ function MyDonations() {
   // =====================================================
 
   const handleDeleteDonation = async (donationId) => {
+    const donation = donations.find(
+      (item) => item.id === donationId
+    );
+
+    const status = (
+      donation?.status || "Pending"
+    ).toLowerCase();
+
+    // Accepted/Collected donations are locked. This frontend check improves
+    // the UX, while the backend must enforce the same rule for security.
+    if (
+      status === "accepted" ||
+      status === "collected"
+    ) {
+      alert(
+        "This donation cannot be deleted because it has already been accepted by the NGO."
+      );
+      return;
+    }
+
+    if (status !== "pending" && status !== "rejected") {
+      alert(
+        "This donation cannot be deleted in its current status."
+      );
+      return;
+    }
+
     const confirmed = window.confirm(
-      "Are you sure you want to delete this pending donation?"
+      status === "rejected"
+        ? "Are you sure you want to delete this rejected donation?"
+        : "Are you sure you want to delete this pending donation?"
     );
 
     if (!confirmed) {
@@ -98,7 +209,7 @@ function MyDonations() {
 
       alert("Donation deleted successfully.");
 
-      fetchMyDonations();
+      await fetchMyDonations();
     } catch (error) {
       console.error(
         "DELETE DONATION ERROR:",
@@ -496,6 +607,61 @@ function MyDonations() {
 
 
                 {/* =================================================
+                    PICKUP DETAILS
+                ================================================= */}
+
+                {(() => {
+                  const pickup = getPickupForDonation(donation);
+
+                  return (
+                    <div className="donor-pickup-section">
+
+                      <div className="donor-pickup-header">
+                        <div>
+                          <span className="pickup-section-label">
+                            🚚 PICKUP DETAILS
+                          </span>
+                          <h3>
+                            {pickup
+                              ? "Pickup Scheduled"
+                              : "Pickup Not Scheduled"}
+                          </h3>
+                        </div>
+
+                        <span className="pickup-status-badge">
+                          {pickup?.status || "Not Scheduled"}
+                        </span>
+                      </div>
+
+                      <div className="donor-pickup-details">
+                        <p>
+                          <strong>📍 Location:</strong>{" "}
+                          {pickup?.pickup_address ||
+                            donation.location ||
+                            "Not scheduled"}
+                        </p>
+                        <p>
+                          <strong>📅 Pickup Date:</strong>{" "}
+                          {formatPickupDate(pickup?.scheduled_time)}
+                        </p>
+                        <p>
+                          <strong>🕐 Pickup Time:</strong>{" "}
+                          {formatPickupTime(pickup?.scheduled_time)}
+                        </p>
+
+                        {!pickup && (
+                          <p className="pickup-waiting-message">
+                            ⏳ Pickup has not been scheduled yet.
+                          </p>
+                        )}
+                      </div>
+
+
+                    </div>
+                  );
+                })()}
+
+                {/* =================================================
                     STATUS TIMELINE
                 ================================================= */}
 
@@ -508,9 +674,11 @@ function MyDonations() {
                     Only available for Pending donations
                 ================================================= */}
 
-                {(
-                  donation.status || "Pending"
-                ).toLowerCase() === "pending" && (
+                {["pending", "rejected"].includes(
+                  (
+                    donation.status || "Pending"
+                  ).toLowerCase()
+                ) && (
                   <div className="donation-actions">
 
                     <button
@@ -549,6 +717,7 @@ function MyDonations() {
         </div>
 
       )}
+
 
     </div>
   );

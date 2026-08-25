@@ -1,3 +1,6 @@
+
+
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
@@ -21,6 +24,9 @@ function DonateItem() {
     ngo: "",
     location: "",
     item_image: null,
+    pickup_date: "",
+    pickup_time: "",
+    pickup_notes: "",
   });
 
   // Location selection
@@ -49,7 +55,7 @@ function DonateItem() {
   }, []);
 
   // =====================================================
-  // AI DETECTION
+  // ITEM DETECTION
   // =====================================================
 
   const [aiItems, setAiItems] = useState([]);
@@ -106,8 +112,10 @@ function DonateItem() {
 
   const [allocationLoading, setAllocationLoading] =
     useState(false);
-const [allocationSuccess, setAllocationSuccess] =
-  useState(null);
+
+  const [allocationSuccess, setAllocationSuccess] =
+    useState(null);
+
   // =====================================================
   // FETCH APPROVED NGOS
   // =====================================================
@@ -188,10 +196,12 @@ const [allocationSuccess, setAllocationSuccess] =
     if (mode === "registered") {
       if (!registeredLocation) {
         setLocationMode("different");
+
         setFormData((prev) => ({
           ...prev,
           location: "",
         }));
+
         return;
       }
 
@@ -199,6 +209,7 @@ const [allocationSuccess, setAllocationSuccess] =
         ...prev,
         location: registeredLocation,
       }));
+
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -256,6 +267,19 @@ const [allocationSuccess, setAllocationSuccess] =
   };
 
   // =====================================================
+  // NORMALIZE ITEM NAME
+  // =====================================================
+
+  const normalizeItemName = (itemName) => {
+    if (!itemName) return "";
+
+    return String(itemName)
+      .trim()
+      .replace(/[-_]+/g, " ")
+      .replace(/\\s+/g, " ");
+  };
+
+  // =====================================================
   // NORMALIZE CATEGORY
   // =====================================================
 
@@ -264,55 +288,44 @@ const [allocationSuccess, setAllocationSuccess] =
       return "Other";
     }
 
-    const value =
-      String(category)
-        .trim()
-        .toLowerCase();
+    const value = String(category)
+      .trim()
+      .replace(/[-_]+/g, " ")
+      .replace(/\\s+/g, " ")
+      .toLowerCase();
 
     const categoryMap = {
       clothing: "Clothing",
       clothes: "Clothing",
       cloth: "Clothing",
-      dress: "Clothing",
 
-      books: "Books",
       book: "Books",
+      books: "Books",
 
       food: "Food",
-      rice: "Food",
-      wheat: "Food",
-      grain: "Food",
-      grains: "Food",
+      foods: "Food",
 
-      electronics: "Electronics",
       electronic: "Electronics",
+      electronics: "Electronics",
 
       furniture: "Furniture",
 
       medical: "Medical Supplies",
-      "medical supplies":
-        "Medical Supplies",
+      "medical supplies": "Medical Supplies",
 
       school: "School Supplies",
-      "school supplies":
-        "School Supplies",
-
+      "school supplies": "School Supplies",
       education: "School Supplies",
       stationery: "School Supplies",
 
-      household: "Other",
-      toys: "Other",
-      toy: "Other",
+      other: "Other",
     };
 
-    return (
-      categoryMap[value] ||
-      "Other"
-    );
+    return categoryMap[value] || "Other";
   };
 
   // =====================================================
-  // AI IMAGE ANALYSIS
+  // IMAGE ANALYSIS
   // =====================================================
 
   const handleAnalyzeImage = async () => {
@@ -385,10 +398,11 @@ const [allocationSuccess, setAllocationSuccess] =
       ) {
         detectedItems = [
           {
-            item:
+            item: normalizeItemName(
               data.item ||
               data.item_name ||
-              data.detected_item,
+              data.detected_item
+            ),
 
             category:
               normalizeCategory(
@@ -418,11 +432,12 @@ const [allocationSuccess, setAllocationSuccess] =
           (item, index) => ({
             id: index,
 
-            item:
+            item: normalizeItemName(
               item.item ||
               item.item_name ||
               item.name ||
-              "Unknown item",
+              "Unknown item"
+            ),
 
             category:
               normalizeCategory(
@@ -517,6 +532,25 @@ const [allocationSuccess, setAllocationSuccess] =
         );
       }
 
+      if (!formData.pickup_date || !formData.pickup_time) {
+        throw new Error(
+          "Please select the pickup date and pickup time."
+        );
+      }
+
+      const selectedPickupTime = new Date(
+        `${formData.pickup_date}T${formData.pickup_time}:00`
+      );
+
+      if (
+        Number.isNaN(selectedPickupTime.getTime()) ||
+        selectedPickupTime.getTime() <= Date.now()
+      ) {
+        throw new Error(
+          "Pickup date and time must be in the future."
+        );
+      }
+
       const data =
         new FormData();
 
@@ -532,10 +566,10 @@ const [allocationSuccess, setAllocationSuccess] =
 
       const itemName =
         aiItems
-          .map(
-            (item) =>
-              item.item
+          .map((item) =>
+            normalizeItemName(item.item)
           )
+          .filter(Boolean)
           .join(", ");
 
       const categories = [
@@ -598,6 +632,12 @@ const [allocationSuccess, setAllocationSuccess] =
         "item_image",
         formData.item_image
       );
+
+      console.log("========== DONATION PAYLOAD ==========");
+      console.log("Detected items:", aiItems);
+      console.log("item_name:", itemName);
+      console.log("category:", category);
+      console.log("quantity:", totalQuantity);
 
       // Do NOT send NGO here.
       // Backend model allows ngo = null.
@@ -713,7 +753,7 @@ const [allocationSuccess, setAllocationSuccess] =
 
       // -------------------------------------------------
       // STEP 3
-      // AI MATCHING
+      // AUTOMATIC MATCHING
       // -------------------------------------------------
 
       if (mode === "ai") {
@@ -923,16 +963,37 @@ const [allocationSuccess, setAllocationSuccess] =
       return;
     }
 
+    if (!formData.pickup_date || !formData.pickup_time) {
+      alert(
+        "Please select the pickup date and pickup time."
+      );
+      return;
+    }
+
+    const selectedPickupTime = new Date(
+      `${formData.pickup_date}T${formData.pickup_time}:00`
+    );
+
+    if (
+      Number.isNaN(selectedPickupTime.getTime()) ||
+      selectedPickupTime.getTime() <= Date.now()
+    ) {
+      alert(
+        "Pickup date and time must be in the future."
+      );
+      return;
+    }
+
     if (!selectedMatch) {
       alert(
-        "Please select an NGO using Donor Match or AI Match."
+        "Please select an NGO using Donor Match or Find the Best Match."
       );
       return;
     }
 
     if (!donationId) {
       alert(
-        "Please select Donor Match or AI Match first."
+        "Please select Donor Match or Find the Best Match first."
       );
       return;
     }
@@ -999,47 +1060,89 @@ const [allocationSuccess, setAllocationSuccess] =
       // =================================================
 
       const requirementId =
-  selectedMatch.requirement_id;
+        selectedMatch.requirement_id;
 
-if (!requirementId) {
-  throw new Error(
-    "Selected NGO requirement ID is missing."
-  );
-}
+      if (!requirementId) {
+        throw new Error(
+          "Selected NGO requirement ID is missing."
+        );
+      }
 
-const allocationResponse =
-  await api.post(
-    `donation/${donationId}/allocate/`,
-    {
-      allocations: [
-        {
-          requirement_id: requirementId,
-          quantity: allocationQuantity
-        }
-      ]
-    }
-  );
+      const allocationResponse =
+        await api.post(
+          `donation/${donationId}/allocate/`,
+          {
+            allocations: [
+              {
+                requirement_id: requirementId,
+                quantity: allocationQuantity
+              }
+            ]
+          }
+        );
 
       console.log(
         "ALLOCATION RESPONSE:",
         allocationResponse.data
       );
 
-     setAllocationSuccess({
-  ngoName:
-    selectedMatch.ngo_name ||
-    selectedMatch.name ||
-    "Selected NGO",
+      // =================================================
+      // CREATE PICKUP REQUEST NOW
+      // =================================================
+      // Donor selects the pickup schedule before NGO acceptance.
+      // The pickup endpoint needs the allocation ID returned above.
+      const allocationData = allocationResponse.data;
 
-  quantity: allocationQuantity,
+      const createdAllocation =
+        allocationData?.allocations?.[0] ||
+        allocationData?.results?.[0] ||
+        allocationData?.data?.[0] ||
+        allocationData?.allocation ||
+        allocationData;
 
-  item:
-    mainDetectedItem?.item ||
-    formData.item_name ||
-    "Donation"
-});
+      const allocationId =
+        createdAllocation?.allocation_id ||
+        createdAllocation?.id;
 
-  
+      if (!allocationId) {
+        throw new Error(
+          "Donation was allocated, but the allocation ID was not returned. Pickup could not be scheduled."
+        );
+      }
+
+      const pickupResponse = await api.post(
+        "pickup/",
+        {
+          allocation_id: allocationId,
+          pickup_address: formData.location.trim(),
+          scheduled_time:
+            `${formData.pickup_date}T${formData.pickup_time}:00`,
+          notes: formData.pickup_notes.trim(),
+        }
+      );
+
+      console.log(
+        "PICKUP CREATED:",
+        pickupResponse.data
+      );
+
+      setAllocationSuccess({
+        ngoName:
+          selectedMatch.ngo_name ||
+          selectedMatch.name ||
+          "Selected NGO",
+
+        quantity: allocationQuantity,
+
+        item:
+          mainDetectedItem?.item ||
+          formData.item_name ||
+          "Donation",
+
+        message:
+          "Your donation is allocated and the pickup has already been scheduled. The NGO will accept the donation separately."
+      });
+
     } catch (error) {
 
       console.error(
@@ -1258,7 +1361,7 @@ const allocationResponse =
         <div>
 
           <span className="donate-badge">
-            AI POWERED DONATION
+            MAKE A DIFFERENCE ❤️
           </span>
 
           <h1>
@@ -1271,8 +1374,7 @@ const allocationResponse =
           </h1>
 
           <p>
-            Upload a photo and let AI
-            identify what you are donating,
+            Upload a photo and we'll handle the details,
             count the items and help find
             the right NGO.
           </p>
@@ -1280,7 +1382,7 @@ const allocationResponse =
         </div>
 
         <div className="hero-heart">
-          🤖
+          ✨
         </div>
 
       </div>
@@ -1289,80 +1391,94 @@ const allocationResponse =
       {/* =================================================
           FORM
       ================================================= */}
-{allocationSuccess && (
-  <div className="allocation-success">
 
-    <div className="allocation-success-icon">
-      ✓
-    </div>
+      {allocationSuccess && (
+        <div className="allocation-success">
 
-    <span className="allocation-success-badge">
-      DONATION ALLOCATED
-    </span>
+          <div className="allocation-success-icon">
+            ✓
+          </div>
 
-    <h2>
-      Donation Successfully Matched! 🎉
-    </h2>
+          <span className="allocation-success-badge">
+            DONATION ALLOCATED
+          </span>
 
-    <p>
-      Your donation has been successfully
-      allocated to an NGO that needs it.
-    </p>
+          <h2>
+            Donation Successfully Matched! 🎉
+          </h2>
 
-    <div className="allocation-success-details">
+          <p>
+            Your donation has been allocated to an NGO and your pickup
+            date and time have already been scheduled. The NGO will
+            process the donation separately.
+          </p>
 
-      <div>
-        <span>ITEM</span>
-        <strong>
-          📦 {allocationSuccess.item}
-        </strong>
-      </div>
+          <div className="allocation-success-details">
 
-      <div>
-        <span>QUANTITY</span>
-        <strong>
-          {allocationSuccess.quantity}
-        </strong>
-      </div>
+            <div>
+              <span>ITEM</span>
+              <strong>
+                📦 {allocationSuccess.item}
+              </strong>
+            </div>
 
-      <div>
-        <span>NGO</span>
-        <strong>
-          🏢 {allocationSuccess.ngoName}
-        </strong>
-      </div>
+            <div>
+              <span>QUANTITY</span>
+              <strong>
+                {allocationSuccess.quantity}
+              </strong>
+            </div>
 
-    </div>
+            <div>
+              <span>NGO</span>
+              <strong>
+                🏢 {allocationSuccess.ngoName}
+              </strong>
+            </div>
 
-    <div className="allocation-success-actions">
+            <div className="allocation-success-pickup-message">
+              <span>PICKUP</span>
 
-      <button
-        type="button"
-        onClick={() =>
-          navigate("/my-donations")
-        }
-      >
-        📋 View My Donations
-      </button>
+              <strong>
+                🚚 Pickup Scheduled
+              </strong>
 
-      <button
-        type="button"
-        className="secondary"
-        onClick={() =>
-          navigate("/dashboard")
-        }
-      >
-        ← Back to Dashboard
-      </button>
+              <small>
+                📅 {formData.pickup_date} &nbsp; 🕐 {formData.pickup_time}
+              </small>
+            </div>
 
-    </div>
+          </div>
 
-  </div>
-)}
+          <div className="allocation-success-actions">
+
+            <button
+              type="button"
+              onClick={() =>
+                navigate("/my-donations")
+              }
+            >
+              📋 View My Donations
+            </button>
+
+            <button
+              type="button"
+              className="secondary"
+              onClick={() =>
+                navigate("/dashboard")
+              }
+            >
+              ← Back to Dashboard
+            </button>
+
+          </div>
+
+        </div>
+      )}
+
       <form
         className="donate-form"
         onSubmit={
-         
           handleSubmit
         }
       >
@@ -1437,13 +1553,13 @@ const allocationResponse =
           <div className="card-heading">
 
             <div className="heading-icon ai-icon">
-              🤖
+              ✨
             </div>
 
             <div>
 
               <span>
-                AI ITEM DETECTION
+                WHAT ARE YOU DONATING?
               </span>
 
               <h2>
@@ -1494,8 +1610,7 @@ const allocationResponse =
                 </strong>
 
                 <span>
-                  AI will identify and count
-                  the items
+                  Snap a photo and we'll handle the details.
                 </span>
 
                 <small>
@@ -1545,12 +1660,15 @@ const allocationResponse =
                     gap: "10px",
                   }}
                 >
+
                   <span
                     className="ai-spinner"
                     aria-hidden="true"
                   />
 
-                  <span>AI is analyzing...</span>
+                  <span>
+                    Checking your donation... ✨
+                  </span>
 
                   <span
                     aria-hidden="true"
@@ -1563,12 +1681,13 @@ const allocationResponse =
                     <span>•</span>
                     <span>•</span>
                   </span>
+
                 </span>
 
               ) : (
 
                 <>
-                  🤖 Analyze Image
+                  ✨ Analyze Image
                 </>
 
               )}
@@ -1606,7 +1725,7 @@ const allocationResponse =
                 <div>
 
                   <span>
-                    AI ANALYSIS COMPLETE
+                    LOOKS GOOD! 🎉
                   </span>
 
                   <h3>
@@ -1755,9 +1874,8 @@ const allocationResponse =
 
               <div className="ai-note">
 
-                ✨ AI detected the donation.
-                Now choose how you want to
-                find the NGO.
+                ✨ Your donation is ready to go!
+                Now choose where you'd like it to make an impact.
 
               </div>
 
@@ -1857,17 +1975,17 @@ const allocationResponse =
               >
 
                 <span>
-                  🤖
+                  ✨
                 </span>
 
                 <div>
 
                   <strong>
-                    AI Match
+                    Find the Best Match
                   </strong>
 
                   <small>
-                    AI chooses the best NGO
+                    We'll find an NGO that needs it most
                   </small>
 
                 </div>
@@ -1884,8 +2002,8 @@ const allocationResponse =
               <div className="ai-note">
 
                 ✓ Donation created.
-                Now you can choose an NGO
-                for allocation.
+                Now you can choose an NGO for allocation.
+                Pickup will be scheduled only after NGO acceptance.
 
               </div>
 
@@ -1901,7 +2019,7 @@ const allocationResponse =
                 <span className="ai-spinner" />
 
                 {matchMode === "ai"
-                  ? "AI is finding the best NGO..."
+                  ? "Finding the right place for your donation..."
                   : "Finding NGOs that need this item..."}
 
               </div>
@@ -1923,7 +2041,7 @@ const allocationResponse =
 
 
             {/* =================================================
-                AI RECOMMENDATION
+                RECOMMENDATION
             ================================================= */}
 
             {!matchingLoading &&
@@ -1933,7 +2051,7 @@ const allocationResponse =
               <div className="ai-recommendation">
 
                 <div className="recommendation-badge">
-                  🤖 AI RECOMMENDED
+                  ✨ BEST MATCH FOR YOU 🏆
                 </div>
 
                 <h3>
@@ -2022,7 +2140,7 @@ const allocationResponse =
                       )
                     }
                   >
-                    Select AI Recommendation →
+                    Choose This NGO →
                   </button>
 
                 </div>
@@ -2064,7 +2182,7 @@ const allocationResponse =
 
 
             {/* =================================================
-                AI OTHER MATCHES
+                OTHER MATCHES
             ================================================= */}
 
             {!matchingLoading &&
@@ -2169,7 +2287,7 @@ const allocationResponse =
 
 
         {/* =================================================
-            LOCATION
+            PICKUP LOCATION
         ================================================= */}
 
         <div className="donate-card">
@@ -2181,11 +2299,15 @@ const allocationResponse =
             </div>
 
             <div>
-              <span>PICKUP LOCATION</span>
+
+              <span>
+                PICKUP LOCATION
+              </span>
 
               <h2>
                 Where should we collect your donation?
               </h2>
+
             </div>
 
           </div>
@@ -2203,17 +2325,25 @@ const allocationResponse =
                 handleLocationModeChange("registered")
               }
             >
-              <span className="location-choice-icon">🏠</span>
+
+              <span className="location-choice-icon">
+                🏠
+              </span>
 
               <span>
-                <strong>Use registered location</strong>
+
+                <strong>
+                  Use registered location
+                </strong>
 
                 <small>
                   {registeredLocation
                     ? registeredLocation
                     : "No registered location found"}
                 </small>
+
               </span>
+
             </button>
 
             <button
@@ -2227,15 +2357,23 @@ const allocationResponse =
                 handleLocationModeChange("different")
               }
             >
-              <span className="location-choice-icon">✏️</span>
+
+              <span className="location-choice-icon">
+                ✏️
+              </span>
 
               <span>
-                <strong>Enter a different location</strong>
+
+                <strong>
+                  Enter a different location
+                </strong>
 
                 <small>
                   Choose another pickup location
                 </small>
+
               </span>
+
             </button>
 
           </div>
@@ -2244,19 +2382,28 @@ const allocationResponse =
           registeredLocation ? (
 
             <div className="location-selected">
+
               ✓ Using your registered location:
-              <strong>{registeredLocation}</strong>
+
+              <strong>
+                {registeredLocation}
+              </strong>
+
             </div>
 
           ) : (
 
             <div className="form-group location-manual-group">
 
-              <label>Pickup / Location</label>
+              <label>
+                Pickup / Location
+              </label>
 
               <div className="location-input">
 
-                <span>📍</span>
+                <span>
+                  📍
+                </span>
 
                 <input
                   type="text"
@@ -2272,6 +2419,81 @@ const allocationResponse =
             </div>
 
           )}
+
+          {/* =================================================
+              PICKUP SCHEDULE
+          ================================================= */}
+
+          <div className="pickup-schedule-card">
+            <div className="pickup-schedule-heading">
+              <div className="pickup-schedule-icon">
+                🚚
+              </div>
+
+              <div>
+                <span>
+                  PICKUP SCHEDULE
+                </span>
+
+                <h3>
+                  When should we collect it?
+                </h3>
+
+                <p>
+                  Choose the pickup date and time now. The schedule is
+                  created with your donation before NGO acceptance.
+                </p>
+              </div>
+            </div>
+
+            <div className="pickup-form-row">
+              <div className="form-group">
+                <label htmlFor="donation-pickup-date">
+                  📅 Pickup Date
+                </label>
+
+                <input
+                  id="donation-pickup-date"
+                  type="date"
+                  name="pickup_date"
+                  value={formData.pickup_date}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="donation-pickup-time">
+                  🕐 Pickup Time
+                </label>
+
+                <input
+                  id="donation-pickup-time"
+                  type="time"
+                  name="pickup_time"
+                  value={formData.pickup_time}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="donation-pickup-notes">
+                📝 Pickup Notes (Optional)
+              </label>
+
+              <textarea
+                id="donation-pickup-notes"
+                name="pickup_notes"
+                rows="3"
+                value={formData.pickup_notes}
+                onChange={handleChange}
+                placeholder="Any instructions for the pickup..."
+              />
+            </div>
+          </div>
 
         </div>
 
@@ -2308,7 +2530,7 @@ const allocationResponse =
                       "the selected NGO"
                     }.`
 
-                  : "Analyze your image and select Donor Match or AI Match."}
+                  : "Analyze your image and select Donor Match or Find the Best Match."}
 
               </p>
 
@@ -2333,15 +2555,18 @@ const allocationResponse =
 
               <>
                 <span className="donate-spinner" />
+
                 {allocationLoading
                   ? "Allocating..."
                   : "Submitting..."}
+
               </>
 
             ) : (
 
               <>
-                Donate Item
+                Allocate Donation
+
                 <span>
                   →
                 </span>

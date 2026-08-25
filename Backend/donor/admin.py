@@ -1,112 +1,101 @@
 from django.contrib import admin
-from .models import Donor, Donation, NGO
 
+from .models import (
+    Donor,
+    NGO,
+    Donation,
+    NGORequirement,
+    DonationAllocation,
+    PickupRequest,
+)
 
-# =========================================================
-# DONOR
-# =========================================================
 
 @admin.register(Donor)
 class DonorAdmin(admin.ModelAdmin):
-
     list_display = (
         "id",
         "name",
         "email",
         "phone",
-        "city",
-        "state",
-        "status_active",
-        "registered_date",
     )
 
-    search_fields = (
-        "name",
-        "email",
-        "phone",
-    )
-
-
-# =========================================================
-# NGO
-# =========================================================
 
 @admin.register(NGO)
 class NGOAdmin(admin.ModelAdmin):
-
-    # IMPORTANT:
-    # NGO name will be clickable
     list_display = (
         "id",
         "ngo_name",
-        "registration_no",
         "email_id",
-        "phone_no",
-        "city",
-        "state",
         "status",
-        "registered_at",
     )
 
-    list_display_links = (
-        "ngo_name",
-    )
-
-    search_fields = (
-        "ngo_name",
-        "registration_no",
-        "email_id",
-        "phone_no",
-    )
-
-    list_filter = (
-        "status",
-        "state",
-        "city",
-    )
-
-    ordering = (
-        "-registered_at",
-    )
-
-
-# =========================================================
-# DONATION
-# =========================================================
 
 @admin.register(Donation)
 class DonationAdmin(admin.ModelAdmin):
-
     list_display = (
         "id",
         "item_name",
         "category",
+        "quantity",
         "donor",
         "ngo",
-        "quantity",
-        "condition",
         "status",
         "donation_date",
     )
 
-    list_display_links = (
+
+@admin.register(NGORequirement)
+class NGORequirementAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "ngo",
         "item_name",
+        "category",
+        "required_quantity",
+        "fulfilled_quantity",
+        "remaining_quantity",
+        "priority",
+        "is_active",
+        "created_at",
     )
 
-    search_fields = (
-        "item_name",
-        "donor__name",
-        "donor__email",
-        "ngo__ngo_name",
+
+@admin.register(DonationAllocation)
+class DonationAllocationAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "donation",
+        "ngo",
+        "requirement",
+        "allocated_quantity",
+        "status",
+        "allocated_at",
+    )
+
+
+@admin.register(PickupRequest)
+class PickupRequestAdmin(admin.ModelAdmin):
+    list_display = (
+        "id",
+        "allocation",
+        "pickup_address",
+        "scheduled_time",
+        "status",
+        "created_at",
+        "updated_at",
     )
 
     list_filter = (
-        "category",
-        "condition",
         "status",
+        "scheduled_time",
     )
 
-    list_select_related = (
-        "donor",
-        "ngo",
+    search_fields = (
+        "pickup_address",
+        "allocation__donation__item_name",
+        "allocation__ngo__ngo_name",
+    )
+
+    ordering = (
+        "-scheduled_time",
     )

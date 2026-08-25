@@ -379,6 +379,15 @@ function EditDonation() {
             </div>
           </div>
 
+          <div className="edit-pickup-note">
+            <strong>🚚 Pickup scheduling</strong>
+            <p>
+              Pickup date and time are scheduled separately after the NGO
+              accepts your donation. Editing this pending donation will not
+              create or change a pickup request.
+            </p>
+          </div>
+
           <div className="form-group">
             <label>Description</label>
 
