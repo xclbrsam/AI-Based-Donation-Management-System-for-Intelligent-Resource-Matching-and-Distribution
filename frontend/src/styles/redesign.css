@@ -1,0 +1,681 @@
+/* =========================================================
+   AI DONATIONS - BURGUNDY + WARM BEIGE PROFESSIONAL DESIGN SYSTEM
+   Visual layer only. API routes, data flow and business logic
+   remain unchanged.
+========================================================= */
+
+ :root {
+  --design-primary: #7F1D1D;
+  --design-primary-hover: #6B1616;
+  --design-primary-soft: #FDF2F2;
+  --design-accent: #EA580C;
+  --design-accent-soft: #FFF7ED;
+  --design-navy: #18181B;
+  --design-muted: #57534E;
+  --design-border: #E7E0D8;
+}
+
+[data-theme="dark"], body.dark-theme {
+  --design-primary: #C85A4A;
+  --design-primary-hover: #E07A5F;
+  --design-primary-soft: #432025;
+  --design-accent: #F59E0B;
+  --design-accent-soft: #3A241B;
+  --design-navy: #FFF8F4;
+  --design-muted: #E7D8D2;
+  --design-border: #4A2B30;
+}
+
+/* Public shell */
+.navbar {
+  background: rgba(255,255,255,.94) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  box-shadow: 0 4px 18px rgba(24,24,27,.05) !important;
+  backdrop-filter: blur(16px);
+}
+.navbar a, .nav-links a { color: var(--text-secondary) !important; }
+.navbar a:hover, .nav-links a:hover { color: var(--primary) !important; }
+
+/* Shared action buttons */
+button.primary, .primary-btn, .home-page .primary-btn,
+.donor-primary-cta, .donor-quick-card button {
+  background: var(--design-primary) !important;
+  color: #fff !important;
+}
+button.primary:hover, .primary-btn:hover, .donor-primary-cta:hover, .donor-quick-card button:hover {
+  background: var(--design-primary-hover) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(127,29,29,.20);
+}
+
+/* Global form focus */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--design-primary) !important;
+  box-shadow: 0 0 0 3px rgba(127,29,29,.12) !important;
+}
+
+/* Donor shell */
+.donor-layout { background: var(--bg-primary) !important; }
+.donor-appbar {
+  background: rgba(255,255,255,.90) !important;
+  border-bottom-color: var(--border-color) !important;
+  box-shadow: 0 4px 18px rgba(24,24,27,.04);
+}
+[data-theme="dark"] .donor-appbar,
+body.dark-theme .donor-appbar { background: rgba(17,17,19,.90) !important; }
+.donor-appbar-kicker { color: var(--primary) !important; }
+.donor-appbar h1 { color: var(--text-primary) !important; }
+.donor-appbar p { color: var(--text-secondary) !important; }
+.donor-appbar-notification, .donor-menu-button {
+  background: var(--bg-card) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+.donor-appbar-notification span { background: var(--accent) !important; }
+.donor-appbar-avatar { background: var(--primary-light) !important; color: var(--primary) !important; }
+.donor-appbar-user strong { color: var(--text-primary) !important; }
+.donor-appbar-user small { color: var(--text-secondary) !important; }
+
+/* Donor sidebar */
+.donor-sidebar {
+  background: linear-gradient(180deg, #6B0F1A 0%, #3D0710 100%) !important;
+  color: #fff !important;
+  border-right: 0 !important;
+  box-shadow: 12px 0 36px rgba(74,17,25,.22) !important;
+}
+.sidebar-brand { padding-top: 4px; }
+.sidebar-brand-mark {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 13px !important;
+  background: linear-gradient(135deg, #9F2D2D, #6B1616) !important;
+  border: 1px solid rgba(255,255,255,.18);
+  box-shadow: 0 8px 18px rgba(0,0,0,.16);
+}
+.sidebar-brand strong { color: #fff !important; font-size: 16px !important; }
+.sidebar-brand span { color: rgba(255,255,255,.66) !important; font-size: 9px !important; }
+.sidebar-user {
+  background: rgba(255,255,255,.08) !important;
+  border-color: rgba(255,255,255,.10) !important;
+}
+.sidebar-avatar { background: #FDF2F2 !important; color: #7F1D1D !important; }
+.sidebar-user-copy strong { color: #fff !important; }
+.sidebar-user-copy span { color: rgba(255,255,255,.62) !important; }
+.sidebar-section-label { color: rgba(255,255,255,.45) !important; }
+.sidebar-link { color: rgba(255,255,255,.72) !important; font-size: 12px !important; }
+.sidebar-link:hover { color: #fff !important; background: rgba(255,255,255,.08) !important; }
+.sidebar-link.active {
+  color: #fff !important;
+  background: linear-gradient(90deg, rgba(180,74,74,.92), rgba(127,29,29,.68)) !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.sidebar-link.active::before { background: #FDBA74 !important; }
+.sidebar-badge { color: #FDBA74 !important; }
+.sidebar-theme-row { background: rgba(255,255,255,.06) !important; }
+.sidebar-theme-label { color: rgba(255,255,255,.72) !important; }
+.sidebar-logout { color: rgba(255,255,255,.72) !important; }
+.sidebar-logout:hover { color: #fff !important; background: rgba(234,88,12,.16) !important; }
+
+/* Dark-mode sidebar keeps a rich burgundy depth */
+[data-theme="dark"] .donor-sidebar,
+body.dark-theme .donor-sidebar { background: linear-gradient(180deg, #3D0A12 0%, #1B0509 100%) !important; }
+
+/* Home */
+.home-page {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+.home-page .home-hero { background: radial-gradient(circle at 82% 18%, rgba(127,29,29,.10), transparent 27%), var(--bg-primary) !important; }
+.home-page .home-eyebrow { background: var(--primary-light) !important; color: var(--primary) !important; border-color: rgba(127,29,29,.20) !important; }
+.home-page .home-hero h1 span { color: var(--primary) !important; }
+.home-page .home-hero-buttons button:first-child { background: var(--primary) !important; color: #fff !important; }
+.home-page .home-hero-buttons button:first-child:hover { background: var(--primary-hover) !important; }
+
+/* Accent utilities used by existing pages */
+.text-link { color: var(--primary) !important; }
+.dashboard-eyebrow, .section-heading span, .donor-quick-card > span { color: var(--primary) !important; }
+
+/* Cards */
+.card, .donate-card, .profile-card, .dashboard-card, .form-card,
+.stat-card, .notification-card, .donation-card, .donor-status-card, .donor-quick-card {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Gold should be used sparingly for action/highlight */
+.gold-stat, .accent, .accent-text { color: var(--accent) !important; }
+
+@media (max-width: 850px) {
+  .donor-sidebar { box-shadow: 18px 0 45px rgba(46,8,14,.38) !important; }
+}
+
+/* =========================================================
+   FINAL DARK-MODE POLISH
+   Keeps every shared surface readable and avoids blue/black
+   leftovers when the application switches to dark mode.
+========================================================= */
+[data-theme="dark"] body,
+body.dark-theme {
+  background: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .donor-appbar,
+body.dark-theme .donor-appbar {
+  background: rgba(22, 11, 13, .94) !important;
+  border-bottom-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .navbar,
+body.dark-theme .navbar {
+  background: rgba(33, 17, 20, .96) !important;
+  border-bottom-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .navbar a,
+body.dark-theme .navbar a,
+[data-theme="dark"] .nav-links a,
+body.dark-theme .nav-links a {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .navbar a:hover,
+body.dark-theme .navbar a:hover,
+[data-theme="dark"] .nav-links a:hover,
+body.dark-theme .nav-links a:hover {
+  color: var(--primary-hover) !important;
+}
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select {
+  background: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder,
+body.dark-theme input::placeholder,
+body.dark-theme textarea::placeholder {
+  color: #8F7E78 !important;
+}
+
+[data-theme="dark"] table,
+body.dark-theme table {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] th,
+[data-theme="dark"] td,
+body.dark-theme th,
+body.dark-theme td {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .donate-card,
+[data-theme="dark"] .profile-card,
+[data-theme="dark"] .dashboard-card,
+[data-theme="dark"] .form-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .notification-card,
+[data-theme="dark"] .donation-card,
+[data-theme="dark"] .donor-status-card,
+[data-theme="dark"] .donor-quick-card,
+body.dark-theme .card,
+body.dark-theme .donate-card,
+body.dark-theme .profile-card,
+body.dark-theme .dashboard-card,
+body.dark-theme .form-card,
+body.dark-theme .stat-card,
+body.dark-theme .notification-card,
+body.dark-theme .donation-card,
+body.dark-theme .donor-status-card,
+body.dark-theme .donor-quick-card {
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .sidebar-avatar,
+body.dark-theme .sidebar-avatar {
+  background: #4A2528 !important;
+  color: #FFD8CC !important;
+}
+
+[data-theme="dark"] .theme-toggle,
+body.dark-theme .theme-toggle {
+  background: #32181D !important;
+  border-color: #5A343A !important;
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* =========================================================
+   FINAL UI LOCK - BURGUNDY + WARM BEIGE
+   Donor + NGO + public pages + complete dark mode.
+   This layer intentionally overrides legacy page-specific
+   colors so the application behaves as one design system.
+========================================================= */
+
+:root {
+  --ui-bg: #FAF7F2;
+  --ui-surface: #FFFFFF;
+  --ui-surface-soft: #FFF7ED;
+  --ui-warm: #FFF1E6;
+  --ui-primary: #7F1D1D;
+  --ui-primary-strong: #5B1111;
+  --ui-primary-hover: #6B1616;
+  --ui-primary-soft: #FDF2F2;
+  --ui-accent: #EA580C;
+  --ui-accent-hover: #C2410C;
+  --ui-text: #18181B;
+  --ui-muted: #6B625C;
+  --ui-border: #E7E0D8;
+  --ui-success: #15803D;
+  --ui-warning: #D97706;
+  --ui-danger: #B91C1C;
+  --ui-focus: rgba(127,29,29,.16);
+}
+
+html[data-theme="dark"], body.dark-theme {
+  --ui-bg: #160B0D;
+  --ui-surface: #211114;
+  --ui-surface-soft: #2B171A;
+  --ui-warm: #352019;
+  --ui-primary: #A83232;
+  --ui-primary-strong: #7F1D1D;
+  --ui-primary-hover: #C14A45;
+  --ui-primary-soft: #432025;
+  --ui-accent: #F97316;
+  --ui-accent-hover: #FB923C;
+  --ui-text: #FFF8F4;
+  --ui-muted: #C5B4AE;
+  --ui-border: #4A2B30;
+  --ui-success: #4ADE80;
+  --ui-warning: #FBBF24;
+  --ui-danger: #F87171;
+  --ui-focus: rgba(248,113,113,.18);
+}
+
+/* Base */
+html[data-theme="dark"], html[data-theme="dark"] body,
+body.dark-theme, body.dark-theme #root {
+  background: var(--ui-bg) !important;
+  color: var(--ui-text) !important;
+}
+
+body, button, input, textarea, select { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+
+::selection { background: rgba(127,29,29,.18); color: var(--ui-text); }
+
+/* Shared surfaces */
+.card, .donate-card, .profile-card, .dashboard-card, .form-card,
+.dashboard-panel, .stat-card, .notification-card, .donation-card,
+.donor-status-card, .donor-quick-card, .quick-action,
+.ngo-item-card, .ngo-form-card, .ngo-impact-card, .ngo-settings-card,
+.ngo-notice, .ngo-clean-actions, .ngo-clean-mini, .ngo-clean-stats article,
+.ngo-empty, .ngo-two-col > *, .feature-card, .login-card {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 8px 24px rgba(87,55,44,.06) !important;
+}
+
+html[data-theme="dark"] .card, html[data-theme="dark"] .donate-card,
+html[data-theme="dark"] .profile-card, html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .form-card, html[data-theme="dark"] .dashboard-panel,
+html[data-theme="dark"] .stat-card, html[data-theme="dark"] .notification-card,
+html[data-theme="dark"] .donation-card, html[data-theme="dark"] .donor-status-card,
+html[data-theme="dark"] .donor-quick-card, html[data-theme="dark"] .quick-action,
+html[data-theme="dark"] .ngo-item-card, html[data-theme="dark"] .ngo-form-card,
+html[data-theme="dark"] .ngo-impact-card, html[data-theme="dark"] .ngo-settings-card,
+html[data-theme="dark"] .ngo-notice, html[data-theme="dark"] .ngo-clean-actions,
+html[data-theme="dark"] .ngo-clean-mini, html[data-theme="dark"] .ngo-clean-stats article,
+html[data-theme="dark"] .ngo-empty, html[data-theme="dark"] .feature-card,
+html[data-theme="dark"] .login-card,
+body.dark-theme .card, body.dark-theme .donate-card, body.dark-theme .profile-card,
+body.dark-theme .dashboard-card, body.dark-theme .form-card,
+body.dark-theme .dashboard-panel, body.dark-theme .stat-card,
+body.dark-theme .notification-card, body.dark-theme .donation-card,
+body.dark-theme .donor-status-card, body.dark-theme .donor-quick-card,
+body.dark-theme .quick-action, body.dark-theme .ngo-item-card,
+body.dark-theme .ngo-form-card, body.dark-theme .ngo-impact-card,
+body.dark-theme .ngo-settings-card, body.dark-theme .ngo-notice,
+body.dark-theme .ngo-clean-actions, body.dark-theme .ngo-clean-mini,
+body.dark-theme .ngo-clean-stats article, body.dark-theme .ngo-empty,
+body.dark-theme .feature-card, body.dark-theme .login-card {
+  background: var(--ui-surface) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-border) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.22) !important;
+}
+
+/* Typography inheritance for legacy hard-coded page styles */
+.ngo-shell, .ngo-layout, .donor-layout, .home-page, .profile-page,
+.my-donations-page, .donate-page, .login-page, .register-choice-container,
+.ngo-register-page, .ngo-profile-page {
+  background: var(--ui-bg) !important;
+  color: var(--ui-text) !important;
+}
+
+.ngo-shell *, .ngo-layout *, .donor-layout *, .home-page *, .profile-page *,
+.my-donations-page *, .donate-page *, .login-page *, .register-choice-container *,
+.ngo-register-page *, .ngo-profile-page * { --legacy-primary: var(--ui-primary); }
+
+/* Public navbar */
+.navbar {
+  background: var(--ui-primary-strong) !important;
+  border-bottom-color: rgba(255,247,237,.12) !important;
+  box-shadow: 0 6px 22px rgba(91,17,17,.16) !important;
+}
+.navbar .logo { color: #FFF7ED !important; }
+.navbar a, .nav-links a { color: #FFF7ED !important; }
+.navbar a:hover, .nav-links a:hover { color: #FDBA74 !important; }
+.logout-button { background: var(--ui-accent) !important; color: #fff !important; }
+.logout-button:hover { background: var(--ui-accent-hover) !important; }
+
+/* Theme toggle */
+.theme-toggle { border-color: rgba(255,247,237,.20) !important; background: rgba(255,247,237,.09) !important; color: #FFF7ED !important; }
+.theme-toggle:hover { background: rgba(234,88,12,.22) !important; border-color: #FDBA74 !important; }
+.theme-toggle:focus-visible { outline-color: #FDBA74 !important; }
+
+/* Donor shell */
+.donor-layout { background: var(--ui-bg) !important; }
+.donor-layout-content { background: var(--ui-bg) !important; }
+.donor-appbar { background: color-mix(in srgb, var(--ui-surface) 94%, transparent) !important; border-bottom-color: var(--ui-border) !important; }
+.donor-appbar-kicker, .section-heading span, .dashboard-eyebrow, .text-link { color: var(--ui-primary) !important; }
+.donor-appbar h1, .donor-appbar-user strong, .section-heading h2,
+.stat-card strong, .recent-item-copy strong { color: var(--ui-text) !important; }
+.donor-appbar p, .donor-appbar-user small, .recent-item-copy span,
+.stat-card span, .stat-card small, .dashboard-muted { color: var(--ui-muted) !important; }
+.donor-appbar-notification, .donor-menu-button { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.donor-appbar-notification span { background: var(--ui-accent) !important; border-color: var(--ui-surface) !important; }
+.donor-appbar-avatar { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+
+/* Donor sidebar */
+.donor-sidebar {
+  background: linear-gradient(180deg, #651515 0%, #3D0B0E 100%) !important;
+  border-right: 1px solid rgba(255,247,237,.10) !important;
+  box-shadow: 12px 0 36px rgba(61,11,14,.22) !important;
+}
+html[data-theme="dark"] .donor-sidebar, body.dark-theme .donor-sidebar {
+  background: linear-gradient(180deg, #3A0D11 0%, #1B0709 100%) !important;
+}
+.sidebar-brand-mark { background: var(--ui-accent) !important; color: #FFF7ED !important; }
+.sidebar-brand strong, .sidebar-user-copy strong { color: #FFF7ED !important; }
+.sidebar-brand span, .sidebar-user-copy span { color: #E8D8D2 !important; }
+.sidebar-user { background: rgba(255,247,237,.07) !important; border-color: rgba(255,247,237,.11) !important; }
+.sidebar-avatar { background: #FFF7ED !important; color: var(--ui-primary) !important; }
+.sidebar-section-label { color: #CDB8B0 !important; }
+.sidebar-link { color: #F3E6E1 !important; }
+.sidebar-link:hover { color: #fff !important; background: rgba(255,247,237,.09) !important; }
+.sidebar-link.active { background: rgba(127,29,29,.72) !important; color: #fff !important; }
+.sidebar-link.active::before { background: var(--ui-accent) !important; }
+.sidebar-badge { color: #FDBA74 !important; }
+.sidebar-theme-row { background: rgba(255,247,237,.07) !important; }
+.sidebar-theme-label, .sidebar-logout { color: #E8D8D2 !important; }
+.sidebar-logout:hover { color: #fff !important; background: rgba(234,88,12,.16) !important; }
+
+/* Donor dashboard hero and AI panels */
+.donor-dashboard-hero { background: linear-gradient(135deg, #651515 0%, #8E2420 100%) !important; box-shadow: 0 22px 55px rgba(91,17,17,.20) !important; }
+.donor-dashboard-hero h2 strong { color: #FDBA74 !important; }
+.donor-primary-cta { background: #FFF7ED !important; color: var(--ui-primary) !important; }
+.donor-secondary-cta { background: rgba(255,247,237,.10) !important; border-color: rgba(255,247,237,.18) !important; color: #fff !important; }
+.impact-ring { background: conic-gradient(#FDBA74 var(--progress), rgba(255,247,237,.16) 0) !important; }
+.impact-ring::after { background: #651515 !important; }
+.ai-insight-panel { background: linear-gradient(145deg,#651515,#8E2420) !important; }
+.ai-insight-panel button { background: #FDBA74 !important; color: #4A1717 !important; }
+.stat-icon.violet { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.stat-icon.gold { background: var(--ui-warm) !important; color: var(--ui-accent) !important; }
+.recent-item-icon { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.quick-action svg { color: var(--ui-primary) !important; }
+.quick-action:nth-child(1) svg, .quick-action:nth-child(4) svg { color: var(--ui-accent) !important; }
+.mini-status.pending { background: var(--ui-warm) !important; color: var(--ui-warning) !important; }
+
+/* NGO shell */
+.ngo-layout, .ngo-shell { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+.ngo-layout-content, .ngo-main { background: var(--ui-bg) !important; }
+.ngo-appbar { background: color-mix(in srgb, var(--ui-surface) 95%, transparent) !important; border-bottom-color: var(--ui-border) !important; }
+.ngo-appbar h1, .ngo-clean-welcome h2 { color: var(--ui-text) !important; }
+.ngo-appbar p, .ngo-clean-welcome p, .ngo-clean-stats small,
+.ngo-impact-card p, .ngo-notice p, .ngo-item-card p, .ngo-settings-card label,
+.ngo-clean-loading, .ngo-empty { color: var(--ui-muted) !important; }
+.ngo-appbar-kicker, .ngo-back, .ngo-back-button,
+.ngo-clean-welcome span, .ngo-clean-actions span, .ngo-clean-mini span,
+.ngo-feature-head>div>span, .ngo-section-title>span, .ngo-impact-card>span,
+.ngo-item-label { color: var(--ui-primary) !important; }
+.ngo-appbar-notification, .ngo-menu-button { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.ngo-appbar-notification span { background: var(--ui-accent) !important; }
+.ngo-appbar-avatar { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.ngo-appbar-user strong { color: var(--ui-text) !important; }
+.ngo-appbar-user small { color: var(--ui-muted) !important; }
+.ngo-mobile-menu { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+
+/* NGO sidebar */
+.ngo-sidebar {
+  background: linear-gradient(180deg,#651515 0%,#3D0B0E 100%) !important;
+  border-right: 1px solid rgba(255,247,237,.10) !important;
+  box-shadow: 12px 0 36px rgba(61,11,14,.22) !important;
+}
+html[data-theme="dark"] .ngo-sidebar, body.dark-theme .ngo-sidebar {
+  background: linear-gradient(180deg,#3A0D11 0%,#1B0709 100%) !important;
+}
+.ngo-sidebar-brand-mark { background: var(--ui-accent) !important; color: #FFF7ED !important; }
+.ngo-sidebar-brand strong { color: #FFF7ED !important; }
+.ngo-sidebar-brand span, .ngo-sidebar-user span { color: #E8D8D2 !important; }
+.ngo-sidebar-user { background: rgba(255,247,237,.07) !important; border-color: rgba(255,247,237,.11) !important; }
+.ngo-sidebar-avatar { background: #FFF7ED !important; color: var(--ui-primary) !important; }
+.ngo-sidebar-nav p { color: #CDB8B0 !important; }
+.ngo-sidebar-link { color: #F3E6E1 !important; }
+.ngo-sidebar-link:hover { color: #fff !important; background: rgba(255,247,237,.09) !important; }
+.ngo-sidebar-link.active { background: rgba(127,29,29,.72) !important; color: #fff !important; }
+.ngo-sidebar-link.active:before { background: var(--ui-accent) !important; }
+.ngo-theme-row { background: rgba(255,247,237,.07) !important; }
+.ngo-theme-row span, .ngo-sidebar-bottom button { color: #E8D8D2 !important; }
+.ngo-sidebar-bottom button:hover { color: #fff !important; background: rgba(234,88,12,.16) !important; }
+
+/* NGO feature/dashboard actions */
+.ngo-action-row button, .ngo-form-card .primary, .ngo-item-actions .good { background: var(--ui-primary) !important; border-color: var(--ui-primary) !important; color: #fff !important; }
+.ngo-action-row button:last-child { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.ngo-item-actions button, .ngo-form-card button, .ngo-feature-head>button { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.ngo-item-actions .bad { color: var(--ui-danger) !important; border-color: rgba(185,28,28,.25) !important; }
+.ngo-clean-stats article b { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.ngo-clean-stats strong, .ngo-clean-mini-grid strong, .ngo-impact-card strong { color: var(--ui-text) !important; }
+.ngo-impact-card strong { color: var(--ui-primary) !important; }
+.ngo-form-card input, .ngo-form-card select, .ngo-form-card textarea { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.ngo-form-card input::placeholder, .ngo-form-card textarea::placeholder { color: var(--ui-muted) !important; }
+.ngo-notice { background: var(--ui-surface) !important; }
+
+/* NGO profile */
+.ngo-profile-page { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+.ngo-profile-page::before { border-color: rgba(127,29,29,.12) !important; }
+.ngo-profile-page::after { background: radial-gradient(circle, rgba(234,88,12,.08), transparent 70%) !important; }
+.ngo-profile-header h1, .ngo-profile-header p { color: var(--ui-text) !important; }
+.ngo-profile-header p { color: var(--ui-muted) !important; }
+.ngo-profile-badge { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; border-color: rgba(127,29,29,.18) !important; }
+.ngo-dashboard-back-button { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.ngo-dashboard-back-button:hover { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+
+/* NGO registration / donor registration / auth */
+.ngo-register-page, .login-page, .register-choice-container { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+.ngo-register-brand, .login-brand { background: linear-gradient(145deg,#5B1111,#7F1D1D) !important; }
+.ngo-logo-icon, .brand-logo-icon { background: var(--ui-accent) !important; color: #FFF7ED !important; }
+.ngo-brand-message h1, .brand-message h1 { color: #FFF7ED !important; }
+.ngo-brand-message h1 span, .brand-message h1 span { color: #FDBA74 !important; }
+.ngo-brand-eyebrow, .brand-eyebrow { color: #F8C9B8 !important; }
+.ngo-brand-message > p:last-child, .brand-description { color: #E8D8D2 !important; }
+.ngo-impact-item strong { color: #FFF7ED !important; }
+.ngo-impact-item p { color: #CDB8B0 !important; }
+.login-section { background: var(--ui-bg) !important; }
+.login-card { background: var(--ui-surface) !important; border-color: var(--ui-border) !important; }
+.login-eyebrow, .forgot-button { color: var(--ui-primary) !important; }
+.login-header h2, .form-group label { color: var(--ui-text) !important; }
+.login-header > p:last-child, .form-group small { color: var(--ui-muted) !important; }
+.input-wrapper, .input-wrapper input { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.input-wrapper input::placeholder { color: var(--ui-muted) !important; }
+.input-wrapper:focus-within { border-color: var(--ui-primary) !important; box-shadow: 0 0 0 3px var(--ui-focus) !important; }
+
+/* Register choice */
+.register-hero h1, .how-it-works h2, .step h3, .feature-card h3 { color: var(--ui-text) !important; }
+.register-hero h1 span, .register-badge, .step-number { color: var(--ui-primary) !important; }
+.register-badge, .feature-icon { background: var(--ui-primary-soft) !important; }
+.get-started-button, .login-button:hover { background: var(--ui-primary) !important; color: #fff !important; }
+.get-started-button:hover { background: var(--ui-primary-hover) !important; }
+.login-button { border-color: var(--ui-primary) !important; color: var(--ui-primary) !important; }
+.login-button:hover { background: var(--ui-primary) !important; color: #fff !important; }
+.feature-card, .how-it-works { background: var(--ui-surface) !important; border-color: var(--ui-border) !important; }
+.feature-card p, .section-description, .step p, .login-section p { color: var(--ui-muted) !important; }
+
+/* Donate / My Donations / Activity / Notifications / Profile / Settings */
+.donate-page, .my-donations-page { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+.donate-hero { background: linear-gradient(145deg,#5B1111,#7F1D1D) !important; }
+.donate-hero h1 span { color: #FDBA74 !important; }
+.donate-card, .my-donation-card, .empty-donations { background: var(--ui-surface) !important; border-color: var(--ui-border) !important; }
+.card-heading > div:last-child span, .my-donations-badge, .my-donation-title h2 { color: var(--ui-primary) !important; }
+.coral-icon, .verified-label { background: var(--ui-primary-soft) !important; color: var(--ui-primary) !important; }
+.donor-information { background: var(--ui-surface-soft) !important; border-color: var(--ui-border) !important; }
+.form-group input, .form-group select, .form-group textarea { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--ui-primary) !important; box-shadow: 0 0 0 3px var(--ui-focus) !important; }
+.my-donation-image { background: var(--ui-surface-soft) !important; }
+.timeline-step.active { color: var(--ui-primary) !important; }
+.timeline-step.active span, .active-line { background: var(--ui-primary) !important; }
+
+/* Generic controls */
+button.primary, .primary-btn, .home-primary-btn, .donor-primary-cta,
+.profile-upload-button, .profile-card button { background: var(--ui-primary) !important; color: #fff !important; }
+button.primary:hover, .primary-btn:hover, .home-primary-btn:hover,
+.profile-upload-button:hover, .profile-card button:hover { background: var(--ui-primary-hover) !important; }
+
+input, textarea, select { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+input::placeholder, textarea::placeholder { color: var(--ui-muted) !important; }
+input:focus, textarea:focus, select:focus { border-color: var(--ui-primary) !important; box-shadow: 0 0 0 3px var(--ui-focus) !important; outline: none !important; }
+
+/* Dark mode: eliminate old cool-blue/green leftovers */
+html[data-theme="dark"] .ngo-appbar,
+html[data-theme="dark"] .donor-appbar,
+body.dark-theme .ngo-appbar,
+body.dark-theme .donor-appbar { background: rgba(33,17,20,.96) !important; }
+
+html[data-theme="dark"] .profile-page,
+body.dark-theme .profile-page { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+html[data-theme="dark"] .profile-card,
+body.dark-theme .profile-card { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+html[data-theme="dark"] .profile-badge,
+body.dark-theme .profile-badge,
+html[data-theme="dark"] .profile-image,
+body.dark-theme .profile-image,
+html[data-theme="dark"] .profile-placeholder,
+body.dark-theme .profile-placeholder { background: var(--ui-primary-soft) !important; border-color: var(--ui-border) !important; color: var(--ui-primary) !important; }
+html[data-theme="dark"] .profile-field strong,
+html[data-theme="dark"] .profile-field span,
+body.dark-theme .profile-field strong,
+body.dark-theme .profile-field span { color: var(--ui-text) !important; }
+html[data-theme="dark"] .profile-upload-section small,
+body.dark-theme .profile-upload-section small { color: var(--ui-muted) !important; }
+
+html[data-theme="dark"] .ngo-form-card input,
+html[data-theme="dark"] .ngo-form-card select,
+html[data-theme="dark"] .ngo-form-card textarea,
+body.dark-theme .ngo-form-card input,
+body.dark-theme .ngo-form-card select,
+body.dark-theme .ngo-form-card textarea { background: #1A0E10 !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+
+html[data-theme="dark"] .home-page,
+body.dark-theme .home-page { background: var(--ui-bg) !important; color: var(--ui-text) !important; }
+html[data-theme="dark"] .home-page .home-secondary-btn,
+body.dark-theme .home-page .home-secondary-btn { background: var(--ui-surface) !important; color: var(--ui-text) !important; border-color: var(--ui-border) !important; }
+
+/* Semantic statuses remain meaningful in both themes */
+.status-pending, .mini-status.pending { background: #FFF1E6 !important; color: #A16207 !important; }
+.status-accepted, .status-collected, .status-completed, .mini-status.accepted,
+.mini-status.collected, .mini-status.completed, .mini-status.delivered { background: #ECFDF3 !important; color: #15803D !important; }
+.status-rejected { background: #FDECEC !important; color: #B91C1C !important; }
+html[data-theme="dark"] .status-pending, body.dark-theme .status-pending { background: #3A2818 !important; color: #FBBF24 !important; }
+html[data-theme="dark"] .status-accepted, html[data-theme="dark"] .status-collected,
+html[data-theme="dark"] .status-completed, html[data-theme="dark"] .mini-status.accepted,
+html[data-theme="dark"] .mini-status.collected, html[data-theme="dark"] .mini-status.completed,
+html[data-theme="dark"] .mini-status.delivered, body.dark-theme .status-accepted,
+body.dark-theme .status-collected, body.dark-theme .status-completed,
+body.dark-theme .mini-status.accepted, body.dark-theme .mini-status.collected,
+body.dark-theme .mini-status.completed, body.dark-theme .mini-status.delivered { background: #173321 !important; color: #86EFAC !important; }
+html[data-theme="dark"] .status-rejected, body.dark-theme .status-rejected { background: #3B191B !important; color: #FCA5A5 !important; }
+
+/* Footer */
+.footer { background: var(--ui-primary-strong) !important; color: #FFF7ED !important; }
+
+/* Mobile consistency */
+@media (max-width: 850px) {
+  .donor-layout-content, .ngo-layout-content, .ngo-main { background: var(--ui-bg) !important; }
+  .donor-page-shell, .ngo-page-shell, .ngo-page-content { padding-left: 16px; padding-right: 16px; }
+}
+
+/* FINAL UI LOCK: BURGUNDY + WARM BEIGE */
+:root{
+--ui-bg:#FAF7F2;--ui-surface:#FFFFFF;--ui-surface-soft:#FFF7ED;--ui-warm:#FFF1E6;
+--ui-primary:#7F1D1D;--ui-primary-strong:#5B1111;--ui-primary-hover:#6B1616;--ui-primary-soft:#FDF2F2;
+--ui-accent:#EA580C;--ui-accent-hover:#C2410C;--ui-text:#18181B;--ui-muted:#6B625C;--ui-border:#E7E0D8;
+--ui-success:#15803D;--ui-warning:#D97706;--ui-danger:#B91C1C;--ui-focus:rgba(127,29,29,.16)
+}
+html[data-theme="dark"],body.dark-theme{
+--ui-bg:#160B0D;--ui-surface:#211114;--ui-surface-soft:#2B171A;--ui-warm:#352019;
+--ui-primary:#A83232;--ui-primary-strong:#7F1D1D;--ui-primary-hover:#C14A45;--ui-primary-soft:#432025;
+--ui-accent:#F97316;--ui-accent-hover:#FB923C;--ui-text:#FFF8F4;--ui-muted:#C5B4AE;--ui-border:#4A2B30;
+--ui-success:#4ADE80;--ui-warning:#FBBF24;--ui-danger:#F87171;--ui-focus:rgba(248,113,113,.18)
+}
+html[data-theme="dark"],html[data-theme="dark"] body,body.dark-theme,body.dark-theme #root{background:var(--ui-bg)!important;color:var(--ui-text)!important}
+body{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+
+/* Shared surfaces */
+.card,.donate-card,.profile-card,.dashboard-card,.form-card,.dashboard-panel,.stat-card,.notification-card,.donation-card,.donor-status-card,.donor-quick-card,.quick-action,.ngo-item-card,.ngo-form-card,.ngo-impact-card,.ngo-settings-card,.ngo-notice,.ngo-clean-actions,.ngo-clean-mini,.ngo-clean-stats article,.ngo-empty,.feature-card,.login-card{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important;box-shadow:0 8px 24px rgba(87,55,44,.06)!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .donate-card,html[data-theme="dark"] .profile-card,html[data-theme="dark"] .dashboard-card,html[data-theme="dark"] .form-card,html[data-theme="dark"] .dashboard-panel,html[data-theme="dark"] .stat-card,html[data-theme="dark"] .notification-card,html[data-theme="dark"] .donation-card,html[data-theme="dark"] .donor-status-card,html[data-theme="dark"] .donor-quick-card,html[data-theme="dark"] .quick-action,html[data-theme="dark"] .ngo-item-card,html[data-theme="dark"] .ngo-form-card,html[data-theme="dark"] .ngo-impact-card,html[data-theme="dark"] .ngo-settings-card,html[data-theme="dark"] .ngo-notice,html[data-theme="dark"] .ngo-clean-actions,html[data-theme="dark"] .ngo-clean-mini,html[data-theme="dark"] .ngo-clean-stats article,html[data-theme="dark"] .ngo-empty,html[data-theme="dark"] .feature-card,html[data-theme="dark"] .login-card,body.dark-theme .card,body.dark-theme .donate-card,body.dark-theme .profile-card,body.dark-theme .dashboard-card,body.dark-theme .form-card,body.dark-theme .dashboard-panel,body.dark-theme .stat-card,body.dark-theme .notification-card,body.dark-theme .donation-card,body.dark-theme .donor-status-card,body.dark-theme .donor-quick-card,body.dark-theme .quick-action,body.dark-theme .ngo-item-card,body.dark-theme .ngo-form-card,body.dark-theme .ngo-impact-card,body.dark-theme .ngo-settings-card,body.dark-theme .ngo-notice,body.dark-theme .ngo-clean-actions,body.dark-theme .ngo-clean-mini,body.dark-theme .ngo-clean-stats article,body.dark-theme .ngo-empty,body.dark-theme .feature-card,body.dark-theme .login-card{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important;box-shadow:0 12px 30px rgba(0,0,0,.22)!important}
+
+/* Public */
+.navbar{background:var(--ui-primary-strong)!important;border-bottom-color:rgba(255,247,237,.12)!important;box-shadow:0 6px 22px rgba(91,17,17,.16)!important}
+.navbar .logo,.navbar a,.nav-links a{color:#FFF7ED!important}.navbar a:hover,.nav-links a:hover{color:#FDBA74!important}.logout-button{background:var(--ui-accent)!important;color:#fff!important}.logout-button:hover{background:var(--ui-accent-hover)!important}
+.theme-toggle{border-color:rgba(255,247,237,.20)!important;background:rgba(255,247,237,.09)!important;color:#FFF7ED!important}.theme-toggle:hover{background:rgba(234,88,12,.22)!important;border-color:#FDBA74!important}
+
+/* Donor shell */
+.donor-layout,.donor-layout-content{background:var(--ui-bg)!important}.donor-appbar{background:color-mix(in srgb,var(--ui-surface) 94%,transparent)!important;border-bottom-color:var(--ui-border)!important}.donor-appbar-kicker,.section-heading span,.dashboard-eyebrow,.text-link{color:var(--ui-primary)!important}.donor-appbar h1,.donor-appbar-user strong,.section-heading h2,.stat-card strong,.recent-item-copy strong{color:var(--ui-text)!important}.donor-appbar p,.donor-appbar-user small,.recent-item-copy span,.stat-card span,.stat-card small,.dashboard-muted{color:var(--ui-muted)!important}.donor-appbar-notification,.donor-menu-button{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.donor-appbar-notification span{background:var(--ui-accent)!important;border-color:var(--ui-surface)!important}.donor-appbar-avatar{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}
+.donor-sidebar{background:linear-gradient(180deg,#651515 0%,#3D0B0E 100%)!important;border-right:1px solid rgba(255,247,237,.10)!important;box-shadow:12px 0 36px rgba(61,11,14,.22)!important}.dark .donor-sidebar,html[data-theme="dark"] .donor-sidebar,body.dark-theme .donor-sidebar{background:linear-gradient(180deg,#3A0D11 0%,#1B0709 100%)!important}.sidebar-brand-mark{background:var(--ui-accent)!important;color:#FFF7ED!important}.sidebar-brand strong,.sidebar-user-copy strong{color:#FFF7ED!important}.sidebar-brand span,.sidebar-user-copy span{color:#E8D8D2!important}.sidebar-user{background:rgba(255,247,237,.07)!important;border-color:rgba(255,247,237,.11)!important}.sidebar-avatar{background:#FFF7ED!important;color:var(--ui-primary)!important}.sidebar-section-label{color:#CDB8B0!important}.sidebar-link{color:#F3E6E1!important}.sidebar-link:hover{color:#fff!important;background:rgba(255,247,237,.09)!important}.sidebar-link.active{background:rgba(127,29,29,.72)!important;color:#fff!important}.sidebar-link.active::before{background:var(--ui-accent)!important}.sidebar-badge{color:#FDBA74!important}.sidebar-theme-row{background:rgba(255,247,237,.07)!important}.sidebar-theme-label,.sidebar-logout{color:#E8D8D2!important}.sidebar-logout:hover{color:#fff!important;background:rgba(234,88,12,.16)!important}
+.donor-dashboard-hero{background:linear-gradient(135deg,#651515 0%,#8E2420 100%)!important;box-shadow:0 22px 55px rgba(91,17,17,.20)!important}.donor-dashboard-hero h2 strong{color:#FDBA74!important}.donor-primary-cta{background:#FFF7ED!important;color:var(--ui-primary)!important}.donor-secondary-cta{background:rgba(255,247,237,.10)!important;border-color:rgba(255,247,237,.18)!important;color:#fff!important}.impact-ring{background:conic-gradient(#FDBA74 var(--progress),rgba(255,247,237,.16) 0)!important}.impact-ring::after{background:#651515!important}.ai-insight-panel{background:linear-gradient(145deg,#651515,#8E2420)!important}.ai-insight-panel button{background:#FDBA74!important;color:#4A1717!important}.stat-icon.violet,.recent-item-icon{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.stat-icon.gold{background:var(--ui-warm)!important;color:var(--ui-accent)!important}.quick-action svg{color:var(--ui-primary)!important}.quick-action:nth-child(1) svg,.quick-action:nth-child(4) svg{color:var(--ui-accent)!important}
+
+/* NGO shell */
+.ngo-layout,.ngo-shell,.ngo-layout-content,.ngo-main{background:var(--ui-bg)!important;color:var(--ui-text)!important}.ngo-appbar{background:color-mix(in srgb,var(--ui-surface) 95%,transparent)!important;border-bottom-color:var(--ui-border)!important}.ngo-appbar h1,.ngo-clean-welcome h2{color:var(--ui-text)!important}.ngo-appbar p,.ngo-clean-welcome p,.ngo-clean-stats small,.ngo-impact-card p,.ngo-notice p,.ngo-item-card p,.ngo-settings-card label,.ngo-clean-loading,.ngo-empty{color:var(--ui-muted)!important}.ngo-appbar-kicker,.ngo-back,.ngo-back-button,.ngo-clean-welcome span,.ngo-clean-actions span,.ngo-clean-mini span,.ngo-feature-head>div>span,.ngo-section-title>span,.ngo-impact-card>span,.ngo-item-label{color:var(--ui-primary)!important}.ngo-appbar-notification,.ngo-menu-button{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.ngo-appbar-notification span{background:var(--ui-accent)!important}.ngo-appbar-avatar{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.ngo-appbar-user strong{color:var(--ui-text)!important}.ngo-appbar-user small{color:var(--ui-muted)!important}.ngo-mobile-menu{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}
+.ngo-sidebar{background:linear-gradient(180deg,#651515 0%,#3D0B0E 100%)!important;border-right:1px solid rgba(255,247,237,.10)!important;box-shadow:12px 0 36px rgba(61,11,14,.22)!important}html[data-theme="dark"] .ngo-sidebar,body.dark-theme .ngo-sidebar{background:linear-gradient(180deg,#3A0D11 0%,#1B0709 100%)!important}.ngo-sidebar-brand-mark{background:var(--ui-accent)!important;color:#FFF7ED!important}.ngo-sidebar-brand strong{color:#FFF7ED!important}.ngo-sidebar-brand span,.ngo-sidebar-user span{color:#E8D8D2!important}.ngo-sidebar-user{background:rgba(255,247,237,.07)!important;border-color:rgba(255,247,237,.11)!important}.ngo-sidebar-avatar{background:#FFF7ED!important;color:var(--ui-primary)!important}.ngo-sidebar-nav p{color:#CDB8B0!important}.ngo-sidebar-link{color:#F3E6E1!important}.ngo-sidebar-link:hover{color:#fff!important;background:rgba(255,247,237,.09)!important}.ngo-sidebar-link.active{background:rgba(127,29,29,.72)!important;color:#fff!important}.ngo-sidebar-link.active:before{background:var(--ui-accent)!important}.ngo-theme-row{background:rgba(255,247,237,.07)!important}.ngo-theme-row span,.ngo-sidebar-bottom button{color:#E8D8D2!important}.ngo-sidebar-bottom button:hover{color:#fff!important;background:rgba(234,88,12,.16)!important}
+.ngo-action-row button,.ngo-form-card .primary,.ngo-item-actions .good{background:var(--ui-primary)!important;border-color:var(--ui-primary)!important;color:#fff!important}.ngo-action-row button:last-child{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.ngo-item-actions button,.ngo-form-card button,.ngo-feature-head>button{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.ngo-item-actions .bad{color:var(--ui-danger)!important;border-color:rgba(185,28,28,.25)!important}.ngo-clean-stats article b{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.ngo-clean-stats strong,.ngo-clean-mini-grid strong{color:var(--ui-text)!important}.ngo-impact-card strong{color:var(--ui-primary)!important}.ngo-form-card input,.ngo-form-card select,.ngo-form-card textarea{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.ngo-form-card input::placeholder,.ngo-form-card textarea::placeholder{color:var(--ui-muted)!important}
+
+/* NGO profile/auth */
+.ngo-profile-page{background:var(--ui-bg)!important;color:var(--ui-text)!important}.ngo-profile-page::before{border-color:rgba(127,29,29,.12)!important}.ngo-profile-page::after{background:radial-gradient(circle,rgba(234,88,12,.08),transparent 70%)!important}.ngo-profile-header h1{color:var(--ui-text)!important}.ngo-profile-header p{color:var(--ui-muted)!important}.ngo-profile-badge{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important;border-color:rgba(127,29,29,.18)!important}.ngo-dashboard-back-button{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.ngo-dashboard-back-button:hover{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}
+.ngo-register-page,.login-page,.register-choice-container{background:var(--ui-bg)!important;color:var(--ui-text)!important}.ngo-register-brand,.login-brand{background:linear-gradient(145deg,#5B1111,#7F1D1D)!important}.ngo-logo-icon,.brand-logo-icon{background:var(--ui-accent)!important;color:#FFF7ED!important}.ngo-brand-message h1,.brand-message h1{color:#FFF7ED!important}.ngo-brand-message h1 span,.brand-message h1 span{color:#FDBA74!important}.ngo-brand-eyebrow,.brand-eyebrow{color:#F8C9B8!important}.ngo-brand-message>p:last-child,.brand-description{color:#E8D8D2!important}.ngo-impact-item strong{color:#FFF7ED!important}.ngo-impact-item p{color:#CDB8B0!important}.login-section{background:var(--ui-bg)!important}.login-card{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}.login-eyebrow,.forgot-button{color:var(--ui-primary)!important}.login-header h2,.form-group label{color:var(--ui-text)!important}.login-header>p:last-child,.form-group small{color:var(--ui-muted)!important}.input-wrapper,.input-wrapper input{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.input-wrapper input::placeholder{color:var(--ui-muted)!important}.input-wrapper:focus-within{border-color:var(--ui-primary)!important;box-shadow:0 0 0 3px var(--ui-focus)!important}
+.register-hero h1,.how-it-works h2,.step h3,.feature-card h3{color:var(--ui-text)!important}.register-hero h1 span{color:var(--ui-primary)!important}.register-badge,.feature-icon{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.get-started-button,.login-button:hover{background:var(--ui-primary)!important;color:#fff!important}.get-started-button:hover{background:var(--ui-primary-hover)!important}.login-button{border-color:var(--ui-primary)!important;color:var(--ui-primary)!important}.login-button:hover{background:var(--ui-primary)!important;color:#fff!important}.feature-card,.how-it-works{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}.feature-card p,.section-description,.step p,.login-section p{color:var(--ui-muted)!important}
+
+/* Donor secondary pages */
+.donate-page,.my-donations-page{background:var(--ui-bg)!important;color:var(--ui-text)!important}.donate-hero{background:linear-gradient(145deg,#5B1111,#7F1D1D)!important}.donate-hero h1 span{color:#FDBA74!important}.donate-card,.my-donation-card,.empty-donations{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}.card-heading>div:last-child span,.my-donations-badge{color:var(--ui-primary)!important}.coral-icon,.verified-label{background:var(--ui-primary-soft)!important;color:var(--ui-primary)!important}.donor-information{background:var(--ui-surface-soft)!important;border-color:var(--ui-border)!important}.form-group input,.form-group select,.form-group textarea{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--ui-primary)!important;box-shadow:0 0 0 3px var(--ui-focus)!important}.my-donation-image{background:var(--ui-surface-soft)!important}.timeline-step.active{color:var(--ui-primary)!important}.timeline-step.active span,.active-line{background:var(--ui-primary)!important}
+
+/* Profile */
+.profile-page{background:var(--ui-bg)!important;color:var(--ui-text)!important}.profile-card{background:var(--ui-surface)!important;border-color:var(--ui-border)!important}.profile-badge,.profile-image,.profile-placeholder{background:var(--ui-primary-soft)!important;border-color:var(--ui-border)!important;color:var(--ui-primary)!important}.profile-header h1,.profile-field strong,.profile-field span{color:var(--ui-text)!important}.profile-header p,.profile-upload-section small{color:var(--ui-muted)!important}.profile-upload-button,.profile-card button{background:var(--ui-primary)!important;color:#fff!important}.profile-upload-button:hover,.profile-card button:hover{background:var(--ui-primary-hover)!important}
+
+/* Global controls */
+button.primary,.primary-btn,.home-primary-btn,.donor-primary-cta{background:var(--ui-primary)!important;color:#fff!important}button.primary:hover,.primary-btn:hover,.home-primary-btn:hover{background:var(--ui-primary-hover)!important}input,textarea,select{background:var(--ui-surface)!important;color:var(--ui-text)!important;border-color:var(--ui-border)!important}input::placeholder,textarea::placeholder{color:var(--ui-muted)!important}input:focus,textarea:focus,select:focus{border-color:var(--ui-primary)!important;box-shadow:0 0 0 3px var(--ui-focus)!important;outline:none!important}
+
+/* Semantic statuses */
+.status-pending,.mini-status.pending{background:#FFF1E6!important;color:#A16207!important}.status-accepted,.status-collected,.status-completed,.mini-status.accepted,.mini-status.collected,.mini-status.completed,.mini-status.delivered{background:#ECFDF3!important;color:#15803D!important}.status-rejected{background:#FDECEC!important;color:#B91C1C!important}
+html[data-theme="dark"] .status-pending,body.dark-theme .status-pending{background:#3A2818!important;color:#FBBF24!important}html[data-theme="dark"] .status-accepted,html[data-theme="dark"] .status-collected,html[data-theme="dark"] .status-completed,html[data-theme="dark"] .mini-status.accepted,html[data-theme="dark"] .mini-status.collected,html[data-theme="dark"] .mini-status.completed,html[data-theme="dark"] .mini-status.delivered,body.dark-theme .status-accepted,body.dark-theme .status-collected,body.dark-theme .status-completed,body.dark-theme .mini-status.accepted,body.dark-theme .mini-status.collected,body.dark-theme .mini-status.completed,body.dark-theme .mini-status.delivered{background:#173321!important;color:#86EFAC!important}html[data-theme="dark"] .status-rejected,body.dark-theme .status-rejected{background:#3B191B!important;color:#FCA5A5!important}
+
+.footer{background:var(--ui-primary-strong)!important;color:#FFF7ED!important}
+@media(max-width:850px){.donor-layout-content,.ngo-layout-content,.ngo-main{background:var(--ui-bg)!important}}
