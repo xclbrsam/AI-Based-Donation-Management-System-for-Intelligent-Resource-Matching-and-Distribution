@@ -1,4 +1,4 @@
-import { Navigate, Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar/Navbar";
 
@@ -15,8 +15,14 @@ import EditDonation from "./Pages/Donor/EditDonation";
 import NGORegister from "./Pages/NGO/NGORegister";
 import NGODashboard from "./Pages/NGO/NGODashboard";
 import NGOProfile from "./Pages/NGO/NGOProfile";
+import NGOWorkspacePage from "./Pages/NGO/NGOWorkspacePage";
 
 import DonorProfile from "./Pages/Donor/DonorProfile";
+import MyActivity from "./Pages/Donor/MyActivity";
+import DonorNotifications from "./Pages/Donor/DonorNotifications";
+import DonorSettings from "./Pages/Donor/DonorSettings";
+import DonorLayout from "./components/DonorLayout/DonorLayout";
+import NGOLayout from "./components/NGOLayout/NGOLayout";
 
 
 // =====================================================
@@ -130,6 +136,17 @@ function NGORoute({ children }) {
 // =====================================================
 
 function App() {
+  const location = useLocation();
+  const donorRoute = [
+    "/dashboard",
+    "/donate-item",
+    "/my-donations",
+    "/my-activity",
+    "/notifications",
+    "/profile",
+    "/settings",
+  ].some((path) => location.pathname === path || location.pathname.startsWith("/edit-donation/"));
+  const ngoRoute = location.pathname.startsWith("/ngo-");
 
   return (
     <>
@@ -138,7 +155,7 @@ function App() {
           Contains ThemeToggle
       ================================================= */}
 
-      <Navbar />
+      {!donorRoute && !ngoRoute && <Navbar />}
 
 
       {/* =================================================
@@ -205,7 +222,7 @@ function App() {
           path="/dashboard"
           element={
             <DonorRoute>
-              <DonorDashboard />
+              <DonorLayout><DonorDashboard /></DonorLayout>
             </DonorRoute>
           }
         />
@@ -219,7 +236,7 @@ function App() {
           path="/donate-item"
           element={
             <DonorRoute>
-              <DonateItem />
+              <DonorLayout><DonateItem /></DonorLayout>
             </DonorRoute>
           }
         />
@@ -233,7 +250,7 @@ function App() {
           path="/edit-donation/:id"
           element={
             <DonorRoute>
-              <EditDonation />
+              <DonorLayout><EditDonation /></DonorLayout>
             </DonorRoute>
           }
         />
@@ -247,7 +264,7 @@ function App() {
           path="/my-donations"
           element={
             <DonorRoute>
-              <MyDonations />
+              <DonorLayout><MyDonations /></DonorLayout>
             </DonorRoute>
           }
         />
@@ -261,7 +278,49 @@ function App() {
           path="/profile"
           element={
             <DonorRoute>
-              <DonorProfile />
+              <DonorLayout><DonorProfile /></DonorLayout>
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            DONOR ACTIVITY
+        ================================================= */}
+
+        <Route
+          path="/my-activity"
+          element={
+            <DonorRoute>
+              <DonorLayout><MyActivity /></DonorLayout>
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            DONOR NOTIFICATIONS
+        ================================================= */}
+
+        <Route
+          path="/notifications"
+          element={
+            <DonorRoute>
+              <DonorLayout><DonorNotifications /></DonorLayout>
+            </DonorRoute>
+          }
+        />
+
+
+        {/* =================================================
+            DONOR SETTINGS
+        ================================================= */}
+
+        <Route
+          path="/settings"
+          element={
+            <DonorRoute>
+              <DonorLayout><DonorSettings /></DonorLayout>
             </DonorRoute>
           }
         />
@@ -275,7 +334,7 @@ function App() {
           path="/ngo-dashboard"
           element={
             <NGORoute>
-              <NGODashboard />
+              <NGOLayout><NGODashboard /></NGOLayout>
             </NGORoute>
           }
         />
@@ -289,11 +348,20 @@ function App() {
           path="/ngo-profile"
           element={
             <NGORoute>
-              <NGOProfile />
+              <NGOLayout><NGOProfile /></NGOLayout>
             </NGORoute>
           }
         />
 
+
+        <Route path="/ngo-donations" element={<NGORoute><NGOLayout><NGOWorkspacePage type="donations" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-requirements" element={<NGORoute><NGOLayout><NGOWorkspacePage type="requirements" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-allocations" element={<NGORoute><NGOLayout><NGOWorkspacePage type="allocations" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-pickups" element={<NGORoute><NGOLayout><NGOWorkspacePage type="pickups" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-analytics" element={<NGORoute><NGOLayout><NGOWorkspacePage type="analytics" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-impact" element={<NGORoute><NGOLayout><NGOWorkspacePage type="impact" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-notifications" element={<NGORoute><NGOLayout><NGOWorkspacePage type="notifications" /></NGOLayout></NGORoute>} />
+        <Route path="/ngo-settings" element={<NGORoute><NGOLayout><NGOWorkspacePage type="settings" /></NGOLayout></NGORoute>} />
 
         {/* =================================================
             FALLBACK

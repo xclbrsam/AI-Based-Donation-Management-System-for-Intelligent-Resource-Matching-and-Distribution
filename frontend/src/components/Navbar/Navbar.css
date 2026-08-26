@@ -17,7 +17,7 @@
 
     padding: 16px 42px;
 
-    background: #071426;
+    background: #5B1118;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
@@ -31,7 +31,7 @@
 ===================================================== */
 
 .logo {
-    color: #ff6f61;
+    color: #7F1D1D;
 
     font-size: 24px;
     font-weight: 800;
@@ -78,7 +78,7 @@
 }
 
 .nav-links a:hover {
-    color: #ff6f61;
+    color: #7F1D1D;
 }
 
 
@@ -93,7 +93,7 @@
 
     border-radius: 9px;
 
-    background: #ff6f61;
+    background: #7F1D1D;
 
     color: #ffffff;
 
@@ -111,7 +111,7 @@
 }
 
 .logout-button:hover {
-    background: #f45d50;
+    background: #C2410C;
 
     transform: translateY(-1px);
 
@@ -162,7 +162,7 @@
 .theme-toggle:hover {
     background: rgba(255, 111, 97, 0.18);
 
-    border-color: #ff6f61;
+    border-color: #7F1D1D;
 
     transform: scale(1.08);
 }
@@ -173,15 +173,15 @@
 ===================================================== */
 
 body.dark-theme .navbar {
-    background: #050d1a;
+    background: #210A0E;
 
     border-bottom-color: #202b3c;
 }
 
 body.dark-theme .theme-toggle {
-    background: #182233;
+    background: #32181D;
 
-    border-color: #3a4658;
+    border-color: #5A343A;
 }
 
 

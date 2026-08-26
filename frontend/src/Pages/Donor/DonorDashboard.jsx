@@ -1,701 +1,156 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  FiActivity,
+  FiArrowRight,
+  FiBell,
+  FiCheckCircle,
+  FiClock,
+  FiGift,
+  FiHeart,
+  FiPackage,
+  FiPlus,
+  FiTruck,
+  FiUser,
+} from "react-icons/fi";
 import api from "../../services/api";
 import "./DonorDashboard.css";
 
-function DonorDashboard() {
+export default function DonorDashboard() {
   const navigate = useNavigate();
-
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // =====================================================
-  // USER DETAILS
-  // =====================================================
-
-  const userName =
-    localStorage.getItem("user_name") || "Donor";
-
-  const userEmail =
-    localStorage.getItem("user_email") || "";
-
-  // =====================================================
-  // FETCH DONATIONS
-  // =====================================================
+  const name = localStorage.getItem("user_name") || "Donor";
 
   useEffect(() => {
-    const fetchDonations = async () => {
-      try {
-        setLoading(true);
-
-        const response = await api.get(
-          "my-donations/"
-        );
-
-        console.log(
-          "Dashboard Donations:",
-          response.data
-        );
-
-        if (Array.isArray(response.data)) {
-          setDonations(response.data);
-        } else {
-          setDonations([]);
-        }
-
-      } catch (error) {
-        console.error(
-          "Dashboard donation fetch error:",
-          error
-        );
-
-        setDonations([]);
-
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDonations();
+    let active = true;
+    api.get("my-donations/")
+      .then(({ data }) => {
+        if (!active) return;
+        setDonations(Array.isArray(data) ? data : data?.results || []);
+      })
+      .catch(() => { if (active) setDonations([]); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
-  // =====================================================
-  // STATISTICS
-  // =====================================================
+  const count = (statuses) => donations.filter((d) => statuses.includes(String(d.status || "pending").toLowerCase())).length;
 
-  const totalDonations = donations.length;
+  const stats = useMemo(() => [
+    { label: "Total Donations", value: donations.length, icon: FiPackage, tone: "violet" },
+    { label: "Pending", value: count(["pending"]), icon: FiClock, tone: "gold" },
+    { label: "Accepted", value: count(["accepted"]), icon: FiCheckCircle, tone: "violet" },
+    { label: "Collected", value: count(["collected", "completed", "delivered"]), icon: FiTruck, tone: "gold" },
+  ], [donations]);
 
-  const pendingDonations =
-    donations.filter(
-      (donation) =>
-        String(donation.status).toLowerCase() ===
-        "pending"
-    ).length;
-
-  const acceptedDonations =
-    donations.filter(
-      (donation) =>
-        String(donation.status).toLowerCase() ===
-          "accepted" ||
-        String(donation.status).toLowerCase() ===
-          "collected"
-    ).length;
-
-  const collectedDonations =
-    donations.filter(
-      (donation) =>
-        String(donation.status).toLowerCase() ===
-        "collected"
-    ).length;
-
-  // =====================================================
-  // RECENT DONATIONS
-  // =====================================================
-
-  const recentDonations =
-    donations.slice(0, 4);
-
-  // =====================================================
-  // STATUS CLASS
-  // =====================================================
-
-  const getStatusClass = (status) => {
-    const value =
-      String(status || "Pending")
-        .toLowerCase();
-
-    return `dashboard-status ${value}`;
-  };
-
-  // =====================================================
-  // STATUS TEXT
-  // =====================================================
-
-  const getStatusText = (status) => {
-    return status || "Pending";
-  };
-
-  // =====================================================
-  // PAGE
-  // =====================================================
+  const recent = donations.slice(0, 4);
+  const completed = count(["collected", "completed", "delivered"]);
+  const accepted = count(["accepted"]);
+  const progress = donations.length ? Math.round(((accepted + completed) / donations.length) * 100) : 0;
 
   return (
-    <div className="donor-dashboard-page">
-
-      {/* =================================================
-          HERO
-      ================================================= */}
-
-      <section className="dashboard-hero">
-
-        <div className="dashboard-hero-content">
-
-          <span className="dashboard-eyebrow">
-            DONOR DASHBOARD
-          </span>
-
-          <h1>
-            Welcome back,{" "}
-            <span>
-              {userName}
-            </span>{" "}
-            👋
-          </h1>
-
-          <p>
-            Every item you give can become
-            something meaningful for someone
-            who needs it.
-          </p>
-
-        </div>
-
-
-        <div className="dashboard-hero-actions">
-
-          {/* LOGOUT */}
-          <button
-            type="button"
-            className="dashboard-top-button logout-top-button"
-            onClick={() => {
-
-              localStorage.removeItem("access");
-              localStorage.removeItem("refresh");
-
-              localStorage.removeItem("user_type");
-              localStorage.removeItem("user_id");
-              localStorage.removeItem("user_name");
-              localStorage.removeItem("user_email");
-
-              navigate("/login", {
-                replace: true
-              });
-
-            }}
-          >
-            <span>↪</span>
-            Logout
-          </button>
-
-
-          {/* DONATE */}
-          <button
-            type="button"
-            className="dashboard-donate-top-button"
-            onClick={() =>
-              navigate("/donate-item")
-            }
-          >
-            <span>＋</span>
-            Donate an Item
-          </button>
-
-        </div>
-
-      </section>
-
-
-      {/* =================================================
-          USER INFO
-      ================================================= */}
-
-      <section className="dashboard-user-card">
-
-        <div className="dashboard-user-avatar">
-          {userName
-            .charAt(0)
-            .toUpperCase()}
-        </div>
-
-        <div className="dashboard-user-info">
-
-          <strong>
-            {userName}
-          </strong>
-
-          <span>
-            {userEmail ||
-              "Donor account"}
-          </span>
-
-        </div>
-
-        <button
-          className="profile-button"
-          onClick={() =>
-            navigate("/profile")
-          }
-        >
-          View Profile →
-        </button>
-
-      </section>
-
-
-      {/* =================================================
-          STATISTICS
-      ================================================= */}
-
-      <section className="dashboard-stats">
-
-        {/* TOTAL */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon">
-            📦
-          </div>
-
-          <div>
-
-            <span>
-              TOTAL DONATIONS
-            </span>
-
-            <strong>
-              {totalDonations}
-            </strong>
-
-            <small>
-              Items donated
-            </small>
-
-          </div>
-
-        </div>
-
-
-        {/* PENDING */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon pending-icon">
-            ◷
-          </div>
-
-          <div>
-
-            <span>
-              PENDING
-            </span>
-
-            <strong>
-              {pendingDonations}
-            </strong>
-
-            <small>
-              Awaiting NGO review
-            </small>
-
-          </div>
-
-        </div>
-
-
-        {/* ACCEPTED */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon accepted-icon">
-            ✓
-          </div>
-
-          <div>
-
-            <span>
-              ACCEPTED
-            </span>
-
-            <strong>
-              {acceptedDonations}
-            </strong>
-
-            <small>
-              Accepted by NGOs
-            </small>
-
-          </div>
-
-        </div>
-
-
-        {/* COLLECTED */}
-
-        <div className="stat-card">
-
-          <div className="stat-icon collected-icon">
-            ♥
-          </div>
-
-          <div>
-
-            <span>
-              COLLECTED
-            </span>
-
-            <strong>
-              {collectedDonations}
-            </strong>
-
-            <small>
-              Successfully collected
-            </small>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* =================================================
-          QUICK ACTIONS
-      ================================================= */}
-
-      <section className="dashboard-section">
-
-        <div className="section-heading">
-
-          <div>
-
-            <span>
-              GET STARTED
-            </span>
-
-            <h2>
-              Make your next move
-            </h2>
-
-          </div>
-
-        </div>
-
-
-        <div className="quick-actions">
-
-          {/* DONATE */}
-
-          <button
-            className="quick-action donate-action"
-            onClick={() =>
-              navigate("/donate-item")
-            }
-          >
-
-            <div className="quick-action-icon">
-              📦
-            </div>
-
-            <div>
-
-              <h3>
-                Donate an Item
-              </h3>
-
-              <p>
-                Give something useful
-                a second life.
-              </p>
-
-            </div>
-
-            <span className="action-arrow">
-              →
-            </span>
-
-          </button>
-
-
-          {/* MY DONATIONS */}
-
-          <button
-            className="quick-action"
-            onClick={() =>
-              navigate("/my-donations")
-            }
-          >
-
-            <div className="quick-action-icon">
-              📋
-            </div>
-
-            <div>
-
-              <h3>
-                My Donations
-              </h3>
-
-              <p>
-                Track your donated
-                items and their status.
-              </p>
-
-            </div>
-
-            <span className="action-arrow">
-              →
-            </span>
-
-          </button>
-
-
-          {/* PROFILE */}
-
-          <button
-            className="quick-action"
-            onClick={() =>
-              navigate("/profile")
-            }
-          >
-
-            <div className="quick-action-icon">
-              👤
-            </div>
-
-            <div>
-
-              <h3>
-                My Profile
-              </h3>
-
-              <p>
-                View and manage your
-                donor information.
-              </p>
-
-            </div>
-
-            <span className="action-arrow">
-              →
-            </span>
-
-          </button>
-
-        </div>
-
-      </section>
-
-
-      {/* =================================================
-          RECENT DONATIONS
-      ================================================= */}
-
-      <section className="dashboard-section">
-
-        <div className="section-heading">
-
-          <div>
-
-            <span>
-              YOUR ACTIVITY
-            </span>
-
-            <h2>
-              Recent donations
-            </h2>
-
-          </div>
-
-
-          {donations.length > 0 && (
-
-            <button
-              className="view-all-button"
-              onClick={() =>
-                navigate("/my-donations")
-              }
-            >
-              View all →
+    <div className="donor-dashboard-page donor-dashboard-modern">
+      <section className="donor-dashboard-hero">
+        <div className="donor-dashboard-hero-copy">
+          <span className="dashboard-eyebrow">DONOR WORKSPACE</span>
+          <h2>Welcome back, <strong>{name}</strong> <span aria-hidden="true">👋</span></h2>
+          <p>Track your donations, follow their progress, and keep making a meaningful difference.</p>
+          <div className="hero-actions">
+            <button className="donor-primary-cta" onClick={() => navigate("/donate-item")}>
+              <FiPlus /> Donate an Item <FiArrowRight />
             </button>
-
-          )}
-
+            <button className="donor-secondary-cta" onClick={() => navigate("/my-donations")}>
+              View My Donations
+            </button>
+          </div>
         </div>
+        <div className="hero-impact-card">
+          <div className="impact-ring" style={{ "--progress": `${progress}%` }}>
+            <span>{loading ? "—" : `${progress}%`}</span>
+          </div>
+          <div>
+            <span>DONATION PROGRESS</span>
+            <h3>{progress ? "Great momentum" : "Ready to begin"}</h3>
+            <p>{progress ? "Your active donations are moving forward." : "Start your first donation and create impact."}</p>
+          </div>
+          <FiHeart className="impact-heart" />
+        </div>
+      </section>
 
+      <section className="dashboard-stats donor-compact-stats">
+        {stats.map(({ label, value, icon: Icon, tone }) => (
+          <div className="stat-card" key={label}>
+            <div className={`stat-icon ${tone}`}><Icon /></div>
+            <div>
+              <span>{label}</span>
+              <strong>{loading ? "—" : value}</strong>
+              <small>{label === "Total Donations" ? "Items donated" : "Current status"}</small>
+            </div>
+          </div>
+        ))}
+      </section>
 
-        <div className="recent-donations-card">
-
+      <section className="dashboard-grid-main">
+        <div className="donor-status-card dashboard-panel">
+          <div className="section-heading">
+            <div><span>RECENT DONATIONS</span><h2>Latest activity</h2></div>
+            <button className="text-link" onClick={() => navigate("/my-donations")}>View all <FiArrowRight /></button>
+          </div>
           {loading ? (
-
+            <p className="dashboard-muted">Loading your donations…</p>
+          ) : recent.length === 0 ? (
             <div className="dashboard-empty">
-
-              <div className="dashboard-loading">
-                <span />
-              </div>
-
-              <p>
-                Loading your donations...
-              </p>
-
+              <FiGift />
+              <p>No donations yet.</p>
+              <button onClick={() => navigate("/donate-item")}>Make your first donation <FiArrowRight /></button>
             </div>
-
-          ) : recentDonations.length === 0 ? (
-
-            <div className="dashboard-empty">
-
-              <div className="empty-dashboard-icon">
-                📦
-              </div>
-
-              <h3>
-                No donations yet
-              </h3>
-
-              <p>
-                Your donation activity will
-                appear here.
-              </p>
-
-              <button
-                onClick={() =>
-                  navigate("/donate-item")
-                }
-              >
-                Make your first donation →
-              </button>
-
-            </div>
-
           ) : (
-
-            <div className="recent-list">
-
-              {recentDonations.map(
-                (donation) => (
-
-                  <div
-                    className="recent-donation"
-                    key={donation.id}
-                  >
-
-                    {/* IMAGE */}
-
-                    <div className="recent-image">
-
-                      {donation.item_image ? (
-
-                        <img
-                          src={
-                            donation.item_image
-                          }
-                          alt={
-                            donation.item_name
-                          }
-                        />
-
-                      ) : (
-
-                        <span>
-                          📦
-                        </span>
-
-                      )}
-
-                    </div>
-
-
-                    {/* INFO */}
-
-                    <div className="recent-info">
-
-                      <strong>
-                        {donation.item_name ||
-                          "Donation"}
-                      </strong>
-
-                      <span>
-                        {donation.ngo_name ||
-                          "NGO not available"}
-                      </span>
-
-                    </div>
-
-
-                    {/* STATUS */}
-
-                    <span
-                      className={getStatusClass(
-                        donation.status
-                      )}
-                    >
-                      {getStatusText(
-                        donation.status
-                      )}
-                    </span>
-
-
-                    {/* DATE */}
-
-                    <span className="recent-date">
-
-                      {donation.donation_date
-                        ? new Date(
-                            donation.donation_date
-                          ).toLocaleDateString()
-                        : "--"}
-
-                    </span>
-
+            <div className="recent-mini-list">
+              {recent.map((d, i) => {
+                const status = String(d.status || "pending").toLowerCase();
+                const title = d.item_name || d.item || d.title || "Donation";
+                return (
+                  <div className="recent-mini-row" key={d.id || i}>
+                    <div className="recent-item-icon"><FiPackage /></div>
+                    <div className="recent-item-copy"><strong>{title}</strong><span>{d.category || "Donation item"}</span></div>
+                    <span className={`mini-status ${status}`}>{d.status || "Pending"}</span>
                   </div>
-
-                )
-              )}
-
+                );
+              })}
             </div>
-
           )}
-
         </div>
 
+        <div className="dashboard-panel ai-insight-panel">
+          <div className="panel-icon"><FiActivity /></div>
+          <span className="panel-kicker">DONATION JOURNEY</span>
+          <h3>Every contribution counts.</h3>
+          <p>Keep your donation journey moving. Accepted and collected items are reflected in your progress automatically.</p>
+          <div className="journey-line">
+            <div><span>Accepted</span><strong>{accepted}</strong></div>
+            <div><span>Collected</span><strong>{completed}</strong></div>
+          </div>
+          <button onClick={() => navigate("/my-activity")}>View Activity <FiArrowRight /></button>
+        </div>
       </section>
 
-
-      {/* =================================================
-          IMPACT CARD
-      ================================================= */}
-
-      <section className="dashboard-impact">
-
-        <div className="impact-symbol">
-          ♥
+      <section className="quick-actions-section">
+        <div className="section-heading section-heading-wide">
+          <div><span>QUICK ACTIONS</span><h2>What would you like to do?</h2></div>
         </div>
-
-        <div className="impact-content">
-
-          <span>
-            YOUR IMPACT
-          </span>
-
-          <h2>
-            Small contributions.
-            <br />
-            Meaningful change.
-          </h2>
-
-          <p>
-            Every donation helps useful resources
-            reach organizations and communities
-            that need them.
-          </p>
-
+        <div className="quick-actions-grid">
+          <button className="quick-action" onClick={() => navigate("/donate-item")}><FiPlus /><strong>Add Donation</strong><span>Create a new donation</span></button>
+          <button className="quick-action" onClick={() => navigate("/my-donations")}><FiPackage /><strong>My Donations</strong><span>Track your items</span></button>
+          <button className="quick-action" onClick={() => navigate("/profile")}><FiUser /><strong>My Profile</strong><span>Manage your details</span></button>
+          <button className="quick-action" onClick={() => navigate("/notifications")}><FiBell /><strong>Notifications</strong><span>See recent updates</span></button>
         </div>
-
-        <div className="impact-number">
-
-          <strong>
-            {totalDonations}
-          </strong>
-
-          <span>
-            contributions
-          </span>
-
-        </div>
-
       </section>
 
+      <section className="donor-impact-banner">
+        <div className="impact-banner-icon"><FiHeart /></div>
+        <div><strong>Together, we create lasting change</strong><span>Your kindness today can build a better tomorrow for someone who needs it.</span></div>
+        <button onClick={() => navigate("/donate-item")}>Donate Now <FiArrowRight /></button>
+      </section>
     </div>
   );
 }
-
-export default DonorDashboard;

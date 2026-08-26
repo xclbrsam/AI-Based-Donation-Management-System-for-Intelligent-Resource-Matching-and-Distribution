@@ -4,19 +4,19 @@
 ===================================================== */
 
 :root {
-  --login-navy: #172033;
-  --login-navy-light: #26334a;
+  --login-navy: #18181B;
+  --login-navy-light: #52525B;
 
-  --login-ivory: #faf8f3;
+  --login-ivory: #FAFAF9;
   --login-white: #ffffff;
 
-  --login-coral: #e8755c;
-  --login-coral-dark: #d85f47;
-  --login-coral-soft: #f8e1da;
+  --login-coral: #7F1D1D;
+  --login-coral-dark: #6B1616;
+  --login-coral-soft: #FDF2F2;
 
-  --login-text: #1c2535;
-  --login-muted: #727987;
-  --login-border: #e5e2dc;
+  --login-text: #18181B;
+  --login-muted: #6B7280;
+  --login-border: #E4E4E7;
 
   --login-shadow:
     0 25px 70px rgba(23, 32, 51, 0.12);
@@ -28,18 +28,18 @@
 
 body.dark-theme {
   --login-navy: #0b1220;
-  --login-navy-light: #172033;
+  --login-navy-light: #18181B;
 
-  --login-ivory: #0d111b;
-  --login-white: #151c2a;
+  --login-ivory: #111113;
+  --login-white: #1C1C20;
 
-  --login-coral: #e8755c;
-  --login-coral-dark: #f08a72;
-  --login-coral-soft: #3a2420;
+  --login-coral: #7F1D1D;
+  --login-coral-dark: #D46A4C;
+  --login-coral-soft: #3A1A1A;
 
   --login-text: #f3f5f8;
-  --login-muted: #a5afbd;
-  --login-border: #303b4d;
+  --login-muted: #71717A;
+  --login-border: #303038;
 
   --login-shadow:
     0 25px 70px rgba(0, 0, 0, 0.30);
@@ -147,7 +147,7 @@ body.dark-theme {
 .brand-eyebrow {
   margin: 0 0 20px;
 
-  color: #e8a395;
+  color: #B64A4A;
 
   font-size: 12px;
   font-weight: 700;
@@ -949,7 +949,7 @@ body.dark-theme .login-card {
 }
 
 body.dark-theme .input-wrapper {
-  background: #111927;
+  background: #18181B;
   border-color: var(--login-border);
 }
 
@@ -958,7 +958,7 @@ body.dark-theme .input-wrapper:hover {
 }
 
 body.dark-theme .input-wrapper:focus-within {
-  background: #111927;
+  background: #18181B;
   border-color: var(--login-coral);
 }
 
@@ -967,7 +967,7 @@ body.dark-theme .input-wrapper input {
 }
 
 body.dark-theme .input-wrapper input::placeholder {
-  color: #778397;
+  color: #6B7280;
 }
 
 body.dark-theme .input-icon {
@@ -1016,7 +1016,7 @@ body.dark-theme .brand-description {
 }
 
 body.dark-theme .brand-eyebrow {
-  color: #e8a395;
+  color: #B64A4A;
 }
 
 body.dark-theme .impact-card span {
@@ -1036,7 +1036,7 @@ body.dark-theme .input-wrapper input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--login-text);
 
   -webkit-box-shadow:
-    0 0 0 1000px #111927 inset;
+    0 0 0 1000px #18181B inset;
 }
 
 /* Smooth theme transition */

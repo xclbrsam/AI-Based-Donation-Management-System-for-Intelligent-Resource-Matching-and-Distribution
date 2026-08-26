@@ -8,29 +8,29 @@
 ===================================================== */
 
 body.dark-theme {
-  --md-ivory: #0d111b;
-  --md-white: #151c2a;
+  --md-ivory: #111113;
+  --md-white: #1C1C20;
 
   --md-navy: #f3f5f8;
   --md-navy-light: #cbd5e1;
 
-  --md-navy-soft: #202938;
+  --md-navy-soft: #18181B;
 
-  --md-muted: #a5afbd;
+  --md-muted: #71717A;
 
-  --md-border: #303b4d;
+  --md-border: #303038;
 
-  --md-coral: #e8755c;
-  --md-coral-dark: #d85f47;
-  --md-coral-soft: #3a2420;
+  --md-coral: #7F1D1D;
+  --md-coral-dark: #6B1616;
+  --md-coral-soft: #3A1A1A;
 
-  --md-input-bg: #111927;
-  --md-upload-bg: #151e2b;
-  --md-preview-bg: #202938;
+  --md-input-bg: #18181B;
+  --md-upload-bg: #18181B;
+  --md-preview-bg: #18181B;
 
-  --md-error-bg: #3a2422;
-  --md-error-border: #633b37;
-  --md-error-text: #f09b91;
+  --md-error-bg: #3A1A1A;
+  --md-error-border: #6B3A32;
+  --md-error-text: #B64A4A;
 }
 
 
@@ -43,9 +43,9 @@ body.dark-theme {
 
   padding: 42px 24px 70px;
 
-  background: var(--md-ivory, #f8f5ef);
+  background: var(--md-ivory, #FAFAF9);
 
-  color: var(--md-navy, #14213d);
+  color: var(--md-navy, #18181B);
 
   transition:
     background-color 0.3s ease,
@@ -74,7 +74,7 @@ body.dark-theme {
 
   border-radius: 999px;
 
-  background: var(--md-navy, #14213d);
+  background: var(--md-navy, #18181B);
 
   color: var(--md-white, #ffffff);
 
@@ -88,7 +88,7 @@ body.dark-theme {
 .edit-donation-header h1 {
   margin: 0;
 
-  color: var(--md-navy, #14213d);
+  color: var(--md-navy, #18181B);
 
   font-size: clamp(
     30px,
@@ -138,7 +138,7 @@ body.dark-theme {
 
   background: var(--md-white, #ffffff);
 
-  border: 1px solid var(--md-border, #e7e1d8);
+  border: 1px solid var(--md-border, #E4E4E7);
 
   border-radius: 16px;
 
@@ -203,7 +203,7 @@ body.dark-theme {
 
   color: var(
     --md-coral,
-    #e8755c
+    #7F1D1D
   );
 
   font-size: 10px;
@@ -218,7 +218,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   font-size: 21px;
@@ -258,7 +258,7 @@ body.dark-theme {
 .edit-upload-box:hover {
   border-color: var(
     --md-coral,
-    #e8755c
+    #7F1D1D
   );
 
   background: #fffaf7;
@@ -289,7 +289,7 @@ body.dark-theme {
 .edit-upload-content strong {
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   font-size: 15px;
@@ -385,7 +385,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   font-size: 12px;
@@ -422,7 +422,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   font-family: inherit;
@@ -464,7 +464,7 @@ body.dark-theme {
 .form-group textarea:focus {
   border-color: var(
     --md-coral,
-    #e8755c
+    #7F1D1D
   );
 
   box-shadow:
@@ -515,7 +515,7 @@ body.dark-theme {
 .location-input:focus-within {
   border-color: var(
     --md-coral,
-    #e8755c
+    #7F1D1D
   );
 
   box-shadow:
@@ -545,7 +545,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 }
 
@@ -606,7 +606,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   border-color: var(
@@ -624,7 +624,7 @@ body.dark-theme {
 .edit-save-button {
   background: var(
     --md-coral,
-    #e8755c
+    #7F1D1D
   );
 
   color: var(
@@ -695,7 +695,7 @@ body.dark-theme {
   border: 1px solid
     var(
       --md-border,
-      #e7e1d8
+      #E4E4E7
     );
 
   border-radius: 16px;
@@ -728,7 +728,7 @@ body.dark-theme {
 
   color: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   font-size: 22px;
@@ -761,7 +761,7 @@ body.dark-theme {
 
   background: var(
     --md-navy,
-    #14213d
+    #18181B
   );
 
   color: #ffffff;
@@ -789,7 +789,7 @@ body.dark-theme {
 
   color: #a33a2f;
 
-  background: #fff0ee;
+  background: #FDEEEE;
 
   border: 1px solid #f0d0ca;
 
@@ -834,7 +834,7 @@ body.dark-theme .edit-upload-box {
 }
 
 body.dark-theme .edit-upload-box:hover {
-  background: #1b2432;
+  background: #18181B;
 
   border-color: var(--md-coral);
 }
@@ -874,7 +874,7 @@ body.dark-theme .edit-cancel-button {
 }
 
 body.dark-theme .edit-cancel-button:hover:not(:disabled) {
-  background: #202938;
+  background: #18181B;
 }
 
 body.dark-theme .inline-error {
@@ -886,7 +886,7 @@ body.dark-theme .inline-error {
 }
 
 body.dark-theme .edit-donation-error button {
-  background: #202938;
+  background: #18181B;
 
   color: #ffffff;
 }

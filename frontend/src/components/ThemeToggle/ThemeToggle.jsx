@@ -8,19 +8,10 @@ function ThemeToggle() {
   return (
     <button
       type="button"
+      className="theme-toggle"
       onClick={toggleTheme}
-      style={{
-        display: "block",
-        width: "50px",
-        height: "40px",
-        background: "red",
-        color: "white",
-        border: "2px solid white",
-        borderRadius: "8px",
-        cursor: "pointer",
-        fontSize: "20px",
-        zIndex: 99999,
-      }}
+      aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+      title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
     >
       {theme === "light" ? "🌙" : "☀️"}
     </button>

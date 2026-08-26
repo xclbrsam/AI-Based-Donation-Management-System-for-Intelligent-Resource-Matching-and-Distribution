@@ -9,27 +9,27 @@
 ===================================================== */
 
 :root {
-  --dash-bg: #f8f5ef;
+  --dash-bg: #FAF7F2;
   --dash-surface: #ffffff;
-  --dash-surface-soft: #fcfaf6;
+  --dash-surface-soft: #FFF7ED;
 
   --dash-text: #182235;
-  --dash-muted: #737b89;
+  --dash-muted: #78716C;
 
-  --dash-border: #e7e1d8;
+  --dash-border: #E4E4E7;
 
-  --dash-navy: #172033;
-  --dash-navy-light: #26334a;
+  --dash-navy: #18181B;
+  --dash-navy-light: #52525B;
 
-  --dash-coral: #e8755c;
-  --dash-coral-dark: #d85f47;
-  --dash-coral-soft: #f8e1da;
+  --dash-coral: #7F1D1D;
+  --dash-coral-dark: #6B1616;
+  --dash-coral-soft: #FDF2F2;
 
-  --dash-green: #4d8066;
-  --dash-green-soft: #edf5ef;
+  --dash-green: #7F1D1D;
+  --dash-green-soft: #FDF2F2;
 
-  --dash-gold: #a47735;
-  --dash-gold-soft: #f8f1df;
+  --dash-gold: #EA580C;
+  --dash-gold-soft: #FFF1E6;
 
   --dash-icon-bg: #eef0f3;
 
@@ -43,25 +43,25 @@
 ===================================================== */
 
 body.dark-theme {
-  --dash-bg: #0d111b;
-  --dash-surface: #151c2a;
-  --dash-surface-soft: #192231;
+  --dash-bg: #160B0D;
+  --dash-surface: #27171A;
+  --dash-surface-soft: #321B1F;
 
-  --dash-text: #f3f5f8;
-  --dash-muted: #9aa4b4;
+  --dash-text: #FFF8F4;
+  --dash-muted: #B9A7A1;
 
-  --dash-border: #293344;
+  --dash-border: #4A2B30;
 
-  --dash-navy: #090e18;
-  --dash-navy-light: #151e2d;
+  --dash-navy: #111113;
+  --dash-navy-light: #18181B;
 
-  --dash-coral-soft: #35201d;
+  --dash-coral-soft: #432025;
 
-  --dash-green-soft: #17271f;
+  --dash-green-soft: #432025;
 
   --dash-gold-soft: #2b2418;
 
-  --dash-icon-bg: #202938;
+  --dash-icon-bg: #18181B;
 
   --dash-shadow:
     0 18px 50px rgba(0, 0, 0, 0.28);
@@ -78,12 +78,12 @@ body {
   background:
     radial-gradient(
       circle at 10% 10%,
-      rgba(232, 117, 92, 0.08),
+      rgba(234, 88, 12, 0.06),
       transparent 25%
     ),
     radial-gradient(
       circle at 90% 20%,
-      rgba(91, 122, 158, 0.08),
+      rgba(127, 29, 29, 0.05),
       transparent 25%
     ),
     var(--dash-bg);
@@ -99,12 +99,12 @@ body.dark-theme {
   background:
     radial-gradient(
       circle at 10% 10%,
-      rgba(232, 117, 92, 0.08),
+      rgba(234, 88, 12, 0.06),
       transparent 25%
     ),
     radial-gradient(
       circle at 90% 20%,
-      rgba(70, 104, 145, 0.10),
+      rgba(234, 88, 12, 0.05),
       transparent 25%
     ),
     var(--dash-bg);
@@ -320,7 +320,7 @@ body.dark-theme {
 
   margin-bottom: 12px;
 
-  color: #e9a294;
+  color: #F5D6CF;
 
   font-size: 9px;
   font-weight: 800;
@@ -894,7 +894,7 @@ body.dark-theme {
 
   margin-bottom: 7px;
 
-  color: #e9a294;
+  color: #F5D6CF;
 
   font-size: 9px;
 
@@ -920,7 +920,7 @@ body.dark-theme {
 
   margin: 10px 0 0;
 
-  color: #aeb7c4;
+  color: #71717A;
 
   font-size: 10px;
 
@@ -972,12 +972,12 @@ body.dark-theme .dashboard-page {
   background:
     radial-gradient(
       circle at 5% 35%,
-      rgba(232, 117, 92, 0.045),
+      rgba(234, 88, 12, 0.035),
       transparent 20%
     ),
     radial-gradient(
       circle at 95% 70%,
-      rgba(70, 104, 145, 0.05),
+      rgba(127, 29, 29, 0.035),
       transparent 22%
     );
 }

@@ -5,23 +5,23 @@
 ===================================================== */
 
 :root {
-  --dp-navy: #172033;
-  --dp-navy-light: #26334a;
+  --dp-navy: #18181B;
+  --dp-navy-light: #52525B;
 
-  --dp-ivory: #faf8f3;
+  --dp-ivory: #FAFAF9;
   --dp-white: #ffffff;
 
-  --dp-coral: #e8755c;
-  --dp-coral-dark: #d85f47;
-  --dp-coral-soft: #f8e1da;
+  --dp-coral: #7F1D1D;
+  --dp-coral-dark: #6B1616;
+  --dp-coral-soft: #FDF2F2;
 
-  --dp-text: #1c2535;
-  --dp-muted: #727987;
+  --dp-text: #18181B;
+  --dp-muted: #6B7280;
 
-  --dp-border: #e5e2dc;
+  --dp-border: #E4E4E7;
 
-  --dp-green: #4d8066;
-  --dp-green-soft: #edf5ef;
+  --dp-green: #7F1D1D;
+  --dp-green-soft: #FDF2F2;
 
   --dp-shadow:
     0 15px 45px rgba(23, 32, 51, 0.07);
@@ -34,23 +34,23 @@
 ===================================================== */
 
 body.dark-theme {
-  --dp-navy: #090e18;
-  --dp-navy-light: #151e2d;
+  --dp-navy: #111113;
+  --dp-navy-light: #18181B;
 
-  --dp-ivory: #0d111b;
-  --dp-white: #151c2a;
+  --dp-ivory: #111113;
+  --dp-white: #1C1C20;
 
-  --dp-coral: #e8755c;
-  --dp-coral-dark: #d85f47;
-  --dp-coral-soft: #35201d;
+  --dp-coral: #7F1D1D;
+  --dp-coral-dark: #6B1616;
+  --dp-coral-soft: #3A1A1A;
 
   --dp-text: #f3f5f8;
-  --dp-muted: #9aa4b4;
+  --dp-muted: #71717A;
 
-  --dp-border: #293344;
+  --dp-border: #303038;
 
   --dp-green: #6da889;
-  --dp-green-soft: #17271f;
+  --dp-green-soft: #3A1A1A;
 
   --dp-shadow:
     0 20px 55px rgba(0, 0, 0, 0.30);
@@ -238,7 +238,7 @@ body.dark-theme {
 
   margin-bottom: 10px;
 
-  color: #e9a294;
+  color: #F5D6CF;
 
   font-size: 9px;
   font-weight: 800;
@@ -1006,7 +1006,7 @@ body.dark-theme {
   border: 1px solid var(--di-border, #ddd);
   border-radius: 10px;
   background: #fff;
-  color: var(--di-text, #17202a);
+  color: var(--di-text, #18181B);
   font-family: inherit;
   font-size: 13px;
   outline: none;
@@ -1016,7 +1016,7 @@ body.dark-theme {
 .profile-edit-field input:focus,
 .profile-edit-field textarea:focus,
 .profile-edit-field select:focus {
-  border-color: var(--di-coral, #e8755c);
+  border-color: var(--di-coral, #7F1D1D);
   box-shadow: 0 0 0 3px rgba(232, 117, 92, 0.10);
 }
 
@@ -1062,7 +1062,7 @@ body.dark-theme {
 }
 
 .profile-save-message.error {
-  background: #fff0ee;
+  background: #FDEEEE;
   color: #b84032;
   border: 1px solid #f0ccc7;
 }

@@ -1,38 +1,117 @@
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  FiHome,
+  FiGift,
+  FiPackage,
+  FiActivity,
+  FiBell,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiSun,
+} from "react-icons/fi";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import "./Sidebar.css";
 
-function Sidebar() {
+const navItems = [
+  { to: "/dashboard", label: "Dashboard", icon: FiHome, end: true },
+  { to: "/donate-item", label: "Donate", icon: FiGift },
+  { to: "/my-donations", label: "My Donations", icon: FiPackage },
+  { to: "/my-activity", label: "My Activity", icon: FiActivity },
+  { to: "/notifications", label: "Notifications", icon: FiBell, badge: true },
+];
+
+function Sidebar({ mobileOpen = false, onClose = () => {} }) {
+  const navigate = useNavigate();
+  const userName = localStorage.getItem("user_name") || "Donor";
+
+  const handleLogout = () => {
+    localStorage.removeItem("access");
+    localStorage.removeItem("refresh");
+    localStorage.removeItem("user_type");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("user_email");
+    navigate("/login", { replace: true });
+  };
+
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <h2>AI Donation</h2>
+    <aside className={`donor-sidebar ${mobileOpen ? "mobile-open" : ""}`}>
+      <div className="sidebar-brand" onClick={() => { navigate("/dashboard"); onClose(); }}>
+        <div className="sidebar-brand-mark">AI</div>
+        <div>
+          <strong>AI Donation</strong>
+          <span>Donor workspace</span>
+        </div>
       </div>
 
-      <ul className="sidebar-menu">
-        <li>
-          <Link to="/dashboard">Dashboard</Link>
-        </li>
+      <div className="sidebar-user">
+        <div className="sidebar-avatar">{userName.charAt(0).toUpperCase()}</div>
+        <div className="sidebar-user-copy">
+          <strong>{userName}</strong>
+          <span>Donor</span>
+        </div>
+      </div>
 
-        <li>
-          <Link to="/donate">Donate</Link>
-        </li>
+      <nav className="sidebar-nav">
+        <p className="sidebar-section-label">MAIN</p>
+        {navItems.slice(0, 4).map(({ to, label, icon: Icon, end }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={end}
+            className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+            onClick={onClose}
+          >
+            <Icon />
+            <span>{label}</span>
+          </NavLink>
+        ))}
 
-        <li>
-          <Link to="/history">Donation History</Link>
-        </li>
+        <p className="sidebar-section-label">COMMUNICATION</p>
+        <NavLink
+          to="/notifications"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onClose}
+        >
+          <FiBell />
+          <span>Notifications</span>
+          <span className="sidebar-badge">•</span>
+        </NavLink>
 
-        <li>
-          <Link to="/profile">Profile</Link>
-        </li>
+        <p className="sidebar-section-label">ACCOUNT</p>
+        <NavLink
+          to="/profile"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onClose}
+        >
+          <FiUser />
+          <span>Profile</span>
+        </NavLink>
+        <NavLink
+          to="/settings"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onClose}
+        >
+          <FiSettings />
+          <span>Settings</span>
+        </NavLink>
+      </nav>
 
-        <li>
-          <Link to="/ngo">NGOs</Link>
-        </li>
+      <div className="sidebar-bottom">
+        <div className="sidebar-theme-row">
+          <div className="sidebar-theme-label">
+            <span className="theme-icon"><FiSun /></span>
+            <span>Appearance</span>
+          </div>
+          <ThemeToggle />
+        </div>
 
-        <li>
-          <Link to="/login">Logout</Link>
-        </li>
-      </ul>
+        <button type="button" className="sidebar-logout" onClick={handleLogout}>
+          <FiLogOut />
+          <span>Logout</span>
+        </button>
+      </div>
     </aside>
   );
 }

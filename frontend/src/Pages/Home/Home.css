@@ -5,26 +5,26 @@
 ===================================================== */
 
 :root {
-  --home-bg: #f8f5ef;
+  --home-bg: #FAFAF9;
   --home-surface: #ffffff;
-  --home-surface-soft: #fcfaf6;
+  --home-surface-soft: #FAFAF9;
 
   --home-text: #182235;
   --home-muted: #737b89;
 
-  --home-border: #e7e1d8;
+  --home-border: #E4E4E7;
 
-  --home-navy: #172033;
-  --home-navy-light: #26334a;
+  --home-navy: #18181B;
+  --home-navy-light: #52525B;
 
-  --home-coral: #e8755c;
-  --home-coral-dark: #d85f47;
-  --home-coral-soft: #f8e1da;
+  --home-coral: #7F1D1D;
+  --home-coral-dark: #6B1616;
+  --home-coral-soft: #FDF2F2;
 
-  --home-green: #4d8066;
-  --home-green-soft: #edf5ef;
+  --home-green: #7F1D1D;
+  --home-green-soft: #FDF2F2;
 
-  --home-gold: #a47735;
+  --home-gold: #C2410C;
 
   --home-shadow:
     0 15px 45px rgba(23, 32, 51, 0.08);
@@ -36,23 +36,23 @@
 ===================================================== */
 
 body.dark-theme {
-  --home-bg: #0d111b;
-  --home-surface: #151c2a;
-  --home-surface-soft: #192231;
+  --home-bg: #111113;
+  --home-surface: #1C1C20;
+  --home-surface-soft: #242429;
 
   --home-text: #f3f5f8;
-  --home-muted: #9aa4b4;
+  --home-muted: #71717A;
 
-  --home-border: #293344;
+  --home-border: #303038;
 
-  --home-navy: #090e18;
-  --home-navy-light: #151e2d;
+  --home-navy: #111113;
+  --home-navy-light: #18181B;
 
-  --home-coral-soft: #35201d;
-  --home-green-soft: #17271f;
+  --home-coral-soft: #3A1A1A;
+  --home-green-soft: #3A1A1A;
 
-  --home-coral: #e8755c;
-  --home-coral-dark: #f08a72;
+  --home-coral: #7F1D1D;
+  --home-coral-dark: #D46A4C;
   --home-green: #6da889;
   --home-gold: #d0a45d;
 
@@ -476,7 +476,7 @@ body.dark-theme {
   background:
     linear-gradient(
       145deg,
-      #172033,
+      #18181B,
       #25334a
     );
 
@@ -498,7 +498,7 @@ body.dark-theme {
 
   justify-content: space-between;
 
-  color: #aeb7c4;
+  color: #71717A;
 
   font-size: 8px;
 
@@ -566,7 +566,7 @@ body.dark-theme {
 .hero-impact-card > p {
   margin: 0;
 
-  color: #aeb7c4;
+  color: #71717A;
 
   font-size: 10px;
 
@@ -850,7 +850,7 @@ body.dark-theme {
   background:
     linear-gradient(
       135deg,
-      #172033,
+      #18181B,
       #25334a
     );
 
@@ -896,7 +896,7 @@ body.dark-theme {
 }
 
 .light-label {
-  color: #e9a294;
+  color: #F5D6CF;
 }
 
 .home-impact-content h2 {
@@ -914,7 +914,7 @@ body.dark-theme {
 .home-impact-content p {
   margin: 13px 0 0;
 
-  color: #aeb7c4;
+  color: #71717A;
 
   font-size: 10px;
 
@@ -948,7 +948,7 @@ body.dark-theme {
 
   margin-top: 3px;
 
-  color: #aeb7c4;
+  color: #71717A;
 
   font-size: 8px;
 
@@ -1669,7 +1669,7 @@ body.dark-theme .hero-impact-card > p,
 body.dark-theme .impact-card-top,
 body.dark-theme .home-impact-content p,
 body.dark-theme .home-impact-stat span {
-  color: #aeb7c4;
+  color: #71717A;
 }
 
 body.dark-theme .home-choice-close {

@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./styles/theme.css";
 import "./index.css";
+import "./styles/redesign.css";
 
 import { BrowserRouter } from "react-router-dom";
 

@@ -5,26 +5,26 @@
 ===================================================== */
 
 :root {
-  --md-navy: #172033;
-  --md-navy-light: #26334a;
+  --md-navy: #18181B;
+  --md-navy-light: #52525B;
 
-  --md-ivory: #faf8f3;
+  --md-ivory: #FAFAF9;
   --md-white: #ffffff;
 
-  --md-coral: #e8755c;
-  --md-coral-dark: #d85f47;
-  --md-coral-soft: #f8e1da;
+  --md-coral: #7F1D1D;
+  --md-coral-dark: #6B1616;
+  --md-coral-soft: #FDF2F2;
 
-  --md-text: #1c2535;
-  --md-muted: #727987;
+  --md-text: #18181B;
+  --md-muted: #6B7280;
 
-  --md-border: #e5e2dc;
+  --md-border: #E4E4E7;
 
-  --md-green: #4d8066;
-  --md-green-soft: #edf5ef;
+  --md-green: #7F1D1D;
+  --md-green-soft: #FDF2F2;
 
-  --md-yellow: #a47735;
-  --md-yellow-soft: #f8f1df;
+  --md-yellow: #C2410C;
+  --md-yellow-soft: #FFF1E6;
 
   --md-blue: #557b9d;
   --md-blue-soft: #edf3f7;
@@ -41,18 +41,18 @@
 ===================================================== */
 
 body.dark-theme {
-  --md-ivory: #0d111b;
-  --md-white: #151c2a;
+  --md-ivory: #111113;
+  --md-white: #1C1C20;
 
   --md-text: #f3f5f8;
-  --md-muted: #a5afbd;
+  --md-muted: #71717A;
 
-  --md-border: #303b4d;
+  --md-border: #303038;
 
   --md-green-soft: #1b2d24;
   --md-yellow-soft: #332a1b;
   --md-blue-soft: #202d3a;
-  --md-red-soft: #3a2422;
+  --md-red-soft: #3A1A1A;
 
   --md-shadow:
     0 14px 45px rgba(0, 0, 0, 0.28);
@@ -813,7 +813,7 @@ body.dark-theme .my-donation-card:hover {
 }
 
 body.dark-theme .my-donation-image {
-  background: #202938;
+  background: #18181B;
 }
 
 body.dark-theme .status-pending {
@@ -828,7 +828,7 @@ body.dark-theme .status-accepted {
 
 body.dark-theme .status-rejected {
   background: var(--md-red-soft);
-  color: #f09b91;
+  color: #B64A4A;
 }
 
 body.dark-theme .status-collected {
@@ -845,7 +845,7 @@ body.dark-theme .donation-date {
 }
 
 body.dark-theme .status-timeline {
-  background: #151e2b;
+  background: #18181B;
   border-color: var(--md-border);
 }
 
@@ -888,8 +888,8 @@ body.dark-theme .my-donations-loading::before {
 
 body.dark-theme .delete-donation-button {
   background: var(--md-red-soft);
-  color: #f09b91;
-  border-color: #633b37;
+  color: #B64A4A;
+  border-color: #6B3A32;
 }
 
 /* Smooth theme transition */

@@ -6,24 +6,24 @@
 ===================================================== */
 
 :root {
-  --ngo-bg: #faf8f3;
+  --ngo-bg: #FAFAF9;
   --ngo-white: #ffffff;
-  --ngo-surface: #fcfaf6;
+  --ngo-surface: #FAFAF9;
 
-  --ngo-navy: #172033;
-  --ngo-navy-light: #26334a;
+  --ngo-navy: #18181B;
+  --ngo-navy-light: #52525B;
 
-  --ngo-coral: #e8755c;
-  --ngo-coral-dark: #d85f47;
-  --ngo-coral-soft: #f8e1da;
+  --ngo-coral: #7F1D1D;
+  --ngo-coral-dark: #6B1616;
+  --ngo-coral-soft: #FDF2F2;
 
-  --ngo-text: #1c2535;
-  --ngo-muted: #727987;
+  --ngo-text: #18181B;
+  --ngo-muted: #6B7280;
 
-  --ngo-border: #e5e2dc;
+  --ngo-border: #E4E4E7;
 
-  --ngo-green: #4d8066;
-  --ngo-green-soft: #edf5ef;
+  --ngo-green: #7F1D1D;
+  --ngo-green-soft: #FDF2F2;
 
   --ngo-shadow:
     0 18px 50px rgba(23, 32, 51, 0.08);
@@ -35,21 +35,21 @@
 ===================================================== */
 
 body.dark-theme {
-  --ngo-bg: #0d111b;
-  --ngo-white: #151c2a;
-  --ngo-surface: #192231;
+  --ngo-bg: #111113;
+  --ngo-white: #1C1C20;
+  --ngo-surface: #242429;
 
-  --ngo-navy: #090e18;
-  --ngo-navy-light: #151e2d;
+  --ngo-navy: #111113;
+  --ngo-navy-light: #18181B;
 
   --ngo-text: #f3f5f8;
-  --ngo-muted: #9aa4b4;
+  --ngo-muted: #71717A;
 
-  --ngo-border: #293344;
+  --ngo-border: #303038;
 
-  --ngo-coral-soft: #35201d;
+  --ngo-coral-soft: #3A1A1A;
 
-  --ngo-green-soft: #17271f;
+  --ngo-green-soft: #3A1A1A;
 
   --ngo-shadow:
     0 22px 60px rgba(0, 0, 0, 0.3);
@@ -160,7 +160,7 @@ body.dark-theme {
 .ngo-brand-eyebrow {
   margin: 0 0 14px;
 
-  color: #e9a294;
+  color: #F5D6CF;
 
   font-size: 9px;
 
@@ -228,7 +228,7 @@ body.dark-theme {
 
 
 .ngo-impact-item > span {
-  color: #e9a294;
+  color: #F5D6CF;
 
   font-size: 9px;
 
@@ -1168,7 +1168,7 @@ body.dark-theme {
 
 body.dark-theme .ngo-brand-eyebrow,
 body.dark-theme .ngo-impact-item > span {
-  color: #e8a395;
+  color: #B64A4A;
 }
 
 body.dark-theme .ngo-brand-message > p:last-child {
@@ -1181,7 +1181,7 @@ body.dark-theme .ngo-impact-item p {
 
 body.dark-theme .ngo-register-form input::placeholder,
 body.dark-theme .ngo-register-form textarea::placeholder {
-  color: #778397;
+  color: #6B7280;
 }
 
 body.dark-theme .ngo-register-form input,
