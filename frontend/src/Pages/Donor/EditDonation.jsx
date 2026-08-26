@@ -1,30 +1,156 @@
+// ============================================================
+// EDIT DONATION
+// ------------------------------------------------------------
+// Only pickup information can be modified while the donation
+// is still Pending.
+//
+// Editable:
+//   • Pickup Address
+//   • Pickup Date
+//   • Pickup Time
+//   • Pickup Notes
+//
+// The actual donation details are intentionally not displayed
+// or editable from this page.
+// ============================================================
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
 import api from "../../services/api";
+
 import "./EditDonation.css";
+
+
+// ============================================================
+// HELPER FUNCTIONS
+// ============================================================
+
+const getPickupValue = (...values) => {
+  const value = values.find(
+    (item) =>
+      item !== undefined &&
+      item !== null &&
+      item !== ""
+  );
+
+  return value ?? "";
+};
+
+
+const formatDateForInput = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  // Already in YYYY-MM-DD format.
+  if (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return value;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const year = date.getFullYear();
+  const month = String(
+    date.getMonth() + 1
+  ).padStart(2, "0");
+
+  const day = String(
+    date.getDate()
+  ).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+
+const formatTimeForInput = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  /*
+   * Handles:
+   * 10:30
+   * 10:30:00
+   * 10:30 AM
+   * 10:30:00 AM
+   */
+
+  const stringValue = String(value).trim();
+
+  const timeMatch = stringValue.match(
+    /^(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?$/i
+  );
+
+  if (!timeMatch) {
+    return "";
+  }
+
+  let hours = Number(timeMatch[1]);
+  const minutes = timeMatch[2];
+  const period = timeMatch[3]?.toUpperCase();
+
+  if (period === "PM" && hours !== 12) {
+    hours += 12;
+  }
+
+  if (period === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, "0")}:${minutes}`;
+};
+
+
+// ============================================================
+// COMPONENT
+// ============================================================
 
 function EditDonation() {
   const navigate = useNavigate();
   const { id } = useParams();
 
+
+  // ----------------------------------------------------------
+  // Pickup Form
+  // ----------------------------------------------------------
+
   const [formData, setFormData] = useState({
-    item_name: "",
-    category: "",
-    quantity: "",
-    condition: "Good",
     location: "",
-    description: "",
-    item_image: null,
+    pickup_date: "",
+    pickup_time: "",
+    pickup_notes: "",
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
+
+  // ----------------------------------------------------------
+  // Donation Status
+  // ----------------------------------------------------------
+
+  const [status, setStatus] = useState("Pending");
+
+
+  // ----------------------------------------------------------
+  // UI State
+  // ----------------------------------------------------------
+
   const [loading, setLoading] = useState(true);
+
   const [saving, setSaving] = useState(false);
+
   const [error, setError] = useState("");
 
-  // =====================================================
-  // LOAD PENDING DONATION
-  // =====================================================
+
+  // ==========================================================
+  // LOAD DONATION
+  // ==========================================================
 
   useEffect(() => {
     const fetchDonation = async () => {
@@ -32,46 +158,109 @@ function EditDonation() {
         setLoading(true);
         setError("");
 
-        const response = await api.get(`donation/${id}/`);
+
+        const response = await api.get(
+          `donation/${id}/`
+        );
+
         const donation = response.data;
 
-        // Only pending donations can be edited.
+
+        // ------------------------------------------------------
+        // Check Donation Status
+        // ------------------------------------------------------
+
+        const currentStatus = String(
+          donation.status || "Pending"
+        ).trim();
+
+        setStatus(currentStatus);
+
+
+        // ------------------------------------------------------
+        // Only Pending Donations Can Be Edited
+        // ------------------------------------------------------
+
         if (
-          String(donation.status || "Pending").toLowerCase() !==
+          currentStatus.toLowerCase() !==
           "pending"
         ) {
-          setError("Only pending donations can be edited.");
+          setError(
+            "This donation can no longer be edited because it has already been processed."
+          );
+
           return;
         }
 
+
+        // ------------------------------------------------------
+        // Pickup Object
+        // ------------------------------------------------------
+
+        const pickup =
+          donation.pickup ||
+          donation.pickup_details ||
+          {};
+
+
+        // ------------------------------------------------------
+        // Load Existing Pickup Information
+        // ------------------------------------------------------
+
         setFormData({
-          item_name: donation.item_name || "",
-          category: donation.category || "",
-          quantity: donation.quantity ?? "",
-          condition: donation.condition || "Good",
-          location: donation.location || "",
-          description: donation.description || "",
-          item_image: null,
+          location: getPickupValue(
+            donation.location,
+            donation.pickup_location,
+            donation.address,
+            pickup.location,
+            pickup.address,
+            pickup.pickup_address
+          ),
+
+          pickup_date: formatDateForInput(
+            getPickupValue(
+              donation.pickup_date,
+              donation.scheduled_date,
+              pickup.pickup_date,
+              pickup.scheduled_date
+            )
+          ),
+
+          pickup_time: formatTimeForInput(
+            getPickupValue(
+              donation.pickup_time,
+              donation.scheduled_time,
+              pickup.pickup_time,
+              pickup.scheduled_time,
+              pickup.time
+            )
+          ),
+
+          pickup_notes: getPickupValue(
+            donation.pickup_notes,
+            donation.pickup_note,
+            pickup.pickup_notes,
+            pickup.notes
+          ),
         });
 
-        if (donation.item_image) {
-          setImagePreview(donation.item_image);
-        }
-      } catch (error) {
+      } catch (err) {
         console.error(
           "EDIT DONATION FETCH ERROR:",
-          error.response?.data || error
+          err.response?.data || err
         );
 
         setError(
-          error.response?.data?.detail ||
-            error.response?.data?.message ||
+          err.response?.data?.detail ||
+            err.response?.data?.message ||
             "Unable to load donation details."
         );
+
       } finally {
         setLoading(false);
       }
     };
+
 
     if (id) {
       fetchDonation();
@@ -81,349 +270,469 @@ function EditDonation() {
     }
   }, [id]);
 
-  // =====================================================
+
+  // ==========================================================
   // HANDLE INPUT
-  // =====================================================
+  // ==========================================================
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
+  const handleChange = (event) => {
+    const {
+      name,
+      value,
+    } = event.target;
 
-    if (files) {
-      const file = files[0] || null;
 
-      setFormData((prev) => ({
-        ...prev,
-        item_image: file,
-      }));
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
 
-      if (file) {
-        setImagePreview(URL.createObjectURL(file));
-      }
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+
+    // Clear previous error when user starts correcting input.
+    if (error) {
+      setError("");
     }
   };
 
-  // =====================================================
-  // SAVE CHANGES
-  // =====================================================
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // ==========================================================
+  // SAVE PICKUP DETAILS
+  // ==========================================================
 
-    if (!formData.item_name.trim()) {
-      alert("Please enter the item name.");
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-    if (!formData.quantity || Number(formData.quantity) <= 0) {
-      alert("Please enter a valid quantity.");
-      return;
-    }
+
+    // --------------------------------------------------------
+    // Validation
+    // --------------------------------------------------------
 
     if (!formData.location.trim()) {
-      alert("Please enter the pickup location.");
+      setError(
+        "Please enter the pickup address."
+      );
+
       return;
     }
+
+
+    if (!formData.pickup_date) {
+      setError(
+        "Please select a pickup date."
+      );
+
+      return;
+    }
+
+
+    if (!formData.pickup_time) {
+      setError(
+        "Please select a pickup time."
+      );
+
+      return;
+    }
+
+
+    // Prevent selecting a past date.
+    const selectedDate = new Date(
+      `${formData.pickup_date}T${formData.pickup_time}`
+    );
+
+    if (
+      !Number.isNaN(selectedDate.getTime()) &&
+      selectedDate < new Date()
+    ) {
+      setError(
+        "Pickup date and time cannot be in the past."
+      );
+
+      return;
+    }
+
 
     try {
       setSaving(true);
       setError("");
 
-      const data = new FormData();
 
-      data.append("item_name", formData.item_name.trim());
-      data.append("category", formData.category);
-      data.append("quantity", formData.quantity);
-      data.append("condition", formData.condition);
-      data.append("location", formData.location.trim());
-      data.append("description", formData.description.trim());
+      // ------------------------------------------------------
+      // Update ONLY pickup information
+      // ------------------------------------------------------
 
-      // Send image only when donor selects a new image.
-      if (formData.item_image) {
-        data.append("item_image", formData.item_image);
-      }
+      await api.patch(
+        `donation/${id}/`,
+        {
+          location:
+            formData.location.trim(),
 
-      await api.patch(`donation/${id}/`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+          pickup_date:
+            formData.pickup_date,
 
-      alert("Donation updated successfully.");
+          pickup_time:
+            formData.pickup_time,
+
+          pickup_notes:
+            formData.pickup_notes.trim(),
+        }
+      );
+
+
+      // ------------------------------------------------------
+      // Success
+      // ------------------------------------------------------
+
+      alert(
+        "Pickup details updated successfully."
+      );
+
+
       navigate("/my-donations");
-    } catch (error) {
+
+    } catch (err) {
       console.error(
         "EDIT DONATION ERROR:",
-        error.response?.data || error
+        err.response?.data || err
       );
 
+
       setError(
-        error.response?.data?.detail ||
-          error.response?.data?.message ||
-          "Unable to update donation."
+        err.response?.data?.detail ||
+          err.response?.data?.message ||
+          "Unable to update pickup details."
       );
+
     } finally {
       setSaving(false);
     }
   };
 
-  // =====================================================
-  // LOADING
-  // =====================================================
+
+  // ==========================================================
+  // LOADING STATE
+  // ==========================================================
 
   if (loading) {
     return (
       <div className="edit-donation-page">
+
         <div className="edit-donation-loading">
-          <div className="loading-icon">📦</div>
-          <h2>Loading donation...</h2>
-          <p>Please wait while we load your donation details.</p>
+
+          <div className="loading-icon">
+            🚚
+          </div>
+
+          <h2>
+            Loading pickup details...
+          </h2>
+
+          <p>
+            Please wait while we load your donation.
+          </p>
+
         </div>
+
       </div>
     );
   }
 
-  // =====================================================
-  // ERROR
-  // =====================================================
 
-  if (error && !formData.item_name) {
+  // ==========================================================
+  // NON-PENDING DONATION
+  // ==========================================================
+
+  if (
+    status.toLowerCase() !==
+    "pending"
+  ) {
     return (
       <div className="edit-donation-page">
+
         <div className="edit-donation-error">
-          <div className="error-icon">⚠️</div>
-          <h2>Unable to edit donation</h2>
-          <p>{error}</p>
+
+          <div className="error-icon">
+            🔒
+          </div>
+
+          <h2>
+            Donation cannot be edited
+          </h2>
+
+          <p>
+            {error ||
+              "This donation has already been processed and its pickup details can no longer be changed."}
+          </p>
+
 
           <button
             type="button"
-            onClick={() => navigate("/my-donations")}
+            className="edit-back-button"
+            onClick={() =>
+              navigate("/my-donations")
+            }
           >
             ← Back to My Donations
           </button>
+
         </div>
+
       </div>
     );
   }
 
-  // =====================================================
-  // PAGE
-  // =====================================================
+
+  // ==========================================================
+  // MAIN PAGE
+  // ==========================================================
 
   return (
     <div className="edit-donation-page">
+
+      {/* ======================================================
+          PAGE HEADER
+          ====================================================== */}
+
       <div className="edit-donation-header">
+
         <span className="edit-donation-badge">
           DONOR DASHBOARD
         </span>
 
-        <h1>Edit Donation</h1>
+        <h1>
+          Edit Pickup Details
+        </h1>
 
         <p>
-          Update your pending donation details before it is
-          accepted.
+          Update when and where your donation
+          should be picked up.
         </p>
+
       </div>
+
+
+      {/* ======================================================
+          ERROR MESSAGE
+          ====================================================== */}
 
       {error && (
         <div className="edit-donation-error inline-error">
-          ⚠️ {error}
+          <span>
+            ⚠️
+          </span>
+
+          <p>
+            {error}
+          </p>
         </div>
       )}
+
+
+      {/* ======================================================
+          PICKUP FORM
+          ====================================================== */}
 
       <form
         className="edit-donation-form"
         onSubmit={handleSubmit}
       >
-        {/* IMAGE */}
 
         <div className="edit-donation-card">
+
+          {/* --------------------------------------------------
+              CARD HEADER
+              -------------------------------------------------- */}
+
           <div className="card-heading">
-            <div className="heading-icon">📷</div>
+
+            <div className="heading-icon">
+              🚚
+            </div>
 
             <div>
-              <span>DONATION IMAGE</span>
-              <h2>Update your item photo</h2>
+
+              <span>
+                PICKUP DETAILS
+              </span>
+
+              <h2>
+                Update your pickup
+              </h2>
+
             </div>
+
           </div>
 
-          <label
-            htmlFor="edit-item-image"
-            className={
-              imagePreview
-                ? "edit-upload-box has-preview"
-                : "edit-upload-box"
-            }
-          >
-            {imagePreview ? (
-              <div className="edit-image-preview">
-                <img
-                  src={imagePreview}
-                  alt="Donation preview"
-                />
-                <div>Click to change image</div>
-              </div>
-            ) : (
-              <div className="edit-upload-content">
-                <div className="upload-icon">📷</div>
-                <strong>Upload a donation photo</strong>
-                <span>JPG, JPEG or PNG</span>
-              </div>
-            )}
 
-            <input
-              id="edit-item-image"
-              type="file"
-              name="item_image"
-              accept="image/*"
-              onChange={handleChange}
-            />
-          </label>
-        </div>
-
-        {/* DONATION DETAILS */}
-
-        <div className="edit-donation-card">
-          <div className="card-heading">
-            <div className="heading-icon coral-icon">📋</div>
-
-            <div>
-              <span>DONATION DETAILS</span>
-              <h2>Update your contribution</h2>
-            </div>
-          </div>
-
-          <div className="edit-two-column">
-            <div className="form-group">
-              <label>Item Name</label>
-              <input
-                type="text"
-                name="item_name"
-                value={formData.item_name}
-                onChange={handleChange}
-                placeholder="Example: Rice"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Category</label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select category</option>
-                <option value="Food">Food</option>
-                <option value="Clothing">Clothing</option>
-                <option value="Books">Books</option>
-                <option value="Electronics">Electronics</option>
-                <option value="Furniture">Furniture</option>
-                <option value="Medical Supplies">
-                  Medical Supplies
-                </option>
-                <option value="School Supplies">
-                  School Supplies
-                </option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label>Quantity</label>
-              <input
-                type="number"
-                name="quantity"
-                min="1"
-                value={formData.quantity}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Condition</label>
-              <select
-                name="condition"
-                value={formData.condition}
-                onChange={handleChange}
-                required
-              >
-                <option value="New">New</option>
-                <option value="Like New">Like New</option>
-                <option value="Good">Good</option>
-                <option value="Used">Used</option>
-              </select>
-            </div>
-          </div>
+          {/* --------------------------------------------------
+              PICKUP ADDRESS
+              -------------------------------------------------- */}
 
           <div className="form-group">
-            <label>Pickup / Location</label>
 
-            <div className="location-input">
-              <span>📍</span>
+            <label htmlFor="pickup-location">
+              Pickup Address
+            </label>
+
+            <div className="pickup-address-input">
+
+              <span
+                className="pickup-field-icon"
+                aria-hidden="true"
+              >
+                📍
+              </span>
 
               <input
+                id="pickup-location"
                 type="text"
                 name="location"
-                placeholder="Example: Vijayawada"
                 value={formData.location}
                 onChange={handleChange}
+                placeholder="Enter pickup address"
+                autoComplete="street-address"
                 required
               />
+
             </div>
+
           </div>
 
-          <div className="edit-pickup-note">
-            <strong>🚚 Pickup scheduling</strong>
-            <p>
-              Pickup date and time are scheduled separately after the NGO
-              accepts your donation. Editing this pending donation will not
-              create or change a pickup request.
-            </p>
+
+          {/* --------------------------------------------------
+              PICKUP DATE & TIME
+              -------------------------------------------------- */}
+
+          <div className="pickup-date-time-grid">
+
+            {/* Pickup Date */}
+
+            <div className="form-group pickup-field">
+
+              <label htmlFor="pickup-date">
+                Pickup Date
+              </label>
+
+              <div className="pickup-date-input">
+
+                <input
+                  id="pickup-date"
+                  type="date"
+                  name="pickup_date"
+                  value={formData.pickup_date}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* Pickup Time */}
+
+            <div className="form-group pickup-field">
+
+              <label htmlFor="pickup-time">
+                Pickup Time
+              </label>
+
+              <div className="pickup-time-input">
+
+                <input
+                  id="pickup-time"
+                  type="time"
+                  name="pickup_time"
+                  value={formData.pickup_time}
+                  onChange={handleChange}
+                  required
+                />
+
+              </div>
+
+            </div>
+
           </div>
 
-          <div className="form-group">
-            <label>Description</label>
+
+          {/* --------------------------------------------------
+              PICKUP NOTES
+              -------------------------------------------------- */}
+
+          <div className="form-group pickup-notes-group">
+
+            <label htmlFor="pickup-notes">
+              Pickup Notes
+            </label>
 
             <textarea
-              name="description"
+              id="pickup-notes"
+              name="pickup_notes"
               rows="4"
-              placeholder="Describe your donation..."
-              value={formData.description}
+              value={formData.pickup_notes}
               onChange={handleChange}
+              placeholder="Add any instructions for pickup..."
             />
+
           </div>
+
+
+          {/* --------------------------------------------------
+              INFORMATION NOTE
+              -------------------------------------------------- */}
+
+          <div className="edit-pickup-note">
+
+            <strong>
+              💡 Pickup details only
+            </strong>
+
+            <p>
+              Your donation details remain unchanged.
+              You can update only the pickup address,
+              date, time and notes while the donation
+              is pending.
+            </p>
+
+          </div>
+
         </div>
 
-        {/* ACTIONS */}
+
+        {/* ====================================================
+            ACTION BUTTONS
+            ==================================================== */}
 
         <div className="edit-donation-actions">
+
           <button
             type="button"
             className="edit-cancel-button"
-            onClick={() => navigate("/my-donations")}
+            onClick={() =>
+              navigate("/my-donations")
+            }
             disabled={saving}
           >
-            ← Cancel
+            Cancel
           </button>
+
 
           <button
             type="submit"
             className="edit-save-button"
             disabled={saving}
           >
-            {saving ? "Saving..." : "✓ Save Changes"}
+            {saving
+              ? "Saving..."
+              : "Save Pickup Details"}
           </button>
+
         </div>
+
       </form>
+
     </div>
   );
 }
+
 
 export default EditDonation;

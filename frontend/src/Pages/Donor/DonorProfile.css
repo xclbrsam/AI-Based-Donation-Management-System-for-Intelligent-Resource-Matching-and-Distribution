@@ -2,14 +2,19 @@
    AI DONATIONS
    DONOR PROFILE
    NAVY + IVORY + CORAL
-===================================================== */
+   ===================================================== */
+
+
+/* =====================================================
+   ROOT VARIABLES
+   ===================================================== */
 
 :root {
   --dp-navy: #18181B;
   --dp-navy-light: #52525B;
 
   --dp-ivory: #FAFAF9;
-  --dp-white: #ffffff;
+  --dp-white: #FFFFFF;
 
   --dp-coral: #7F1D1D;
   --dp-coral-dark: #6B1616;
@@ -30,8 +35,7 @@
 
 /* =====================================================
    DARK MODE
-   SAME AI DONATIONS THEME
-===================================================== */
+   ===================================================== */
 
 body.dark-theme {
   --dp-navy: #111113;
@@ -44,12 +48,12 @@ body.dark-theme {
   --dp-coral-dark: #6B1616;
   --dp-coral-soft: #3A1A1A;
 
-  --dp-text: #f3f5f8;
-  --dp-muted: #71717A;
+  --dp-text: #F3F5F8;
+  --dp-muted: #A1A1AA;
 
   --dp-border: #303038;
 
-  --dp-green: #6da889;
+  --dp-green: #6DA889;
   --dp-green-soft: #3A1A1A;
 
   --dp-shadow:
@@ -59,7 +63,7 @@ body.dark-theme {
 
 /* =====================================================
    PAGE
-===================================================== */
+   ===================================================== */
 
 .donor-profile-page {
   min-height: 100vh;
@@ -92,6 +96,7 @@ body.dark-theme {
     color 0.3s ease;
 }
 
+
 .donor-profile-page::before {
   content: "";
 
@@ -110,6 +115,7 @@ body.dark-theme {
 
   pointer-events: none;
 }
+
 
 .donor-profile-page::after {
   content: "";
@@ -137,7 +143,7 @@ body.dark-theme {
 
 /* =====================================================
    HERO
-===================================================== */
+   ===================================================== */
 
 .profile-hero {
   position: relative;
@@ -157,6 +163,7 @@ body.dark-theme {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   overflow: hidden;
@@ -185,6 +192,7 @@ body.dark-theme {
     box-shadow 0.3s ease;
 }
 
+
 .profile-hero::before {
   content: "";
 
@@ -198,13 +206,15 @@ body.dark-theme {
 
   border-radius: 50%;
 
-  border: 1px solid rgba(
-    232,
-    117,
-    92,
-    0.18
-  );
+  border: 1px solid
+    rgba(
+      232,
+      117,
+      92,
+      0.18
+    );
 }
+
 
 .profile-hero::after {
   content: "";
@@ -219,19 +229,22 @@ body.dark-theme {
 
   border-radius: 50%;
 
-  background: rgba(
-    232,
-    117,
-    92,
-    0.05
-  );
+  background:
+    rgba(
+      232,
+      117,
+      92,
+      0.05
+    );
 }
+
 
 .profile-hero-content {
   position: relative;
 
   z-index: 2;
 }
+
 
 .profile-eyebrow {
   display: block;
@@ -241,10 +254,12 @@ body.dark-theme {
   color: #F5D6CF;
 
   font-size: 9px;
+
   font-weight: 800;
 
   letter-spacing: 2.2px;
 }
+
 
 .profile-hero h1 {
   margin: 0;
@@ -262,17 +277,19 @@ body.dark-theme {
   letter-spacing: -2px;
 }
 
+
 .profile-hero p {
   max-width: 540px;
 
   margin: 13px 0 0;
 
-  color: #b8c1ce;
+  color: #B8C1CE;
 
   font-size: 12px;
 
   line-height: 1.7;
 }
+
 
 .profile-hero-symbol {
   position: relative;
@@ -283,26 +300,30 @@ body.dark-theme {
   height: 90px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   margin-right: 35px;
 
-  border: 1px solid rgba(
-    255,
-    255,
-    255,
-    0.08
-  );
+  border: 1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.08
+    );
 
   border-radius: 25px;
 
-  background: rgba(
-    255,
-    255,
-    255,
-    0.06
-  );
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.06
+    );
 
   font-size: 35px;
 }
@@ -310,7 +331,7 @@ body.dark-theme {
 
 /* =====================================================
    PROFILE LAYOUT
-===================================================== */
+   ===================================================== */
 
 .profile-layout {
   position: relative;
@@ -335,7 +356,7 @@ body.dark-theme {
 
 /* =====================================================
    PROFILE SUMMARY
-===================================================== */
+   ===================================================== */
 
 .profile-summary {
   position: sticky;
@@ -362,12 +383,15 @@ body.dark-theme {
     box-shadow 0.3s ease;
 }
 
+
 .profile-avatar {
   width: 82px;
   height: 82px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   margin: 0 auto 15px;
@@ -379,6 +403,7 @@ body.dark-theme {
   color: white;
 
   font-size: 29px;
+
   font-weight: 800;
 
   box-shadow:
@@ -390,6 +415,7 @@ body.dark-theme {
     );
 }
 
+
 .profile-summary h2 {
   margin: 0;
 
@@ -399,6 +425,7 @@ body.dark-theme {
 
   letter-spacing: -0.4px;
 }
+
 
 .profile-summary > p {
   margin: 6px 0 13px;
@@ -414,6 +441,7 @@ body.dark-theme {
   white-space: nowrap;
 }
 
+
 .profile-role {
   display: inline-block;
 
@@ -426,10 +454,12 @@ body.dark-theme {
   color: var(--dp-coral);
 
   font-size: 8px;
+
   font-weight: 800;
 
   letter-spacing: 1px;
 }
+
 
 .profile-divider {
   height: 1px;
@@ -439,26 +469,32 @@ body.dark-theme {
   background: var(--dp-border);
 }
 
+
 .profile-summary-item {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   padding: 10px 2px;
 
-  border-bottom: 1px solid var(--dp-border);
+  border-bottom: 1px solid
+    var(--dp-border);
 }
+
 
 .profile-summary-item:last-child {
   border-bottom: none;
 }
+
 
 .profile-summary-item span {
   color: var(--dp-muted);
 
   font-size: 10px;
 }
+
 
 .profile-summary-item strong {
   color: var(--dp-text);
@@ -469,7 +505,7 @@ body.dark-theme {
 
 /* =====================================================
    DETAILS
-===================================================== */
+   ===================================================== */
 
 .profile-details {
   min-width: 0;
@@ -484,7 +520,7 @@ body.dark-theme {
 
 /* =====================================================
    PROFILE CARD
-===================================================== */
+   ===================================================== */
 
 .profile-card {
   padding: 27px;
@@ -513,7 +549,7 @@ body.dark-theme {
 
 /* =====================================================
    CARD HEADING
-===================================================== */
+   ===================================================== */
 
 .profile-card-heading {
   display: flex;
@@ -525,12 +561,15 @@ body.dark-theme {
   margin-bottom: 23px;
 }
 
+
 .profile-card-icon {
   width: 42px;
   height: 42px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   flex-shrink: 0;
@@ -542,9 +581,11 @@ body.dark-theme {
   font-size: 17px;
 }
 
+
 .profile-card-icon.coral {
   background: var(--dp-coral-soft);
 }
+
 
 .profile-card-heading span {
   display: block;
@@ -554,10 +595,12 @@ body.dark-theme {
   color: var(--dp-coral);
 
   font-size: 8px;
+
   font-weight: 800;
 
   letter-spacing: 1.7px;
 }
+
 
 .profile-card-heading h2 {
   margin: 0;
@@ -572,7 +615,7 @@ body.dark-theme {
 
 /* =====================================================
    INFO GRID
-===================================================== */
+   ===================================================== */
 
 .profile-info-grid {
   display: grid;
@@ -583,6 +626,7 @@ body.dark-theme {
 
   gap: 12px;
 }
+
 
 .profile-info {
   min-height: 68px;
@@ -604,6 +648,7 @@ body.dark-theme {
   background: var(--dp-ivory);
 }
 
+
 .profile-info span {
   margin-bottom: 5px;
 
@@ -611,6 +656,7 @@ body.dark-theme {
 
   font-size: 9px;
 }
+
 
 .profile-info strong {
   overflow: hidden;
@@ -629,7 +675,7 @@ body.dark-theme {
 
 /* =====================================================
    ADDRESS
-===================================================== */
+   ===================================================== */
 
 .profile-address {
   display: flex;
@@ -649,12 +695,15 @@ body.dark-theme {
   background: var(--dp-ivory);
 }
 
+
 .address-icon {
   width: 35px;
   height: 35px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   flex-shrink: 0;
@@ -666,6 +715,7 @@ body.dark-theme {
   font-size: 14px;
 }
 
+
 .profile-address span {
   display: block;
 
@@ -675,6 +725,7 @@ body.dark-theme {
 
   font-size: 9px;
 }
+
 
 .profile-address strong {
   display: block;
@@ -688,44 +739,65 @@ body.dark-theme {
   word-break: break-word;
 }
 
+
 .location-grid {
+  display: grid;
+
   grid-template-columns:
     repeat(3, 1fr);
+
+  gap: 12px;
 }
 
 
 /* =====================================================
    ACCOUNT ACTIONS
-===================================================== */
+   ===================================================== */
 
 .account-card {
   padding-bottom: 22px;
 }
 
+
 .account-actions {
   display: flex;
 
+  align-items: center;
+
   gap: 11px;
+
+  width: 100%;
 }
 
+
 .account-actions button {
-  min-height: 45px;
+  min-height: 48px;
+
+  flex: 1;
 
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 8px;
 
-  padding: 0 15px;
+  padding: 0 18px;
+
+  box-sizing: border-box;
 
   border-radius: 9px;
 
   font-family: inherit;
 
-  font-size: 10px;
-  font-weight: 750;
+  font-size: 14px;
+
+  font-weight: 700;
+
+  line-height: 1.2;
+
+  text-align: center;
 
   cursor: pointer;
 
@@ -737,9 +809,12 @@ body.dark-theme {
     box-shadow 0.2s ease;
 }
 
-.edit-profile-button {
-  flex: 1;
 
+/* -----------------------------------------------------
+   Edit Profile Button
+   ----------------------------------------------------- */
+
+.edit-profile-button {
   border: none;
 
   background: var(--dp-coral);
@@ -748,12 +823,17 @@ body.dark-theme {
 
   box-shadow:
     0 7px 18px rgba(
-      232,
-      117,
-      92,
+      127,
+      29,
+      29,
       0.18
     );
+
+  justify-content: center !important;
+
+  text-align: center !important;
 }
+
 
 .edit-profile-button:hover {
   background: var(--dp-coral-dark);
@@ -761,21 +841,23 @@ body.dark-theme {
   transform: translateY(-2px);
 }
 
-.edit-profile-button > :last-child {
-  margin-left: auto;
 
-  font-size: 16px;
-}
+/* -----------------------------------------------------
+   Back To Dashboard Button
+   ----------------------------------------------------- */
 
 .dashboard-button {
-  flex: 1;
-
   border: 1px solid var(--dp-border);
 
   background: var(--dp-white);
 
   color: var(--dp-text);
+
+  justify-content: center !important;
+
+  text-align: center !important;
 }
+
 
 .dashboard-button:hover {
   border-color: var(--dp-coral);
@@ -788,9 +870,23 @@ body.dark-theme {
 }
 
 
+/* -----------------------------------------------------
+   Prevent Old Icon Positioning From Breaking Center
+   ----------------------------------------------------- */
+
+.account-actions button svg,
+.account-actions button span {
+  position: static;
+
+  margin: 0;
+
+  transform: none;
+}
+
+
 /* =====================================================
    LOADING
-===================================================== */
+   ===================================================== */
 
 .profile-loading {
   min-height: 100vh;
@@ -798,6 +894,7 @@ body.dark-theme {
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   flex-direction: column;
@@ -806,6 +903,7 @@ body.dark-theme {
 
   color: var(--dp-muted);
 }
+
 
 .profile-spinner {
   width: 30px;
@@ -823,11 +921,13 @@ body.dark-theme {
     profileSpin 0.7s linear infinite;
 }
 
+
 .profile-loading p {
   margin: 0;
 
   font-size: 11px;
 }
+
 
 @keyframes profileSpin {
   to {
@@ -837,15 +937,236 @@ body.dark-theme {
 
 
 /* =====================================================
+   EDIT PROFILE
+   ===================================================== */
+
+.profile-edit-form {
+  width: 100%;
+}
+
+
+.profile-edit-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 18px;
+
+  width: 100%;
+}
+
+
+.profile-edit-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
+  min-width: 0;
+}
+
+
+.profile-edit-field.full {
+  grid-column: 1 / -1;
+}
+
+
+.profile-edit-field > span {
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 0.4px;
+
+  color: var(
+    --di-muted,
+    #777
+  );
+}
+
+
+.profile-edit-field input,
+.profile-edit-field textarea,
+.profile-edit-field select {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 12px 13px;
+
+  border: 1px solid
+    var(
+      --di-border,
+      #DDD
+    );
+
+  border-radius: 10px;
+
+  background: var(
+    --dp-white,
+    #FFF
+  );
+
+  color: var(
+    --di-text,
+    #18181B
+  );
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.profile-edit-field input:focus,
+.profile-edit-field textarea:focus,
+.profile-edit-field select:focus {
+  border-color:
+    var(
+      --dp-coral,
+      #7F1D1D
+    );
+
+  box-shadow:
+    0 0 0 3px
+    rgba(
+      127,
+      29,
+      29,
+      0.10
+    );
+}
+
+
+.profile-edit-field input:disabled {
+  background: #F4F3EF;
+
+  color: #888;
+
+  cursor: not-allowed;
+}
+
+
+body.dark-theme
+.profile-edit-field input:disabled {
+  background: #25252A;
+
+  color: #777;
+}
+
+
+.profile-edit-field textarea {
+  resize: vertical;
+
+  min-height: 90px;
+}
+
+
+.profile-edit-field small {
+  font-size: 11px;
+
+  line-height: 1.4;
+
+  color: var(--dp-muted);
+}
+
+
+/* =====================================================
+   EDIT PROFILE ACTIONS
+   ===================================================== */
+
+.profile-edit-actions {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 12px;
+
+  margin-top: 22px;
+}
+
+
+.profile-edit-actions button {
+  min-width: 130px;
+
+  min-height: 45px;
+
+  padding: 0 18px;
+
+  border-radius: 9px;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   SAVE MESSAGE
+   ===================================================== */
+
+.profile-save-message {
+  margin-top: 14px;
+
+  padding: 11px 14px;
+
+  border-radius: 10px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  line-height: 1.4;
+}
+
+
+.profile-save-message.success {
+  background: #EDF7EF;
+
+  color: #287A3D;
+
+  border: 1px solid #CDE6D2;
+}
+
+
+.profile-save-message.error {
+  background: #FDEEEE;
+
+  color: #B84032;
+
+  border: 1px solid #F0CCC7;
+}
+
+
+/* =====================================================
    TABLET
-===================================================== */
+   ===================================================== */
 
 @media (max-width: 950px) {
 
   .donor-profile-page {
     padding-left: 25px;
+
     padding-right: 25px;
   }
+
 
   .profile-layout {
     grid-template-columns:
@@ -853,26 +1174,28 @@ body.dark-theme {
       1fr;
   }
 
+
   .profile-summary {
     padding: 24px 17px;
   }
 
+
   .profile-hero-symbol {
     margin-right: 5px;
   }
-
 }
 
 
 /* =====================================================
    MOBILE
-===================================================== */
+   ===================================================== */
 
 @media (max-width: 700px) {
 
   .donor-profile-page {
     padding: 20px 13px 45px;
   }
+
 
   .profile-hero {
     min-height: auto;
@@ -884,19 +1207,23 @@ body.dark-theme {
     border-radius: 19px;
   }
 
+
   .profile-hero h1 {
     font-size: 35px;
 
     letter-spacing: -1.5px;
   }
 
+
   .profile-hero p {
     font-size: 11px;
   }
 
+
   .profile-hero-symbol {
     display: none;
   }
+
 
   .profile-layout {
     grid-template-columns: 1fr;
@@ -904,14 +1231,17 @@ body.dark-theme {
     gap: 15px;
   }
 
+
   .profile-summary {
     position: static;
 
     padding: 23px;
   }
 
+
   .profile-avatar {
     width: 70px;
+
     height: 70px;
 
     border-radius: 21px;
@@ -919,24 +1249,68 @@ body.dark-theme {
     font-size: 25px;
   }
 
+
   .profile-summary h2 {
     font-size: 18px;
   }
+
 
   .profile-details {
     gap: 14px;
   }
 
+
   .profile-card {
     padding: 21px;
   }
 
+
+  .profile-edit-grid {
+    grid-template-columns: 1fr;
+
+    gap: 16px;
+  }
+
+
+  .profile-edit-field.full {
+    grid-column: auto;
+  }
+
+
+  .profile-edit-actions {
+    flex-direction: column-reverse;
+
+    align-items: stretch;
+  }
+
+
+  .profile-edit-actions button {
+    width: 100%;
+  }
+
+
+  .account-actions {
+    flex-direction: column;
+
+    width: 100%;
+  }
+
+
+  .account-actions button {
+    width: 100%;
+
+    flex: none;
+
+    min-height: 48px;
+
+    font-size: 14px;
+  }
 }
 
 
 /* =====================================================
    SMALL MOBILE
-===================================================== */
+   ===================================================== */
 
 @media (max-width: 480px) {
 
@@ -944,143 +1318,20 @@ body.dark-theme {
     grid-template-columns: 1fr;
   }
 
+
   .location-grid {
     grid-template-columns: 1fr;
   }
 
-  .account-actions {
-    flex-direction: column;
-  }
-
-  .account-actions button {
-    width: 100%;
-  }
 
   .profile-card-heading h2 {
     font-size: 16px;
   }
 
+
   .profile-card-icon {
     width: 38px;
+
     height: 38px;
-  }
-
-}
-/* =====================================================
-   EDIT PROFILE
-   ===================================================== */
-
-.profile-edit-form {
-  width: 100%;
-}
-
-.profile-edit-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.profile-edit-field {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-
-.profile-edit-field.full {
-  grid-column: 1 / -1;
-}
-
-.profile-edit-field > span {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  color: var(--di-muted, #777);
-}
-
-.profile-edit-field input,
-.profile-edit-field textarea,
-.profile-edit-field select {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 13px;
-  border: 1px solid var(--di-border, #ddd);
-  border-radius: 10px;
-  background: #fff;
-  color: var(--di-text, #18181B);
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
-  transition: 0.2s ease;
-}
-
-.profile-edit-field input:focus,
-.profile-edit-field textarea:focus,
-.profile-edit-field select:focus {
-  border-color: var(--di-coral, #7F1D1D);
-  box-shadow: 0 0 0 3px rgba(232, 117, 92, 0.10);
-}
-
-.profile-edit-field input:disabled {
-  background: #f4f3ef;
-  color: #888;
-  cursor: not-allowed;
-}
-
-.profile-edit-field textarea {
-  resize: vertical;
-  min-height: 90px;
-}
-
-.profile-edit-field small {
-  font-size: 10px;
-  color: #999;
-}
-
-.profile-edit-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 20px;
-}
-
-.profile-edit-actions button {
-  min-width: 130px;
-}
-
-.profile-save-message {
-  margin-top: 14px;
-  padding: 11px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.profile-save-message.success {
-  background: #edf7ef;
-  color: #287a3d;
-  border: 1px solid #cde6d2;
-}
-
-.profile-save-message.error {
-  background: #FDEEEE;
-  color: #b84032;
-  border: 1px solid #f0ccc7;
-}
-
-@media (max-width: 700px) {
-  .profile-edit-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-edit-field.full {
-    grid-column: auto;
-  }
-
-  .profile-edit-actions {
-    flex-direction: column-reverse;
-  }
-
-  .profile-edit-actions button {
-    width: 100%;
   }
 }

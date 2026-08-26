@@ -1,974 +1,550 @@
-/* =====================================================
-   EDIT DONATION PAGE
-   LIGHT + DARK MODE
-===================================================== */
-
-/* =====================================================
-   DARK MODE VARIABLES
-===================================================== */
-
-body.dark-theme {
-  --md-ivory: #111113;
-  --md-white: #1C1C20;
-
-  --md-navy: #f3f5f8;
-  --md-navy-light: #cbd5e1;
-
-  --md-navy-soft: #18181B;
-
-  --md-muted: #71717A;
-
-  --md-border: #303038;
-
-  --md-coral: #7F1D1D;
-  --md-coral-dark: #6B1616;
-  --md-coral-soft: #3A1A1A;
-
-  --md-input-bg: #18181B;
-  --md-upload-bg: #18181B;
-  --md-preview-bg: #18181B;
-
-  --md-error-bg: #3A1A1A;
-  --md-error-border: #6B3A32;
-  --md-error-text: #B64A4A;
-}
-
-
-/* =====================================================
-   PAGE
-===================================================== */
+/* ============================================================
+   EDIT DONATION
+   Pickup Details
+   ============================================================ */
 
 .edit-donation-page {
-  min-height: 100vh;
-
-  padding: 42px 24px 70px;
-
-  background: var(--md-ivory, #FAFAF9);
-
-  color: var(--md-navy, #18181B);
-
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 42px 32px 64px;
+  box-sizing: border-box;
 }
 
 
-/* =====================================================
+/* ============================================================
    HEADER
-===================================================== */
+   ============================================================ */
 
 .edit-donation-header {
-  max-width: 1050px;
-
-  margin: 0 auto 28px;
-
-  text-align: center;
+  margin-bottom: 30px;
 }
 
 .edit-donation-badge {
   display: inline-block;
+  margin-bottom: 9px;
 
-  margin-bottom: 10px;
-
-  padding: 6px 12px;
-
-  border-radius: 999px;
-
-  background: var(--md-navy, #18181B);
-
-  color: var(--md-white, #ffffff);
-
-  font-size: 10px;
-
+  font-size: 11px;
   font-weight: 800;
-
-  letter-spacing: 1.2px;
+  letter-spacing: 1.4px;
 }
 
 .edit-donation-header h1 {
-  margin: 0;
+  margin: 0 0 10px;
 
-  color: var(--md-navy, #18181B);
-
-  font-size: clamp(
-    30px,
-    4vw,
-    46px
-  );
-
-  line-height: 1.1;
-
-  font-weight: 900;
+  font-size: 34px;
+  line-height: 1.2;
+  font-weight: 750;
 }
 
 .edit-donation-header p {
-  max-width: 650px;
+  margin: 0;
 
-  margin: 10px auto 0;
-
-  color: var(--md-muted, #6f7480);
-
-  font-size: 14px;
-
-  line-height: 1.7;
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 
-/* =====================================================
-   FORM
-===================================================== */
+/* ============================================================
+   MAIN FORM
+   ============================================================ */
 
 .edit-donation-form {
-  width: min(1050px, 100%);
-
-  margin: 0 auto;
-
-  display: grid;
-
-  gap: 20px;
+  width: 100%;
 }
-
-
-/* =====================================================
-   CARD
-===================================================== */
 
 .edit-donation-card {
-  padding: 26px;
+  width: 100%;
+  padding: 30px;
+  margin: 0;
 
-  background: var(--md-white, #ffffff);
+  box-sizing: border-box;
 
-  border: 1px solid var(--md-border, #E4E4E7);
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 8px 24px rgba(
-      20,
-      33,
-      61,
-      0.06
-    );
-
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+  border-radius: 18px;
 }
 
 
-/* =====================================================
-   CARD HEADING
-===================================================== */
+/* ============================================================
+   CARD HEADER
+   ============================================================ */
 
 .card-heading {
   display: flex;
-
   align-items: center;
+  gap: 14px;
 
-  gap: 13px;
-
-  margin-bottom: 22px;
+  margin-bottom: 30px;
 }
 
 .heading-icon {
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
 
-  flex: 0 0 42px;
+  flex: 0 0 48px;
 
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  place-items: center;
+  border-radius: 14px;
 
-  border-radius: 12px;
-
-  background: var(--md-navy-soft, #eef1f6);
-
-  font-size: 19px;
-}
-
-.heading-icon.coral-icon {
-  background: var(
-    --md-coral-soft,
-    #fff0eb
-  );
+  font-size: 22px;
 }
 
 .card-heading span {
   display: block;
 
-  margin-bottom: 4px;
-
-  color: var(
-    --md-coral,
-    #7F1D1D
-  );
+  margin-bottom: 5px;
 
   font-size: 10px;
-
-  font-weight: 900;
-
-  letter-spacing: 1px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
 }
 
 .card-heading h2 {
   margin: 0;
 
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  font-size: 21px;
-
-  font-weight: 850;
+  font-size: 22px;
+  line-height: 1.3;
 }
 
 
-/* =====================================================
-   IMAGE UPLOAD
-===================================================== */
-
-.edit-upload-box {
-  position: relative;
-
-  min-height: 230px;
-
-  display: grid;
-
-  place-items: center;
-
-  overflow: hidden;
-
-  border: 1.5px dashed #cfc8bd;
-
-  border-radius: 14px;
-
-  background: #fcfaf7;
-
-  cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    background-color 0.3s ease;
-}
-
-.edit-upload-box:hover {
-  border-color: var(
-    --md-coral,
-    #7F1D1D
-  );
-
-  background: #fffaf7;
-}
-
-.edit-upload-box input {
-  display: none;
-}
-
-.edit-upload-content {
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 7px;
-
-  text-align: center;
-}
-
-.edit-upload-content .upload-icon {
-  margin-bottom: 5px;
-
-  font-size: 36px;
-}
-
-.edit-upload-content strong {
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  font-size: 15px;
-}
-
-.edit-upload-content span {
-  color: var(
-    --md-muted,
-    #6f7480
-  );
-
-  font-size: 12px;
-}
-
-.edit-image-preview {
-  position: absolute;
-
-  inset: 0;
-
-  display: grid;
-
-  place-items: center;
-
-  background: #f2eee8;
-}
-
-.edit-image-preview img {
-  width: 100%;
-  height: 230px;
-
-  object-fit: contain;
-
-  display: block;
-}
-
-.edit-image-preview div {
-  position: absolute;
-
-  left: 50%;
-  bottom: 14px;
-
-  transform: translateX(-50%);
-
-  padding: 7px 12px;
-
-  border-radius: 999px;
-
-  background: rgba(
-    20,
-    33,
-    61,
-    0.88
-  );
-
-  color: #ffffff;
-
-  font-size: 11px;
-
-  font-weight: 700;
-
-  white-space: nowrap;
-}
-
-
-/* =====================================================
+/* ============================================================
    FORM GROUP
-===================================================== */
-
-.edit-two-column {
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      2,
-      minmax(0, 1fr)
-    );
-
-  gap: 18px;
-}
+   ============================================================ */
 
 .form-group {
-  margin-bottom: 18px;
-}
+  width: 100%;
+  min-width: 0;
 
-.edit-two-column .form-group {
-  margin-bottom: 0;
+  margin: 0 0 25px;
+
+  box-sizing: border-box;
 }
 
 .form-group label {
   display: block;
 
-  margin-bottom: 8px;
+  margin: 0 0 9px;
 
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  font-size: 12px;
-
-  font-weight: 800;
-}
-
-
-/* =====================================================
-   INPUTS
-===================================================== */
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-
-  box-sizing: border-box;
-
-  border: 1px solid
-    var(
-      --md-border,
-      #ddd7ce
-    );
-
-  border-radius: 9px;
-
-  outline: none;
-
-  background: var(
-    --md-input-bg,
-    #ffffff
-  );
-
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  font-family: inherit;
-
-  font-size: 13px;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
-
-.form-group input,
-.form-group select {
-  min-height: 44px;
-
-  padding: 10px 12px;
-}
-
-.form-group textarea {
-  min-height: 110px;
-
-  padding: 12px;
-
-  resize: vertical;
-}
-
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-  color: var(
-    --md-muted,
-    #8a909a
-  );
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: var(
-    --md-coral,
-    #7F1D1D
-  );
-
-  box-shadow:
-    0 0 0 3px
-    rgba(
-      232,
-      117,
-      92,
-      0.1
-    );
-}
-
-
-/* =====================================================
-   LOCATION
-===================================================== */
-
-.location-input {
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  min-height: 44px;
-
-  padding: 0 12px;
-
-  border: 1px solid
-    var(
-      --md-border,
-      #ddd7ce
-    );
-
-  border-radius: 9px;
-
-  background: var(
-    --md-input-bg,
-    #ffffff
-  );
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.3s ease;
-}
-
-.location-input:focus-within {
-  border-color: var(
-    --md-coral,
-    #7F1D1D
-  );
-
-  box-shadow:
-    0 0 0 3px
-    rgba(
-      232,
-      117,
-      92,
-      0.1
-    );
-}
-
-.location-input span {
-  flex: 0 0 auto;
-}
-
-.location-input input {
-  min-height: 40px;
-
-  padding: 6px 0;
-
-  border: none;
-
-  box-shadow: none;
-
-  background: transparent;
-
-  color: var(
-    --md-navy,
-    #18181B
-  );
-}
-
-.location-input input:focus {
-  border: none;
-
-  box-shadow: none;
-}
-
-
-/* =====================================================
-   ACTIONS
-===================================================== */
-
-.edit-donation-actions {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: flex-end;
-
-  gap: 11px;
-
-  padding-top: 2px;
-}
-
-.edit-cancel-button,
-.edit-save-button {
-  min-height: 42px;
-
-  padding: 10px 18px;
-
-  border-radius: 9px;
-
-  border: 1px solid transparent;
-
-  font-family: inherit;
-
-  font-size: 12px;
-
-  font-weight: 800;
-
-  cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.edit-cancel-button {
-  background: var(
-    --md-white,
-    #ffffff
-  );
-
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  border-color: var(
-    --md-border,
-    #ddd7ce
-  );
-}
-
-.edit-cancel-button:hover:not(:disabled) {
-  background: #f1eee9;
-
-  transform: translateY(-1px);
-}
-
-.edit-save-button {
-  background: var(
-    --md-coral,
-    #7F1D1D
-  );
-
-  color: var(
-    --md-white,
-    #ffffff
-  );
-
-  box-shadow:
-    0 6px 15px
-    rgba(
-      232,
-      117,
-      92,
-      0.18
-    );
-}
-
-.edit-save-button:hover:not(:disabled) {
-  background: var(
-    --md-coral-dark,
-    #d9634d
-  );
-
-  transform: translateY(-1px);
-
-  box-shadow:
-    0 8px 18px
-    rgba(
-      232,
-      117,
-      92,
-      0.22
-    );
-}
-
-.edit-cancel-button:disabled,
-.edit-save-button:disabled {
-  opacity: 0.65;
-
-  cursor: not-allowed;
-
-  transform: none;
-}
-
-
-/* =====================================================
-   LOADING / ERROR
-===================================================== */
-
-.edit-donation-loading,
-.edit-donation-error {
-  width: min(
-    620px,
-    100%
-  );
-
-  margin: 80px auto 0;
-
-  padding: 36px 28px;
-
-  text-align: center;
-
-  background: var(
-    --md-white,
-    #ffffff
-  );
-
-  border: 1px solid
-    var(
-      --md-border,
-      #E4E4E7
-    );
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 8px 24px
-    rgba(
-      20,
-      33,
-      61,
-      0.06
-    );
-
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease;
-}
-
-.loading-icon,
-.error-icon {
-  font-size: 38px;
-
-  margin-bottom: 12px;
-}
-
-.edit-donation-loading h2,
-.edit-donation-error h2 {
-  margin: 0 0 8px;
-
-  color: var(
-    --md-navy,
-    #18181B
-  );
-
-  font-size: 22px;
-}
-
-.edit-donation-loading p,
-.edit-donation-error p {
-  margin: 0;
-
-  color: var(
-    --md-muted,
-    #6f7480
-  );
-
-  font-size: 13px;
-
-  line-height: 1.6;
-}
-
-.edit-donation-error button {
-  margin-top: 20px;
-
-  min-height: 40px;
-
-  padding: 9px 16px;
-
-  border: none;
-
-  border-radius: 9px;
-
-  background: var(
-    --md-navy,
-    #18181B
-  );
-
-  color: #ffffff;
-
-  font-family: inherit;
-
-  font-size: 12px;
-
-  font-weight: 800;
-
-  cursor: pointer;
-}
-
-.inline-error {
-  width: min(
-    1050px,
-    100%
-  );
-
-  margin: 0 auto 18px;
-
-  padding: 12px 15px;
-
-  box-sizing: border-box;
-
-  color: #a33a2f;
-
-  background: #FDEEEE;
-
-  border: 1px solid #f0d0ca;
-
-  border-radius: 9px;
-
-  font-size: 12px;
-
+  font-size: 14px;
+  line-height: 1.4;
   font-weight: 700;
 }
 
 
-/* =====================================================
-   DARK MODE OVERRIDES
-===================================================== */
+/* ============================================================
+   PICKUP ADDRESS
+   ============================================================ */
 
-body.dark-theme .edit-donation-page {
-  background: var(--md-ivory);
-  color: var(--md-navy);
+.pickup-address-input {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 52px;
+
+  padding: 0 15px;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(100, 80, 70, 0.22);
+  border-radius: 11px;
+
+  overflow: hidden;
 }
 
-body.dark-theme .edit-donation-card,
-body.dark-theme .edit-donation-loading,
-body.dark-theme .edit-donation-error {
-  background: var(--md-white);
+.pickup-field-icon {
+  flex: 0 0 22px;
 
-  border-color: var(--md-border);
+  width: 22px;
+  height: 22px;
 
-  box-shadow:
-    0 10px 30px
-    rgba(
-      0,
-      0,
-      0,
-      0.25
-    );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 11px;
+
+  font-size: 17px;
+  line-height: 1;
 }
 
-body.dark-theme .edit-upload-box {
-  background: var(--md-upload-bg);
+.pickup-address-input input {
+  flex: 1 1 auto;
 
-  border-color: #4a5668;
-}
+  width: 100%;
+  min-width: 0;
+  height: 50px;
 
-body.dark-theme .edit-upload-box:hover {
-  background: #18181B;
+  padding: 0;
 
-  border-color: var(--md-coral);
-}
+  border: 0;
+  outline: 0;
 
-body.dark-theme .edit-image-preview {
-  background: var(--md-preview-bg);
-}
-
-body.dark-theme .form-group input,
-body.dark-theme .form-group select,
-body.dark-theme .form-group textarea {
-  background: var(--md-input-bg);
-
-  color: var(--md-navy);
-
-  border-color: var(--md-border);
-}
-
-body.dark-theme .location-input {
-  background: var(--md-input-bg);
-
-  border-color: var(--md-border);
-}
-
-body.dark-theme .location-input input {
   background: transparent;
 
-  color: var(--md-navy);
-}
-
-body.dark-theme .edit-cancel-button {
-  background: var(--md-white);
-
-  color: var(--md-navy);
-
-  border-color: var(--md-border);
-}
-
-body.dark-theme .edit-cancel-button:hover:not(:disabled) {
-  background: #18181B;
-}
-
-body.dark-theme .inline-error {
-  color: var(--md-error-text);
-
-  background: var(--md-error-bg);
-
-  border-color: var(--md-error-border);
-}
-
-body.dark-theme .edit-donation-error button {
-  background: #18181B;
-
-  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 
-/* =====================================================
-   RESPONSIVE
-===================================================== */
+/* ============================================================
+   DATE + TIME GRID
+   ============================================================ */
+
+.pickup-date-time-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  gap: 22px;
+
+  width: 100%;
+
+  margin: 0;
+
+  box-sizing: border-box;
+}
+
+.pickup-field {
+  min-width: 0;
+  margin-bottom: 25px;
+}
+
+
+/* ============================================================
+   DATE INPUT
+   ============================================================ */
+
+.pickup-date-input,
+.pickup-time-input {
+  width: 100%;
+  height: 52px;
+
+  box-sizing: border-box;
+
+  border: 1px solid rgba(100, 80, 70, 0.22);
+  border-radius: 11px;
+
+  overflow: hidden;
+}
+
+.pickup-date-input input,
+.pickup-time-input input {
+  display: block;
+
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+
+  padding: 0 13px;
+
+  margin: 0;
+
+  box-sizing: border-box;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.4;
+
+  cursor: pointer;
+}
+
+
+/* ------------------------------------------------------------
+   Native Date/Time Controls
+   ------------------------------------------------------------ */
+
+.pickup-date-input input::-webkit-datetime-edit,
+.pickup-time-input input::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.pickup-date-input input::-webkit-datetime-edit-fields-wrapper,
+.pickup-time-input input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.pickup-date-input input::-webkit-calendar-picker-indicator,
+.pickup-time-input input::-webkit-calendar-picker-indicator {
+  width: 18px;
+  height: 18px;
+
+  margin-left: 8px;
+
+  cursor: pointer;
+}
+
+
+/* ============================================================
+   FOCUS STATES
+   ============================================================ */
+
+.pickup-address-input:focus-within,
+.pickup-date-input:focus-within,
+.pickup-time-input:focus-within {
+  border-color: rgba(127, 29, 29, 0.55);
+
+  box-shadow:
+    0 0 0 3px rgba(127, 29, 29, 0.08);
+}
+
+
+/* ============================================================
+   PICKUP NOTES
+   ============================================================ */
+
+.pickup-notes-group {
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.pickup-notes-group textarea {
+  display: block;
+
+  width: 100%;
+  min-height: 120px;
+
+  padding: 14px 15px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+
+  border: 1px solid rgba(100, 80, 70, 0.22);
+  border-radius: 11px;
+
+  outline: 0;
+
+  background: transparent;
+
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.pickup-notes-group textarea:focus {
+  border-color: rgba(127, 29, 29, 0.55);
+
+  box-shadow:
+    0 0 0 3px rgba(127, 29, 29, 0.08);
+}
+
+
+/* ============================================================
+   INFORMATION NOTE
+   ============================================================ */
+
+.edit-pickup-note {
+  margin-top: 4px;
+
+  padding: 16px 18px;
+
+  border-radius: 12px;
+
+  line-height: 1.5;
+}
+
+.edit-pickup-note strong {
+  display: block;
+
+  margin-bottom: 5px;
+
+  font-size: 14px;
+}
+
+.edit-pickup-note p {
+  margin: 0;
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+
+.edit-donation-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 14px;
+
+  margin-top: 24px;
+}
+
+.edit-cancel-button,
+.edit-save-button,
+.edit-back-button {
+  min-height: 48px;
+
+  padding: 0 22px;
+
+  border-radius: 10px;
+  border: 0;
+
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.edit-cancel-button:hover,
+.edit-save-button:hover,
+.edit-back-button:hover {
+  transform: translateY(-1px);
+}
+
+.edit-cancel-button:disabled,
+.edit-save-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+
+.edit-donation-loading {
+  width: 100%;
+  max-width: 620px;
+
+  margin: 90px auto;
+  padding: 38px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  border-radius: 18px;
+}
+
+.loading-icon {
+  font-size: 34px;
+  margin-bottom: 14px;
+}
+
+.edit-donation-loading h2 {
+  margin: 0 0 8px;
+
+  font-size: 22px;
+}
+
+.edit-donation-loading p {
+  margin: 0;
+
+  line-height: 1.6;
+}
+
+
+/* ============================================================
+   ERROR STATE
+   ============================================================ */
+
+.edit-donation-error {
+  width: 100%;
+  max-width: 620px;
+
+  margin: 80px auto;
+  padding: 36px;
+
+  box-sizing: border-box;
+
+  text-align: center;
+
+  border-radius: 18px;
+}
+
+.edit-donation-error h2 {
+  margin: 14px 0 9px;
+
+  font-size: 22px;
+}
+
+.edit-donation-error p {
+  margin: 0;
+
+  line-height: 1.6;
+}
+
+.error-icon {
+  font-size: 34px;
+}
+
+.inline-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  max-width: none;
+
+  margin: 0 0 20px;
+  padding: 14px 16px;
+
+  text-align: left;
+
+  border-radius: 11px;
+}
+
+.inline-error p {
+  margin: 0;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
 
 @media (max-width: 700px) {
 
   .edit-donation-page {
-    padding: 28px 15px 50px;
+    padding: 28px 18px 48px;
+  }
+
+  .edit-donation-header h1 {
+    font-size: 28px;
   }
 
   .edit-donation-card {
-    padding: 20px 16px;
+    padding: 22px 18px;
   }
 
-  .edit-two-column {
+  .pickup-date-time-grid {
     grid-template-columns: 1fr;
 
     gap: 0;
   }
 
-  .edit-two-column .form-group {
-    margin-bottom: 18px;
+  .pickup-field {
+    margin-bottom: 22px;
   }
 
   .edit-donation-actions {
     flex-direction: column-reverse;
+
+    align-items: stretch;
   }
 
   .edit-cancel-button,
   .edit-save-button {
     width: 100%;
-  }
-
-}
-/* =====================================================
-   PICKUP DATE & TIME
-===================================================== */
-
-.edit-pickup-schedule {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-  margin: 20px 0;
-}
-
-.edit-pickup-schedule .form-group {
-  margin: 0;
-}
-
-.edit-pickup-schedule label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-}
-
-.edit-pickup-schedule input {
-  width: 100%;
-  min-height: 48px;
-  padding: 12px 14px;
-  box-sizing: border-box;
-  border: 1px solid #d9dee7;
-  border-radius: 12px;
-  background: #fff;
-  font-size: 15px;
-  color: #1f2937;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.edit-pickup-schedule input:focus {
-  outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
-}
-
-@media (max-width: 700px) {
-  .edit-pickup-schedule {
-    grid-template-columns: 1fr;
-    gap: 14px;
   }
 }
