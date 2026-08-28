@@ -27,13 +27,25 @@ function RegisterChoice() {
             Connect with trusted NGOs and turn unused things into meaningful help.
           </p>
 
-          <button
-            className="get-started-button"
-            onClick={() => navigate("/register/donor")}
-          >
-            Get Started
-            <span>→</span>
-          </button>
+          <div className="register-action-buttons">
+
+  <button
+    className="get-started-button"
+    onClick={() => navigate("/register/donor")}
+  >
+    Get Started
+    <span>→</span>
+  </button>
+
+  <button
+  className="explore-ngo-button"
+  onClick={() => navigate("/explore-ngos")}
+ >
+  Explore NGOs
+  <span>→</span>
+ </button>
+
+ </div>
 
         </div>
 

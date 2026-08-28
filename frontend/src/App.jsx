@@ -16,6 +16,8 @@ import NGORegister from "./Pages/NGO/NGORegister";
 import NGODashboard from "./Pages/NGO/NGODashboard";
 import NGOProfile from "./Pages/NGO/NGOProfile";
 import NGOWorkspacePage from "./Pages/NGO/NGOWorkspacePage";
+import ExploreNGOs from "./Pages/NGO/ExploreNGOs";
+import NGODetails from "./Pages/NGO/NGODetails";
 
 import DonorProfile from "./Pages/Donor/DonorProfile";
 import MyActivity from "./Pages/Donor/MyActivity";
@@ -192,6 +194,15 @@ function App() {
           path="/register"
           element={<RegisterChoice />}
         />
+        <Route
+          path="/explore-ngos"
+          element={<ExploreNGOs />}
+        />
+        <Route
+          path="/ngo-details/:id"
+          element={<NGODetails />}
+        />
+
 
 
         {/* =================================================
@@ -212,6 +223,7 @@ function App() {
           path="/register/ngo"
           element={<NGORegister />}
         />
+        
 
 
         {/* =================================================
