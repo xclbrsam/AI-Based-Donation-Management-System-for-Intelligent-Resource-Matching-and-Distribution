@@ -31,7 +31,7 @@
 ===================================================== */
 
 .logo {
-    color: #7F1D1D;
+    color: #2563EB;
 
     font-size: 24px;
     font-weight: 800;
@@ -78,7 +78,7 @@
 }
 
 .nav-links a:hover {
-    color: #7F1D1D;
+    color: #2563EB;
 }
 
 
@@ -93,7 +93,7 @@
 
     border-radius: 9px;
 
-    background: #7F1D1D;
+    background: #2563EB;
 
     color: #ffffff;
 
@@ -111,7 +111,7 @@
 }
 
 .logout-button:hover {
-    background: #C2410C;
+    background: #1D4ED8;
 
     transform: translateY(-1px);
 
@@ -162,7 +162,7 @@
 .theme-toggle:hover {
     background: rgba(255, 111, 97, 0.18);
 
-    border-color: #7F1D1D;
+    border-color: #2563EB;
 
     transform: scale(1.08);
 }

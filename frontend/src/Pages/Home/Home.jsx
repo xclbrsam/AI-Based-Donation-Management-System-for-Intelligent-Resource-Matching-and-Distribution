@@ -521,7 +521,7 @@ function Home() {
           <div>
 
             <strong>
-              AI Donations
+              ResourceBridge
             </strong>
 
             <span>
@@ -534,7 +534,7 @@ function Home() {
 
 
         <div className="footer-copy">
-          © 2026 AI Donation Management System
+          © 2026 Donation Management System
         </div>
 
       </footer>

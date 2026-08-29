@@ -24,7 +24,7 @@ export default function NGOSidebar({ onNavigate }) {
     navigate("/login", { replace: true });
   };
   return <aside className="ngo-sidebar">
-    <div className="ngo-brand"><div className="ngo-brand-mark">🤝</div><div><strong>AI Donations</strong><small>NGO Workspace</small></div></div>
+    <div className="ngo-brand"><div className="ngo-brand-mark">🤝</div><div><strong>ResourceBridge</strong><small>NGO Workspace</small></div></div>
     <div className="ngo-user"><div className="ngo-avatar">{name.charAt(0).toUpperCase()}</div><div><strong>{name}</strong><small>NGO</small></div></div>
     <nav>
       <Group title="MAIN" items={main} onNavigate={onNavigate}/>

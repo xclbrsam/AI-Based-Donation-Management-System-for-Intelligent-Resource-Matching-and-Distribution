@@ -141,7 +141,7 @@ function DonorRegister() {
             </span>
 
             <span>
-              AI Donations
+              ResourceBridge
             </span>
           </div>
 
@@ -224,7 +224,7 @@ function DonorRegister() {
           <div className="donor-register-header">
 
             <div className="donor-mobile-logo">
-              ✦ AI Donations
+              ✦ ResourceBridge
             </div>
 
             <p className="donor-register-eyebrow">

@@ -1,7 +1,7 @@
 .explore-ngos-page {
   min-height: 100vh;
   padding: 60px 30px;
-  background: #f7faf9;
+  background: #F7FAFF;
 }
 
 .explore-ngos-container {
@@ -21,25 +21,25 @@
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
-  background: #e8f5ee;
-  color: #218653;
+  background: #DBEAFE;
+  color: #2563EB;
 }
 
 .explore-ngos-header h1 {
   margin: 18px 0 12px;
   font-size: 42px;
   font-weight: 800;
-  color: #17231d;
+  color: #0F172A;
 }
 
 .explore-ngos-header h1 span {
-  color: #218653;
+  color: #2563EB;
 }
 
 .explore-ngos-header p {
   max-width: 650px;
   margin: 0 auto;
-  color: #66736c;
+  color: #475569;
   font-size: 16px;
   line-height: 1.7;
 }
@@ -52,7 +52,7 @@
 
 .ngo-card {
   background: white;
-  border: 1px solid #e4ebe7;
+  border: 1px solid #E2E8F0;
   border-radius: 18px;
   padding: 25px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
@@ -68,7 +68,7 @@
   width: 70px;
   height: 70px;
   border-radius: 16px;
-  background: #eaf7ef;
+  background: #DBEAFE;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,11 +86,11 @@
 .ngo-card-content h2 {
   margin: 0 0 10px;
   font-size: 21px;
-  color: #17231d;
+  color: #0F172A;
 }
 
 .ngo-description {
-  color: #68756e;
+  color: #475569;
   line-height: 1.6;
   font-size: 14px;
   min-height: 65px;
@@ -99,13 +99,13 @@
 .ngo-details {
   margin: 18px 0;
   padding-top: 15px;
-  border-top: 1px solid #edf1ee;
+  border-top: 1px solid #E2E8F0;
 }
 
 .ngo-details p {
   margin: 8px 0;
   font-size: 13px;
-  color: #59665f;
+  color: #475569;
 }
 
 .ngo-view-button {
@@ -113,7 +113,7 @@
   border: none;
   border-radius: 10px;
   padding: 12px 16px;
-  background: #218653;
+  background: #2563EB;
   color: white;
   font-size: 14px;
   font-weight: 700;
@@ -133,7 +133,7 @@
   padding: 50px;
   background: white;
   border-radius: 16px;
-  color: #66736c;
+  color: #475569;
 }
 
 .explore-message.error {
@@ -146,7 +146,7 @@
 }
 
 .explore-ngos-bottom p {
-  color: #66736c;
+  color: #475569;
   margin-bottom: 12px;
 }
 
@@ -154,7 +154,7 @@
   border: none;
   padding: 12px 22px;
   border-radius: 10px;
-  background: #17231d;
+  background: #0F172A;
   color: white;
   cursor: pointer;
   font-weight: 600;

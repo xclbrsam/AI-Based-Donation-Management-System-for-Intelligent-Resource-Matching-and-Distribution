@@ -114,11 +114,11 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql',
 
-        'NAME': 'donation_db',
+        'NAME': 'ai_donation',
 
         'USER': 'postgres',
 
-        'PASSWORD': 'Sam0311',
+        'PASSWORD': 'ai_donation01',
 
         'HOST': 'localhost',
 

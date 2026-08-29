@@ -188,7 +188,7 @@ function NGORegister() {
             </span>
 
             <span>
-              AI Donations
+              ResourceBridge
             </span>
 
           </div>
@@ -300,7 +300,7 @@ function NGORegister() {
           <div className="ngo-register-header">
 
             <div className="ngo-mobile-logo">
-              ✦ AI Donations
+              ✦ ResourceBridge
             </div>
 
             <p className="ngo-register-eyebrow">

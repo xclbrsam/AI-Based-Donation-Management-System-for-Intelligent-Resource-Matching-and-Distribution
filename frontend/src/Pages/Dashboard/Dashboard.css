@@ -9,27 +9,27 @@
 ===================================================== */
 
 :root {
-  --dash-bg: #FAF7F2;
+  --dash-bg: #F7FAFF;
   --dash-surface: #ffffff;
-  --dash-surface-soft: #FFF7ED;
+  --dash-surface-soft: #EFF6FF;
 
-  --dash-text: #182235;
-  --dash-muted: #78716C;
+  --dash-text: #0F172A;
+  --dash-muted: #475569;
 
-  --dash-border: #E4E4E7;
+  --dash-border: #E2E8F0;
 
-  --dash-navy: #18181B;
-  --dash-navy-light: #52525B;
+  --dash-navy: #0F172A;
+  --dash-navy-light: #475569;
 
-  --dash-coral: #7F1D1D;
-  --dash-coral-dark: #6B1616;
-  --dash-coral-soft: #FDF2F2;
+  --dash-coral: #2563EB;
+  --dash-coral-dark: #1D4ED8;
+  --dash-coral-soft: #DBEAFE;
 
-  --dash-green: #7F1D1D;
-  --dash-green-soft: #FDF2F2;
+  --dash-green: #2563EB;
+  --dash-green-soft: #DBEAFE;
 
-  --dash-gold: #EA580C;
-  --dash-gold-soft: #FFF1E6;
+  --dash-gold: #2563EB;
+  --dash-gold-soft: #DBEAFE;
 
   --dash-icon-bg: #eef0f3;
 
@@ -43,25 +43,25 @@
 ===================================================== */
 
 body.dark-theme {
-  --dash-bg: #160B0D;
-  --dash-surface: #27171A;
-  --dash-surface-soft: #321B1F;
+  --dash-bg: #08111F;
+  --dash-surface: #142B43;
+  --dash-surface-soft: #172B43;
 
   --dash-text: #FFF8F4;
-  --dash-muted: #B9A7A1;
+  --dash-muted: #CBBBC1;
 
-  --dash-border: #4A2B30;
+  --dash-border: #403238;
 
-  --dash-navy: #111113;
-  --dash-navy-light: #18181B;
+  --dash-navy: #08111F;
+  --dash-navy-light: #0F172A;
 
-  --dash-coral-soft: #432025;
+  --dash-coral-soft: #17345A;
 
-  --dash-green-soft: #432025;
+  --dash-green-soft: #17345A;
 
   --dash-gold-soft: #2b2418;
 
-  --dash-icon-bg: #18181B;
+  --dash-icon-bg: #0F172A;
 
   --dash-shadow:
     0 18px 50px rgba(0, 0, 0, 0.28);
@@ -353,7 +353,7 @@ body.dark-theme {
 
   margin: 16px 0 0;
 
-  color: #b9c1cd;
+  color: #CBBBC1;
 
   font-size: 12px;
 
@@ -920,7 +920,7 @@ body.dark-theme {
 
   margin: 10px 0 0;
 
-  color: #71717A;
+  color: #9E8C93;
 
   font-size: 10px;
 
@@ -954,7 +954,7 @@ body.dark-theme {
 
   margin-top: 7px;
 
-  color: #9ca5b4;
+  color: #9E8C93;
 
   font-size: 9px;
 

@@ -3,7 +3,7 @@ import "./Footer.css";
 function Footer() {
   return (
     <footer className="footer">
-      <h3>AI Donation Management System</h3>
+      <h3>Donation Management System</h3>
 
       <p>
         Connecting donors with NGOs using Artificial Intelligence.

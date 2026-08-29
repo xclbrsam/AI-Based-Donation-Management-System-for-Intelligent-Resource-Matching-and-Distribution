@@ -26,7 +26,7 @@
   display: grid;
   place-items: center;
   border-radius: 12px;
-  background: #7F1D1D;
+  background: #2563EB;
   color: #fff;
   font-size: 12px;
   font-weight: 900;
@@ -41,7 +41,7 @@
 }
 
 .sidebar-brand strong { font-size: 15px; }
-.sidebar-brand span { margin-top: 3px; color: #8e9aaf; font-size: 9px; }
+.sidebar-brand span { margin-top: 3px; color: #94A3B8; font-size: 9px; }
 
 .sidebar-user {
   display: flex;
@@ -61,13 +61,13 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: 12px;
-  background: #FDF2F2;
-  color: #7F1D1D;
+  background: #DBEAFE;
+  color: #2563EB;
   font-weight: 800;
 }
 
 .sidebar-user-copy strong { font-size: 12px; }
-.sidebar-user-copy span { margin-top: 3px; color: #8e9aaf; font-size: 9px; }
+.sidebar-user-copy span { margin-top: 3px; color: #94A3B8; font-size: 9px; }
 
 .sidebar-nav { flex: 1; overflow-y: auto; }
 
@@ -90,7 +90,7 @@
   padding: 0 11px;
   margin: 3px 0;
   border-radius: 11px;
-  color: #aab4c4;
+  color: #CBBBC1;
   text-decoration: none;
   font-size: 11px;
   font-weight: 650;
@@ -107,12 +107,12 @@
   width: 3px;
   height: 20px;
   border-radius: 0 5px 5px 0;
-  background: #7F1D1D;
+  background: #2563EB;
 }
 
 .sidebar-badge {
   margin-left: auto;
-  color: #7F1D1D;
+  color: #2563EB;
   font-size: 17px;
   line-height: 1;
 }
@@ -127,7 +127,7 @@
   border-radius: 11px;
   background: rgba(255,255,255,.035);
 }
-.sidebar-theme-label { display: flex; align-items: center; gap: 9px; color: #aab4c4; font-size: 10px; }
+.sidebar-theme-label { display: flex; align-items: center; gap: 9px; color: #CBBBC1; font-size: 10px; }
 .theme-icon { display: flex; }
 
 .sidebar-logout {
@@ -140,7 +140,7 @@
   border: 0;
   border-radius: 11px;
   background: transparent;
-  color: #aab4c4;
+  color: #CBBBC1;
   font: inherit;
   font-size: 11px;
   font-weight: 650;
@@ -212,4 +212,26 @@
   .donor-sidebar .sidebar-logout { justify-content: flex-start; padding: 0 11px; }
   .donor-sidebar .sidebar-link.active::before { left: 0; }
   .donor-sidebar .sidebar-badge { position: static; margin-left: auto; }
+}
+
+/* Final active navigation: blue family, never legacy red/pink */
+.sidebar-link.active {
+  background: rgba(37,99,235,.16) !important;
+  color: #FFFFFF !important;
+}
+.sidebar-link.active::before {
+  background: #60A5FA !important;
+}
+.sidebar-badge {
+  color: #60A5FA !important;
+}
+
+html[data-theme="dark"] .sidebar-link.active,
+body.dark-theme .sidebar-link.active {
+  background: rgba(37,99,235,.22) !important;
+  color: #FFFFFF !important;
+}
+html[data-theme="dark"] .sidebar-link.active::before,
+body.dark-theme .sidebar-link.active::before {
+  background: #60A5FA !important;
 }

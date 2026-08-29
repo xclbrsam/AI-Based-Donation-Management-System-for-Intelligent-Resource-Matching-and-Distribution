@@ -4,31 +4,31 @@
 ========================================================= */
 
 :root {
-  --md-bg: #f8f6f2;
+  --md-bg: #F7FAFF;
   --md-card: #ffffff;
 
   --md-text: #171717;
   --md-secondary: #454545;
   --md-muted: #737373;
 
-  --md-coral: #8f2020;
-  --md-coral-dark: #711616;
-  --md-coral-light: #fff3f1;
+  --md-coral: #2563EB;
+  --md-coral-dark: #1D4ED8;
+  --md-coral-light: #DBEAFE;
 
   --md-green: #15803d;
   --md-green-light: #ecfdf3;
 
-  --md-orange: #c2410c;
-  --md-orange-light: #fff7ed;
+  --md-orange: #1D4ED8;
+  --md-orange-light: #EFF6FF;
 
-  --md-blue: #2563a8;
-  --md-blue-light: #eff6ff;
+  --md-blue: #2563EB;
+  --md-blue-light: #DBEAFE;
 
   --md-red: #b42318;
-  --md-red-light: #fff1f0;
+  --md-red-light: #DBEAFE;
 
   --md-border: #e5e0da;
-  --md-border-light: #eeeae5;
+  --md-border-light: #E2E8F0;
 
   --md-shadow:
     0 10px 35px rgba(20, 20, 20, 0.055);
@@ -201,7 +201,7 @@
 
   box-sizing: border-box;
 
-  border: 1px solid #d8d4cf;
+  border: 1px solid #E2E8F0;
 
   border-radius: 10px;
 
@@ -329,7 +329,7 @@
 .my-donation-card:hover {
   transform: translateY(-3px);
 
-  border-color: #dcd6cf;
+  border-color: #E2E8F0;
 
   box-shadow: var(--md-shadow-hover);
 }
@@ -568,7 +568,7 @@
   background:
     linear-gradient(
       135deg,
-      #fff7f4,
+      #F7FAFF,
       #ffffff
     );
 
@@ -689,7 +689,7 @@
 .pickup-info p + p {
   padding-left: 15px;
 
-  border-left: 1px solid #e8e0da;
+  border-left: 1px solid #E2E8F0;
 }
 
 .pickup-info strong {
@@ -835,7 +835,7 @@
 .pickup-actions .cancel-button {
   background: var(--md-red-light);
 
-  border-color: #efd4d1;
+  border-color: #E2E8F0;
 
   color: var(--md-red);
 }
@@ -902,7 +902,7 @@
 
   border-radius: 50%;
 
-  background: #e5e2de;
+  background: #E2E8F0;
 
   color: #777;
 
@@ -940,7 +940,7 @@
   margin:
     0 6px 19px;
 
-  background: #e1ded9;
+  background: #E2E8F0;
 
   border-radius: 10px;
 }
@@ -1008,7 +1008,7 @@
 }
 
 .delete-donation-button {
-  border: 1px solid #efd4d1;
+  border: 1px solid #E2E8F0;
 
   background: var(--md-red-light);
 
@@ -1455,20 +1455,20 @@
 ========================================================= */
 
 body.dark-theme {
-  --md-bg: #111113;
-  --md-card: #1b1b1f;
+  --md-bg: #08111F;
+  --md-card: #142B43;
 
-  --md-text: #f5f5f5;
-  --md-muted: #a1a1aa;
+  --md-text: #FFF5F8;
+  --md-muted: #9E8C93;
 
-  --md-border: #303038;
-  --md-border-light: #303038;
+  --md-border: #403238;
+  --md-border-light: #403238;
 
-  --md-coral-light: #321919;
-  --md-green-light: #14291f;
-  --md-orange-light: #302118;
-  --md-blue-light: #182738;
-  --md-red-light: #321a1a;
+  --md-coral-light: #17345A;
+  --md-green-light: #122235;
+  --md-orange-light: #172B43;
+  --md-blue-light: #17345A;
+  --md-red-light: #17345A;
 }
 
 body.dark-theme .my-donations-page {
@@ -1505,7 +1505,7 @@ body.dark-theme .timeline-line {
 }
 
 body.dark-theme .timeline-step span {
-  background: #303038;
+  background: #403238;
 
   color: #aaa;
 }

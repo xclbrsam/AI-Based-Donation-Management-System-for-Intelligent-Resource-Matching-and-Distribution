@@ -10,20 +10,20 @@
   --ngo-white: #ffffff;
   --ngo-surface: #FAFAF9;
 
-  --ngo-navy: #18181B;
-  --ngo-navy-light: #52525B;
+  --ngo-navy: #0F172A;
+  --ngo-navy-light: #475569;
 
-  --ngo-coral: #7F1D1D;
-  --ngo-coral-dark: #6B1616;
-  --ngo-coral-soft: #FDF2F2;
+  --ngo-coral: #2563EB;
+  --ngo-coral-dark: #1D4ED8;
+  --ngo-coral-soft: #DBEAFE;
 
-  --ngo-text: #18181B;
-  --ngo-muted: #6B7280;
+  --ngo-text: #0F172A;
+  --ngo-muted: #475569;
 
-  --ngo-border: #E4E4E7;
+  --ngo-border: #E2E8F0;
 
-  --ngo-green: #7F1D1D;
-  --ngo-green-soft: #FDF2F2;
+  --ngo-green: #2563EB;
+  --ngo-green-soft: #DBEAFE;
 
   --ngo-shadow:
     0 18px 50px rgba(23, 32, 51, 0.08);
@@ -35,21 +35,21 @@
 ===================================================== */
 
 body.dark-theme {
-  --ngo-bg: #111113;
-  --ngo-white: #1C1C20;
-  --ngo-surface: #242429;
+  --ngo-bg: #08111F;
+  --ngo-white: #0D1B2A;
+  --ngo-surface: #142B43;
 
-  --ngo-navy: #111113;
-  --ngo-navy-light: #18181B;
+  --ngo-navy: #08111F;
+  --ngo-navy-light: #0F172A;
 
-  --ngo-text: #f3f5f8;
-  --ngo-muted: #71717A;
+  --ngo-text: #FFF5F8;
+  --ngo-muted: #9E8C93;
 
-  --ngo-border: #303038;
+  --ngo-border: #403238;
 
-  --ngo-coral-soft: #3A1A1A;
+  --ngo-coral-soft: #17345A;
 
-  --ngo-green-soft: #3A1A1A;
+  --ngo-green-soft: #17345A;
 
   --ngo-shadow:
     0 22px 60px rgba(0, 0, 0, 0.3);
@@ -153,7 +153,7 @@ body.dark-theme {
 
   box-shadow:
     0 8px 20px
-    rgba(232, 117, 92, 0.2);
+    rgba(37, 99, 235, 0.20);
 }
 
 
@@ -195,7 +195,7 @@ body.dark-theme {
 
   margin: 22px 0 0;
 
-  color: #b9c1cd;
+  color: #CBBBC1;
 
   font-size: 12px;
 
@@ -479,7 +479,7 @@ body.dark-theme {
 
   box-shadow:
     0 8px 20px
-    rgba(232, 117, 92, 0.08);
+    rgba(37, 99, 235, 0.08);
 }
 
 
@@ -884,7 +884,7 @@ body.dark-theme {
 
   box-shadow:
     0 10px 25px
-    rgba(232, 117, 92, 0.2);
+    rgba(37, 99, 235, 0.20);
 
   transition:
     transform 0.2s ease,
@@ -1168,11 +1168,11 @@ body.dark-theme {
 
 body.dark-theme .ngo-brand-eyebrow,
 body.dark-theme .ngo-impact-item > span {
-  color: #B64A4A;
+  color: #1D4ED8;
 }
 
 body.dark-theme .ngo-brand-message > p:last-child {
-  color: #b9c1cd;
+  color: #CBBBC1;
 }
 
 body.dark-theme .ngo-impact-item p {
@@ -1181,7 +1181,7 @@ body.dark-theme .ngo-impact-item p {
 
 body.dark-theme .ngo-register-form input::placeholder,
 body.dark-theme .ngo-register-form textarea::placeholder {
-  color: #6B7280;
+  color: #475569;
 }
 
 body.dark-theme .ngo-register-form input,

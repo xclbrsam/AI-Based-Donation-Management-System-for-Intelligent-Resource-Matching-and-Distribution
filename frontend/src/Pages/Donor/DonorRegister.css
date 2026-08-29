@@ -5,20 +5,20 @@
 ===================================================== */
 
 :root {
-  --dr-navy: #18181B;
-  --dr-navy-light: #52525B;
+  --dr-navy: #0F172A;
+  --dr-navy-light: #475569;
 
   --dr-ivory: #FAFAF9;
   --dr-white: #ffffff;
 
-  --dr-coral: #7F1D1D;
-  --dr-coral-dark: #6B1616;
-  --dr-coral-soft: #FDF2F2;
+  --dr-coral: #2563EB;
+  --dr-coral-dark: #1D4ED8;
+  --dr-coral-soft: #DBEAFE;
 
-  --dr-text: #18181B;
-  --dr-muted: #6B7280;
+  --dr-text: #0F172A;
+  --dr-muted: #475569;
 
-  --dr-border: #E4E4E7;
+  --dr-border: #E2E8F0;
 
   --dr-shadow:
     0 25px 70px rgba(23, 32, 51, 0.1);
@@ -29,24 +29,24 @@
 ===================================================== */
 
 body.dark-theme {
-  --dr-navy: #0b1220;
-  --dr-navy-light: #18181B;
+  --dr-navy: #08111F;
+  --dr-navy-light: #0F172A;
 
-  --dr-ivory: #111113;
-  --dr-white: #1C1C20;
+  --dr-ivory: #08111F;
+  --dr-white: #0D1B2A;
 
-  --dr-coral-soft: #3A1A1A;
+  --dr-coral-soft: #17345A;
 
-  --dr-text: #f3f5f8;
-  --dr-muted: #71717A;
+  --dr-text: #FFF5F8;
+  --dr-muted: #9E8C93;
 
-  --dr-border: #303038;
+  --dr-border: #403238;
 
   --dr-shadow:
     0 25px 70px rgba(0, 0, 0, 0.30);
 
-  --dr-input-bg: #18181B;
-  --dr-switch-bg: #18181B;
+  --dr-input-bg: #0F172A;
+  --dr-switch-bg: #0F172A;
 }
 
 
@@ -148,7 +148,7 @@ body.dark-theme {
 .donor-brand-eyebrow {
   margin: 0 0 18px;
 
-  color: #B64A4A;
+  color: #1D4ED8;
 
   font-size: 11px;
   font-weight: 800;
@@ -175,7 +175,7 @@ body.dark-theme {
 
   margin: 28px 0 0;
 
-  color: #b9c0cc;
+  color: #CBBBC1;
 
   font-size: 14px;
 
@@ -208,7 +208,7 @@ body.dark-theme {
 
   flex-shrink: 0;
 
-  color: #B64A4A;
+  color: #1D4ED8;
 
   font-size: 11px;
   font-weight: 700;
@@ -1075,7 +1075,7 @@ body.dark-theme .donor-account-button > span {
 }
 
 body.dark-theme .donor-account-button:hover {
-  border-color: #536076;
+  border-color: #475569;
 }
 
 body.dark-theme .donor-account-button.active {
@@ -1094,15 +1094,15 @@ body.dark-theme .donor-form-group select {
 body.dark-theme .donor-input-wrapper input::placeholder,
 body.dark-theme .donor-form-group input::placeholder,
 body.dark-theme .donor-form-group textarea::placeholder {
-  color: #6B7280;
+  color: #475569;
 }
 
 body.dark-theme .donor-input-wrapper > span {
-  color: #9aa5b5;
+  color: #94A3B8;
 }
 
 body.dark-theme .donor-password-toggle {
-  color: #9aa5b5;
+  color: #94A3B8;
 }
 
 body.dark-theme .donor-password-toggle:hover {

@@ -9,20 +9,20 @@
    ============================================================ */
 
 :root {
-  --ds-navy: #18181B;
+  --ds-navy: #0F172A;
   --ds-navy-light: #3F3F46;
 
   --ds-ivory: #FAFAF9;
   --ds-white: #FFFFFF;
 
-  --ds-burgundy: #7F1D1D;
-  --ds-burgundy-dark: #6B1616;
-  --ds-burgundy-soft: #FDF2F2;
+  --ds-burgundy: #2563EB;
+  --ds-burgundy-dark: #1D4ED8;
+  --ds-burgundy-soft: #DBEAFE;
 
-  --ds-text: #18181B;
-  --ds-muted: #6B7280;
+  --ds-text: #0F172A;
+  --ds-muted: #475569;
 
-  --ds-border: #E4E4E7;
+  --ds-border: #E2E8F0;
 
   --ds-green: #287A3D;
   --ds-green-soft: #EDF7EF;
@@ -43,20 +43,20 @@
    ============================================================ */
 
 body.dark-theme {
-  --ds-navy: #111113;
-  --ds-navy-light: #1C1C20;
+  --ds-navy: #08111F;
+  --ds-navy-light: #0D1B2A;
 
-  --ds-ivory: #111113;
-  --ds-white: #1C1C20;
+  --ds-ivory: #08111F;
+  --ds-white: #0D1B2A;
 
-  --ds-burgundy: #8F3030;
-  --ds-burgundy-dark: #762525;
-  --ds-burgundy-soft: #351A1A;
+  --ds-burgundy: #2563EB;
+  --ds-burgundy-dark: #1D4ED8;
+  --ds-burgundy-soft: #17345A;
 
   --ds-text: #F3F5F8;
   --ds-muted: #A1A1AA;
 
-  --ds-border: #303038;
+  --ds-border: #403238;
 
   --ds-green: #78B58D;
   --ds-green-soft: #1D3023;
@@ -697,8 +697,8 @@ body.dark-theme
   background:
     linear-gradient(
       145deg,
-      #1C1C20,
-      #18181B
+      #0D1B2A,
+      #0F172A
     );
 
   border-color: var(--ds-border);

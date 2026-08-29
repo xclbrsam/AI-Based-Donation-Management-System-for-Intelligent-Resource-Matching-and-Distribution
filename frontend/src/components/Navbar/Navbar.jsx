@@ -32,7 +32,7 @@ function Navbar() {
       ================================================= */}
 
       <div className="logo">
-        AI Donation
+       ResourceBridge
       </div>
 
 

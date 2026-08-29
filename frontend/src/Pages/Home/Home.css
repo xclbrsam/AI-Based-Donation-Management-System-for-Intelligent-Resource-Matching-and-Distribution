@@ -9,22 +9,22 @@
   --home-surface: #ffffff;
   --home-surface-soft: #FAFAF9;
 
-  --home-text: #182235;
-  --home-muted: #737b89;
+  --home-text: #0F172A;
+  --home-muted: #475569;
 
-  --home-border: #E4E4E7;
+  --home-border: #E2E8F0;
 
-  --home-navy: #18181B;
-  --home-navy-light: #52525B;
+  --home-navy: #0F172A;
+  --home-navy-light: #475569;
 
-  --home-coral: #7F1D1D;
-  --home-coral-dark: #6B1616;
-  --home-coral-soft: #FDF2F2;
+  --home-coral: #2563EB;
+  --home-coral-dark: #1D4ED8;
+  --home-coral-soft: #DBEAFE;
 
-  --home-green: #7F1D1D;
-  --home-green-soft: #FDF2F2;
+  --home-green: #2563EB;
+  --home-green-soft: #DBEAFE;
 
-  --home-gold: #C2410C;
+  --home-gold: #1D4ED8;
 
   --home-shadow:
     0 15px 45px rgba(23, 32, 51, 0.08);
@@ -36,23 +36,23 @@
 ===================================================== */
 
 body.dark-theme {
-  --home-bg: #111113;
-  --home-surface: #1C1C20;
-  --home-surface-soft: #242429;
+  --home-bg: #08111F;
+  --home-surface: #0D1B2A;
+  --home-surface-soft: #142B43;
 
-  --home-text: #f3f5f8;
-  --home-muted: #71717A;
+  --home-text: #FFF5F8;
+  --home-muted: #9E8C93;
 
-  --home-border: #303038;
+  --home-border: #403238;
 
-  --home-navy: #111113;
-  --home-navy-light: #18181B;
+  --home-navy: #08111F;
+  --home-navy-light: #0F172A;
 
-  --home-coral-soft: #3A1A1A;
-  --home-green-soft: #3A1A1A;
+  --home-coral-soft: #17345A;
+  --home-green-soft: #17345A;
 
-  --home-coral: #7F1D1D;
-  --home-coral-dark: #D46A4C;
+  --home-coral: #2563EB;
+  --home-coral-dark: #1D4ED8;
   --home-green: #6da889;
   --home-gold: #d0a45d;
 
@@ -73,7 +73,7 @@ body.dark-theme {
   background:
     radial-gradient(
       circle at 5% 15%,
-      rgba(232, 117, 92, 0.08),
+      rgba(37, 99, 235, 0.08),
       transparent 23%
     ),
     radial-gradient(
@@ -118,7 +118,7 @@ body.dark-theme {
   background:
     radial-gradient(
       circle at 20% 40%,
-      rgba(232, 117, 92, 0.08),
+      rgba(37, 99, 235, 0.08),
       transparent 30%
     );
 }
@@ -476,8 +476,8 @@ body.dark-theme {
   background:
     linear-gradient(
       145deg,
-      #18181B,
-      #25334a
+      #0F172A,
+      #172B43
     );
 
   color: white;
@@ -498,7 +498,7 @@ body.dark-theme {
 
   justify-content: space-between;
 
-  color: #71717A;
+  color: #9E8C93;
 
   font-size: 8px;
 
@@ -566,7 +566,7 @@ body.dark-theme {
 .hero-impact-card > p {
   margin: 0;
 
-  color: #71717A;
+  color: #9E8C93;
 
   font-size: 10px;
 
@@ -850,8 +850,8 @@ body.dark-theme {
   background:
     linear-gradient(
       135deg,
-      #18181B,
-      #25334a
+      #0F172A,
+      #172B43
     );
 
   color: white;
@@ -914,7 +914,7 @@ body.dark-theme {
 .home-impact-content p {
   margin: 13px 0 0;
 
-  color: #71717A;
+  color: #9E8C93;
 
   font-size: 10px;
 
@@ -948,7 +948,7 @@ body.dark-theme {
 
   margin-top: 3px;
 
-  color: #71717A;
+  color: #9E8C93;
 
   font-size: 8px;
 
@@ -1484,7 +1484,7 @@ body.dark-theme {
 
 .home-login-link:hover {
   transform: translateY(-2px);
-  border-color: rgba(232, 117, 92, 0.35);
+  border-color: rgba(37, 99, 235, 0.35);
   background: var(--home-surface-soft);
   box-shadow: 0 12px 28px rgba(23, 32, 51, 0.12);
 }
@@ -1669,7 +1669,7 @@ body.dark-theme .hero-impact-card > p,
 body.dark-theme .impact-card-top,
 body.dark-theme .home-impact-content p,
 body.dark-theme .home-impact-stat span {
-  color: #71717A;
+  color: #9E8C93;
 }
 
 body.dark-theme .home-choice-close {
@@ -1696,4 +1696,19 @@ body.dark-theme .home-donate-overlay {
     color 0.3s ease,
     border-color 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+
+/* FINAL BLUE DARK-MODE HERO LOCK */
+body.dark-theme .home-hero,
+html[data-theme="dark"] .home-hero {
+  background:
+    radial-gradient(circle at 82% 18%, rgba(56,189,248,.16), transparent 24%),
+    radial-gradient(circle at 18% 72%, rgba(37,99,235,.18), transparent 28%),
+    linear-gradient(135deg, #12345A 0%, #1D4ED8 58%, #2563EB 100%) !important;
+  border-color: #315B8A !important;
+}
+body.dark-theme .home-page,
+html[data-theme="dark"] .home-page {
+  background: #08111F !important;
 }

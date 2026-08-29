@@ -40,7 +40,7 @@ function Sidebar({ mobileOpen = false, onClose = () => {} }) {
       <div className="sidebar-brand" onClick={() => { navigate("/dashboard"); onClose(); }}>
         <div className="sidebar-brand-mark">AI</div>
         <div>
-          <strong>AI Donation</strong>
+          <strong>ResourceBridge</strong>
           <span>Donor workspace</span>
         </div>
       </div>

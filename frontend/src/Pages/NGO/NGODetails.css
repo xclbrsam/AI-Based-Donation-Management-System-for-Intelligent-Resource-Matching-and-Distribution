@@ -1,7 +1,7 @@
 .ngo-details-page {
   min-height: 100vh;
   padding: 40px 20px;
-  background: #f7f9fc;
+  background: #F7FAFF;
 }
 
 .ngo-details-container {
@@ -31,7 +31,7 @@
   width: 120px;
   height: 120px;
   border-radius: 18px;
-  background: #eef3f8;
+  background: #DBEAFE;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,7 +58,7 @@
 }
 
 .ngo-details-header p {
-  color: #666;
+  color: #475569;
   line-height: 1.6;
 }
 
@@ -82,7 +82,7 @@
 
 .ngo-info-card {
   padding: 18px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .ngo-contact-section p {
-  color: #666;
+  color: #475569;
   line-height: 1.6;
 }
 

@@ -2,9 +2,9 @@ Get-Content .\.gitignore.register-choice-page {
   min-height: 100vh;
   padding: 70px 25px;
   background:
-    radial-gradient(circle at top left, #e8f6ef 0%, transparent 35%),
-    radial-gradient(circle at bottom right, #e5f2ec 0%, transparent 35%),
-    #f7faf8;
+    radial-gradient(circle at top left, #DBEAFE 0%, transparent 35%),
+    radial-gradient(circle at bottom right, #EFF6FF 0%, transparent 35%),
+    #F7FAFF;
   box-sizing: border-box;
 }
 
@@ -30,8 +30,8 @@ Get-Content .\.gitignore.register-choice-page {
   padding: 8px 16px;
   border-radius: 30px;
 
-  background: #e4f5ec;
-  color: #7F1D1D;
+  background: #DBEAFE;
+  color: #2563EB;
 
   font-size: 12px;
   font-weight: 700;
@@ -41,7 +41,7 @@ Get-Content .\.gitignore.register-choice-page {
 .register-hero h1 {
   margin: 20px 0 18px;
 
-  color: #18181B;
+  color: #0F172A;
 
   font-size: 52px;
   line-height: 1.15;
@@ -49,7 +49,7 @@ Get-Content .\.gitignore.register-choice-page {
 }
 
 .register-hero h1 span {
-  color: #7F1D1D;
+  color: #2563EB;
 }
 
 .register-hero p {
@@ -75,7 +75,7 @@ Get-Content .\.gitignore.register-choice-page {
   border: none;
   border-radius: 12px;
 
-  background: #7F1D1D;
+  background: #2563EB;
   color: white;
 
   font-size: 16px;
@@ -152,7 +152,7 @@ Get-Content .\.gitignore.register-choice-page {
 .feature-card h3 {
   margin: 20px 0 10px;
 
-  color: #18181B;
+  color: #0F172A;
 
   font-size: 20px;
 }
@@ -160,7 +160,7 @@ Get-Content .\.gitignore.register-choice-page {
 .feature-card p {
   margin: 0;
 
-  color: #6c757d;
+  color: #475569;
 
   line-height: 1.7;
   font-size: 14px;
@@ -180,7 +180,7 @@ Get-Content .\.gitignore.register-choice-page {
 .how-it-works h2 {
   margin: 0;
 
-  color: #18181B;
+  color: #0F172A;
 
   font-size: 32px;
 }
@@ -188,7 +188,7 @@ Get-Content .\.gitignore.register-choice-page {
 .section-description {
   margin-top: 10px;
 
-  color: #6c757d;
+  color: #475569;
 }
 
 
@@ -216,7 +216,7 @@ Get-Content .\.gitignore.register-choice-page {
 
   border-radius: 50%;
 
-  background: #7F1D1D;
+  background: #2563EB;
   color: white;
 
   font-size: 13px;
@@ -226,7 +226,7 @@ Get-Content .\.gitignore.register-choice-page {
 .step h3 {
   margin: 0 0 8px;
 
-  color: #18181B;
+  color: #0F172A;
 
   font-size: 18px;
 }
@@ -234,7 +234,7 @@ Get-Content .\.gitignore.register-choice-page {
 .step p {
   margin: 0;
 
-  color: #6c757d;
+  color: #475569;
 
   font-size: 14px;
 }
@@ -257,17 +257,17 @@ Get-Content .\.gitignore.register-choice-page {
 .login-section p {
   margin-bottom: 12px;
 
-  color: #6c757d;
+  color: #475569;
 }
 
 .login-button {
   padding: 11px 22px;
 
-  border: 1px solid #7F1D1D;
+  border: 1px solid #2563EB;
   border-radius: 9px;
 
   background: transparent;
-  color: #7F1D1D;
+  color: #2563EB;
 
   font-size: 14px;
   font-weight: 600;
@@ -278,7 +278,7 @@ Get-Content .\.gitignore.register-choice-page {
 }
 
 .login-button:hover {
-  background: #7F1D1D;
+  background: #2563EB;
   color: white;
 }
 

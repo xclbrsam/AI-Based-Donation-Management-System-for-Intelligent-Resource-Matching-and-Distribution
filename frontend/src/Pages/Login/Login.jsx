@@ -271,7 +271,7 @@ function Login() {
             </span>
 
             <span>
-              AI Donations
+              ResourceBridge
             </span>
 
           </div>
@@ -361,7 +361,7 @@ function Login() {
           <div className="login-header">
 
             <span className="mobile-logo">
-              ✦ AI Donations
+              ✦ ResourceBridge
             </span>
 
             <p className="login-eyebrow">

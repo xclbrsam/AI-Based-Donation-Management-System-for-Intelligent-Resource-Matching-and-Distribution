@@ -1,6 +1,6 @@
 /* ============================================================
    NGO FEATURE PAGES
-   Burgundy + Warm Beige Theme
+   Blue Gradient Theme
    Light + Dark Mode
    ============================================================ */
 
@@ -10,9 +10,9 @@
 
 .ngo-feature-page,
 .ngo-feature {
-  --ngo-burgundy: #7f1d1d;
-  --ngo-burgundy-dark: #5f1515;
-  --ngo-burgundy-soft: #fdf2f2;
+  --ngo-burgundy: #2563EB;
+  --ngo-burgundy-dark: #1D4ED8;
+  --ngo-burgundy-soft: #DBEAFE;
 
   --ngo-beige: #f6f0e8;
   --ngo-beige-dark: #ebe0d2;
@@ -20,12 +20,12 @@
   --ngo-surface: #ffffff;
   --ngo-surface-soft: #faf7f3;
 
-  --ngo-border: #e4e4e7;
+  --ngo-border: #E2E8F0;
   --ngo-border-warm: #ddd6cc;
 
   --ngo-text: #2f2925;
   --ngo-text-soft: #6b7280;
-  --ngo-text-muted: #8a8178;
+  --ngo-text-muted: #9E8C93;
 
   --ngo-success: #2f6f4e;
   --ngo-success-soft: #edf7f0;
@@ -56,13 +56,13 @@
 /* ============================================================
    PAGE HEADER
    ============================================================ */
-
 .ngo-feature-head,
 .ngo-page-header {
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 20px;
+  width: 100%;
   margin-bottom: 22px;
 }
 
@@ -130,7 +130,7 @@
   gap: 15px;
   margin-bottom: 18px;
   padding: 13px 15px;
-  border: 1px solid #efd4d0;
+  border: 1px solid #E2E8F0;
   border-radius: 12px;
   background: var(--ngo-danger-soft);
   color: var(--ngo-danger);
@@ -176,7 +176,7 @@
 }
 
 .ngo-item-card:hover {
-  border-color: #d6c7b8;
+  border-color: #E2E8F0;
   box-shadow: 0 8px 24px rgba(74, 42, 24, 0.06);
   transform: translateY(-1px);
 }
@@ -242,7 +242,7 @@
 
 .ngo-item-actions .bad {
   color: var(--ngo-danger);
-  border-color: #efd4d0;
+  border-color: #E2E8F0;
   background: var(--ngo-danger-soft);
 }
 
@@ -459,8 +459,8 @@
 }
 
 .ngo-settings-section-icon.blue {
-  background: var(--ngo-blue-soft, #edf3f7);
-  color: var(--ngo-blue, #557b9d);
+  background: var(--ngo-burgundy-soft, #DBEAFE);
+  color: var(--ngo-burgundy, #2563EB);
 }
 
 .ngo-settings-section-icon.green {
@@ -769,7 +769,7 @@ html.dark .ngo-settings-action-button:hover {
 .ngo-empty,
 .ngo-empty-state {
   background: var(--ngo-surface);
-  border: 1px dashed #d8d1c7;
+  border: 1px dashed #E2E8F0;
   border-radius: 14px;
   padding: 30px;
   text-align: center;
@@ -812,7 +812,7 @@ html.dark .ngo-settings-action-button:hover {
 }
 
 .ngo-donation-card:hover {
-  border-color: #d5c4b5;
+  border-color: #E2E8F0;
   box-shadow: 0 12px 32px rgba(66, 37, 20, 0.08);
   transform: translateY(-1px);
 }
@@ -963,7 +963,7 @@ html.dark .ngo-settings-action-button:hover {
 .ngo-reject-button {
   background: var(--ngo-danger-soft);
   color: var(--ngo-danger);
-  border: 1px solid #efd4d0;
+  border: 1px solid #E2E8F0;
 }
 
 .ngo-reject-button:hover {
@@ -1218,42 +1218,45 @@ html.dark .ngo-settings-action-button:hover {
 
 /* ============================================================
    DARK MODE
-   Works with common body / root dark-mode classes
+   Premium Blue Gradient Theme
+   Matches Donor dashboard
    ============================================================ */
-
+body.dark-theme .ngo-feature-page,
+body.dark-theme .ngo-feature,
 .dark .ngo-feature-page,
 .dark .ngo-feature,
 body.dark .ngo-feature-page,
 body.dark .ngo-feature,
 html.dark .ngo-feature-page,
 html.dark .ngo-feature {
-  --ngo-burgundy: #d98b8b;
-  --ngo-burgundy-dark: #b96a6a;
-  --ngo-burgundy-soft: rgba(127, 29, 29, 0.24);
+  --ngo-burgundy: #60A5FA;
+  --ngo-burgundy-dark: #3B82F6;
+  --ngo-burgundy-soft: rgba(37, 99, 235, 0.18);
 
-  --ngo-beige: #241f1b;
-  --ngo-beige-dark: #302923;
+  --ngo-beige: #101D31;
+  --ngo-beige-dark: #162640;
 
-  --ngo-surface: #211d1a;
-  --ngo-surface-soft: #29231f;
+  --ngo-surface: #111F33;
+  --ngo-surface-soft: #162840;
 
-  --ngo-border: #403832;
-  --ngo-border-warm: #51473e;
+  --ngo-border: #284563;
+  --ngo-border-warm: #315577;
 
-  --ngo-text: #f4eee7;
-  --ngo-text-soft: #b9afa5;
-  --ngo-text-muted: #91877e;
+  --ngo-text: #F4F8FF;
+  --ngo-text-soft: #B7C7D9;
+  --ngo-text-muted: #8297AD;
 
-  --ngo-success: #78b995;
-  --ngo-success-soft: rgba(47, 111, 78, 0.2);
+  --ngo-success: #34D399;
+  --ngo-success-soft: rgba(52, 211, 153, 0.14);
 
-  --ngo-danger: #df8d83;
-  --ngo-danger-soft: rgba(165, 63, 53, 0.18);
+  --ngo-danger: #F87171;
+  --ngo-danger-soft: rgba(248, 113, 113, 0.12);
 
-  --ngo-warning: #d7aa55;
-  --ngo-warning-soft: rgba(154, 106, 24, 0.18);
+  --ngo-warning: #FBBF24;
+  --ngo-warning-soft: rgba(251, 191, 36, 0.14);
 }
 
+/* Dark mode form controls */
 .dark .ngo-form-card input,
 .dark .ngo-form-card select,
 .dark .ngo-form-card textarea,
@@ -1265,6 +1268,7 @@ html.dark .ngo-form-card select,
 html.dark .ngo-form-card textarea {
   color: var(--ngo-text);
   background: var(--ngo-surface);
+  border-color: var(--ngo-border);
 }
 
 .dark .ngo-form-card input::placeholder,
@@ -1276,14 +1280,301 @@ html.dark .ngo-form-card textarea::placeholder {
   color: var(--ngo-text-muted);
 }
 
+/* Dark mode detail overlay */
 .dark .ngo-detail-overlay,
 body.dark .ngo-detail-overlay,
 html.dark .ngo-detail-overlay {
-  background: rgba(0, 0, 0, 0.72);
+  background: rgba(3, 10, 18, 0.76);
+}
+
+/* Dark mode donation cards and detail surfaces */
+.dark .ngo-donation-card,
+body.dark .ngo-donation-card,
+html.dark .ngo-donation-card,
+.dark .ngo-item-card,
+body.dark .ngo-item-card,
+html.dark .ngo-item-card,
+.dark .ngo-form-card,
+body.dark .ngo-form-card,
+html.dark .ngo-form-card,
+.dark .ngo-impact-card,
+body.dark .ngo-impact-card,
+html.dark .ngo-impact-card,
+.dark .ngo-settings-card,
+body.dark .ngo-settings-card,
+html.dark .ngo-settings-card,
+.dark .ngo-notice,
+body.dark .ngo-notice,
+html.dark .ngo-notice {
+  background: var(--ngo-surface);
+  border-color: var(--ngo-border);
+  color: var(--ngo-text);
+}
+
+/* Dark mode donation action area */
+.dark .ngo-donation-actions,
+body.dark .ngo-donation-actions,
+html.dark .ngo-donation-actions,
+.dark .ngo-detail-actions,
+body.dark .ngo-detail-actions,
+html.dark .ngo-detail-actions {
+  background: var(--ngo-surface-soft);
+  border-color: var(--ngo-border);
+}
+
+/* Dark mode modal */
+.dark .ngo-detail-modal,
+body.dark .ngo-detail-modal,
+html.dark .ngo-detail-modal {
+  background: var(--ngo-surface);
+  border-color: var(--ngo-border);
+}
+
+.dark .ngo-detail-header,
+body.dark .ngo-detail-header,
+html.dark .ngo-detail-header {
+  background: linear-gradient(
+    135deg,
+    #111F33,
+    #162840
+  );
+  border-color: var(--ngo-border);
+}
+
+.dark .ngo-detail-section,
+body.dark .ngo-detail-section,
+html.dark .ngo-detail-section {
+  background: #162840;
+  border-color: var(--ngo-border);
+}
+
+.dark .ngo-close-button,
+body.dark .ngo-close-button,
+html.dark .ngo-close-button {
+  background: #142943;
+  border-color: var(--ngo-border);
+  color: var(--ngo-text);
+}
+
+.dark .ngo-close-button:hover,
+body.dark .ngo-close-button:hover,
+html.dark .ngo-close-button:hover {
+  background: #1D4ED8;
+  border-color: #3B82F6;
+  color: #FFFFFF;
+}
+
+/* Dark mode buttons */
+.dark .ngo-accept-button,
+body.dark .ngo-accept-button,
+html.dark .ngo-accept-button {
+  background: linear-gradient(135deg, #1D4ED8, #2563EB);
+  border-color: #2563EB;
+  color: #FFFFFF;
+}
+
+.dark .ngo-accept-button:hover,
+body.dark .ngo-accept-button:hover,
+html.dark .ngo-accept-button:hover {
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
+}
+
+.dark .ngo-secondary-button,
+body.dark .ngo-secondary-button,
+html.dark .ngo-secondary-button {
+  background: #142943;
+  border-color: var(--ngo-border);
+  color: var(--ngo-text);
+}
+
+.dark .ngo-secondary-button:hover,
+body.dark .ngo-secondary-button:hover,
+html.dark .ngo-secondary-button:hover {
+  background: var(--ngo-burgundy-soft);
+  border-color: #60A5FA;
+  color: #93C5FD;
+}
+
+/* Dark mode status accents */
+.dark .ngo-status.accepted,
+body.dark .ngo-status.accepted,
+html.dark .ngo-status.accepted {
+  background: rgba(37, 99, 235, 0.18);
+  color: #60A5FA;
+}
+
+/* ============================================================
+   FINAL BLUE OVERRIDES
+   Remove legacy burgundy/maroon appearance from NGO feature UI
+   ============================================================ */
+
+.dark .ngo-feature-page,
+.dark .ngo-feature,
+body.dark .ngo-feature-page,
+body.dark .ngo-feature,
+html.dark .ngo-feature-page,
+html.dark .ngo-feature {
+  color-scheme: dark;
+}
+
+.dark .ngo-feature-head > button,
+.dark .ngo-refresh-button,
+body.dark .ngo-feature-head > button,
+body.dark .ngo-refresh-button,
+html.dark .ngo-feature-head > button,
+html.dark .ngo-refresh-button {
+  background: #142943;
+  border-color: #315577;
+  color: #60A5FA;
+}
+
+.dark .ngo-feature-head > button:hover,
+.dark .ngo-refresh-button:hover,
+body.dark .ngo-feature-head > button:hover,
+body.dark .ngo-refresh-button:hover,
+html.dark .ngo-feature-head > button:hover,
+html.dark .ngo-refresh-button:hover {
+  background: rgba(37, 99, 235, 0.20);
+  border-color: #60A5FA;
+  color: #93C5FD;
+}
+
+/* ============================================================
+   REFRESH BUTTON - FIXED TOP RIGHT
+   ============================================================ */
+
+@media (min-width: 601px) {
+
+  .ngo-feature-head,
+  .ngo-page-header {
+    position: relative;
+    width: 100%;
+    min-height: 72px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .ngo-feature-head > button,
+  .ngo-refresh-button {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+    left: auto !important;
+
+    margin: 0 !important;
+
+    flex-shrink: 0;
+
+    z-index: 10;
+  }
+}
+
+/* Dark donation card hover */
+.dark .ngo-donation-card:hover,
+body.dark .ngo-donation-card:hover,
+html.dark .ngo-donation-card:hover {
+  border-color: #315577;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+}
+
+/* Dark donation labels/details */
+.dark .ngo-donation-top h3,
+body.dark .ngo-donation-top h3,
+html.dark .ngo-donation-top h3,
+.dark .ngo-donation-summary strong,
+body.dark .ngo-donation-summary strong,
+html.dark .ngo-donation-summary strong,
+.dark .ngo-item-card h3,
+body.dark .ngo-item-card h3,
+html.dark .ngo-item-card h3 {
+  color: #F4F8FF;
+}
+
+/* Blue primary accents */
+.dark .ngo-eyebrow,
+body.dark .ngo-eyebrow,
+html.dark .ngo-eyebrow,
+.dark .ngo-item-label,
+body.dark .ngo-item-label,
+html.dark .ngo-item-label,
+.dark .ngo-view-details,
+body.dark .ngo-view-details,
+html.dark .ngo-view-details,
+.dark .ngo-section-title > span,
+body.dark .ngo-section-title > span,
+html.dark .ngo-section-title > span {
+  color: #60A5FA;
+}
+
+/* Blue action buttons */
+.dark .ngo-item-actions .good,
+body.dark .ngo-item-actions .good,
+html.dark .ngo-item-actions .good,
+.dark .ngo-form-card .primary,
+body.dark .ngo-form-card .primary,
+html.dark .ngo-form-card .primary {
+  background: linear-gradient(135deg, #1D4ED8, #2563EB);
+  color: #FFFFFF;
+  border-color: #2563EB;
+}
+
+.dark .ngo-item-actions .good:hover,
+body.dark .ngo-item-actions .good:hover,
+html.dark .ngo-item-actions .good:hover,
+.dark .ngo-form-card .primary:hover,
+body.dark .ngo-form-card .primary:hover,
+html.dark .ngo-form-card .primary:hover {
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
+}
+
+/* Blue timeline completion */
+.dark .ngo-timeline-item.completed:not(:last-child)::after,
+body.dark .ngo-timeline-item.completed:not(:last-child)::after,
+html.dark .ngo-timeline-item.completed:not(:last-child)::after {
+  background: #3B82F6;
+}
+
+.dark .ngo-timeline-item.completed .ngo-timeline-icon,
+body.dark .ngo-timeline-item.completed .ngo-timeline-icon,
+html.dark .ngo-timeline-item.completed .ngo-timeline-icon {
+  background: #2563EB;
+  border-color: #3B82F6;
+  color: #FFFFFF;
+}
+
+/* Blue settings icons */
+.dark .ngo-settings-section-icon.coral,
+body.dark .ngo-settings-section-icon.coral,
+html.dark .ngo-settings-section-icon.coral,
+.dark .ngo-settings-section-icon.blue,
+body.dark .ngo-settings-section-icon.blue,
+html.dark .ngo-settings-section-icon.blue {
+  background: rgba(37, 99, 235, 0.18);
+  color: #60A5FA;
+}
+
+/* Preserve semantic danger/success/warning colors */
+.dark .ngo-reject-button,
+body.dark .ngo-reject-button,
+html.dark .ngo-reject-button {
+  background: var(--ngo-danger-soft);
+  color: var(--ngo-danger);
+}
+
+.dark .ngo-collect-button,
+body.dark .ngo-collect-button,
+html.dark .ngo-collect-button {
+  background: var(--ngo-success);
+  border-color: var(--ngo-success);
+  color: #FFFFFF;
 }
 
 /* ============================================================
    RESPONSIVE
+   ============================================================
+
+
    ============================================================ */
 
 @media (max-width: 850px) {
@@ -1335,6 +1626,7 @@ html.dark .ngo-detail-overlay {
   .ngo-refresh-button {
     width: 100%;
     margin-top: 0;
+    margin-left: 0;
   }
 
   .ngo-donation-content {

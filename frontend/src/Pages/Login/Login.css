@@ -4,19 +4,19 @@
 ===================================================== */
 
 :root {
-  --login-navy: #18181B;
-  --login-navy-light: #52525B;
+  --login-navy: #0F172A;
+  --login-navy-light: #475569;
 
   --login-ivory: #FAFAF9;
   --login-white: #ffffff;
 
-  --login-coral: #7F1D1D;
-  --login-coral-dark: #6B1616;
-  --login-coral-soft: #FDF2F2;
+  --login-coral: #2563EB;
+  --login-coral-dark: #1D4ED8;
+  --login-coral-soft: #DBEAFE;
 
-  --login-text: #18181B;
-  --login-muted: #6B7280;
-  --login-border: #E4E4E7;
+  --login-text: #0F172A;
+  --login-muted: #475569;
+  --login-border: #E2E8F0;
 
   --login-shadow:
     0 25px 70px rgba(23, 32, 51, 0.12);
@@ -27,19 +27,19 @@
 ===================================================== */
 
 body.dark-theme {
-  --login-navy: #0b1220;
-  --login-navy-light: #18181B;
+  --login-navy: #08111F;
+  --login-navy-light: #0F172A;
 
-  --login-ivory: #111113;
-  --login-white: #1C1C20;
+  --login-ivory: #08111F;
+  --login-white: #0D1B2A;
 
-  --login-coral: #7F1D1D;
-  --login-coral-dark: #D46A4C;
-  --login-coral-soft: #3A1A1A;
+  --login-coral: #2563EB;
+  --login-coral-dark: #1D4ED8;
+  --login-coral-soft: #17345A;
 
-  --login-text: #f3f5f8;
-  --login-muted: #71717A;
-  --login-border: #303038;
+  --login-text: #FFF5F8;
+  --login-muted: #9E8C93;
+  --login-border: #403238;
 
   --login-shadow:
     0 25px 70px rgba(0, 0, 0, 0.30);
@@ -147,7 +147,7 @@ body.dark-theme {
 .brand-eyebrow {
   margin: 0 0 20px;
 
-  color: #B64A4A;
+  color: #1D4ED8;
 
   font-size: 12px;
   font-weight: 700;
@@ -176,7 +176,7 @@ body.dark-theme {
 
   margin: 30px 0 0;
 
-  color: #b9c0cc;
+  color: #CBBBC1;
 
   font-size: 16px;
   line-height: 1.8;
@@ -237,7 +237,7 @@ body.dark-theme {
 .impact-card span {
   display: block;
 
-  color: #aeb6c4;
+  color: #94A3B8;
 
   font-size: 12px;
   line-height: 1.5;
@@ -642,7 +642,7 @@ body.dark-theme {
   white-space: nowrap;
 
   box-shadow:
-    0 10px 25px rgba(232, 117, 92, 0.22);
+    0 10px 25px rgba(37, 99, 235, 0.22);
 
   transition:
     transform 0.2s ease,
@@ -655,7 +655,7 @@ body.dark-theme {
   transform: translateY(-2px);
 
   box-shadow:
-    0 14px 30px rgba(232, 117, 92, 0.28);
+    0 14px 30px rgba(37, 99, 235, 0.28);
 }
 
 .login-submit:active:not(:disabled) {
@@ -949,16 +949,16 @@ body.dark-theme .login-card {
 }
 
 body.dark-theme .input-wrapper {
-  background: #18181B;
+  background: #0F172A;
   border-color: var(--login-border);
 }
 
 body.dark-theme .input-wrapper:hover {
-  border-color: #536076;
+  border-color: #475569;
 }
 
 body.dark-theme .input-wrapper:focus-within {
-  background: #18181B;
+  background: #0F172A;
   border-color: var(--login-coral);
 }
 
@@ -967,15 +967,15 @@ body.dark-theme .input-wrapper input {
 }
 
 body.dark-theme .input-wrapper input::placeholder {
-  color: #6B7280;
+  color: #475569;
 }
 
 body.dark-theme .input-icon {
-  color: #9aa5b5;
+  color: #94A3B8;
 }
 
 body.dark-theme .password-toggle {
-  color: #9aa5b5;
+  color: #94A3B8;
 }
 
 body.dark-theme .password-toggle:hover {
@@ -1012,15 +1012,15 @@ body.dark-theme .impact-card {
 }
 
 body.dark-theme .brand-description {
-  color: #b9c0cc;
+  color: #CBBBC1;
 }
 
 body.dark-theme .brand-eyebrow {
-  color: #B64A4A;
+  color: #1D4ED8;
 }
 
 body.dark-theme .impact-card span {
-  color: #aeb6c4;
+  color: #94A3B8;
 }
 
 /* Keep white text on navy/coral surfaces */
@@ -1036,7 +1036,7 @@ body.dark-theme .input-wrapper input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--login-text);
 
   -webkit-box-shadow:
-    0 0 0 1000px #18181B inset;
+    0 0 0 1000px #0F172A inset;
 }
 
 /* Smooth theme transition */

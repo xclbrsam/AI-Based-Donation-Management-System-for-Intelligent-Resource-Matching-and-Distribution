@@ -10,23 +10,23 @@
    ===================================================== */
 
 :root {
-  --dp-navy: #18181B;
-  --dp-navy-light: #52525B;
+  --dp-navy: #0F172A;
+  --dp-navy-light: #475569;
 
   --dp-ivory: #FAFAF9;
   --dp-white: #FFFFFF;
 
-  --dp-coral: #7F1D1D;
-  --dp-coral-dark: #6B1616;
-  --dp-coral-soft: #FDF2F2;
+  --dp-coral: #2563EB;
+  --dp-coral-dark: #1D4ED8;
+  --dp-coral-soft: #DBEAFE;
 
-  --dp-text: #18181B;
-  --dp-muted: #6B7280;
+  --dp-text: #0F172A;
+  --dp-muted: #475569;
 
-  --dp-border: #E4E4E7;
+  --dp-border: #E2E8F0;
 
-  --dp-green: #7F1D1D;
-  --dp-green-soft: #FDF2F2;
+  --dp-green: #2563EB;
+  --dp-green-soft: #DBEAFE;
 
   --dp-shadow:
     0 15px 45px rgba(23, 32, 51, 0.07);
@@ -38,23 +38,23 @@
    ===================================================== */
 
 body.dark-theme {
-  --dp-navy: #111113;
-  --dp-navy-light: #18181B;
+  --dp-navy: #08111F;
+  --dp-navy-light: #0F172A;
 
-  --dp-ivory: #111113;
-  --dp-white: #1C1C20;
+  --dp-ivory: #08111F;
+  --dp-white: #0D1B2A;
 
-  --dp-coral: #7F1D1D;
-  --dp-coral-dark: #6B1616;
-  --dp-coral-soft: #3A1A1A;
+  --dp-coral: #2563EB;
+  --dp-coral-dark: #1D4ED8;
+  --dp-coral-soft: #17345A;
 
   --dp-text: #F3F5F8;
   --dp-muted: #A1A1AA;
 
-  --dp-border: #303038;
+  --dp-border: #403238;
 
   --dp-green: #6DA889;
-  --dp-green-soft: #3A1A1A;
+  --dp-green-soft: #17345A;
 
   --dp-shadow:
     0 20px 55px rgba(0, 0, 0, 0.30);
@@ -79,7 +79,7 @@ body.dark-theme {
   background:
     radial-gradient(
       circle at 5% 10%,
-      rgba(232, 117, 92, 0.08),
+      rgba(37, 99, 235, 0.08),
       transparent 25%
     ),
     radial-gradient(
@@ -1011,7 +1011,7 @@ body.dark-theme {
 
   color: var(
     --di-text,
-    #18181B
+    #0F172A
   );
 
   font-family: inherit;
@@ -1035,7 +1035,7 @@ body.dark-theme {
   border-color:
     var(
       --dp-coral,
-      #7F1D1D
+      #2563EB
     );
 
   box-shadow:
