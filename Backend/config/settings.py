@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Added User App 
+    'notifications',
     'users',
     "corsheaders",
 ]

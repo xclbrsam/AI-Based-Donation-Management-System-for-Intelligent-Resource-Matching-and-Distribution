@@ -35,6 +35,15 @@ from .serializers import (
     DonationAllocationSerializer,
     PickupRequestSerializer,
 )
+from notifications.services import (
+    notify_ai_match,
+    notify_allocation_created,
+    notify_donation_approved,
+    notify_donation_rejected,
+    notify_donation_submitted,
+    notify_pickup_created,
+    notify_pickup_status_changed,
+)
 
 
 # =========================================================
@@ -668,9 +677,10 @@ class DonationCreateView(
         # SAVE DONATION
         # -------------------------------------------------
 
-        serializer.save(
+        donation = serializer.save(
             donor=donor
         )
+        notify_donation_submitted(donation)
 
 
 # =========================================================
@@ -1636,10 +1646,20 @@ class DonationStatusUpdateView(APIView):
                     for allocation in pending_allocations
                 ]
 
+                cancelled_pickups = []
                 if pending_allocation_ids:
-                    PickupRequest.objects.filter(
+                    cancelled_pickups = list(
+                        PickupRequest.objects.select_related(
+                            "allocation",
+                            "allocation__donation",
+                            "allocation__ngo",
+                        ).filter(
                         allocation_id__in=pending_allocation_ids,
                         status="Pending"
+                        )
+                    )
+                    PickupRequest.objects.filter(
+                        id__in=[pickup.id for pickup in cancelled_pickups]
                     ).update(
                         status="Cancelled"
                     )
@@ -1658,6 +1678,11 @@ class DonationStatusUpdateView(APIView):
                         "status"
                     ]
                 )
+
+                notify_donation_rejected(donation)
+                for pickup in cancelled_pickups:
+                    pickup.status = "Cancelled"
+                    notify_pickup_status_changed(pickup, changed_by="NGO")
 
                 return Response(
                     {
@@ -1770,10 +1795,20 @@ class DonationStatusUpdateView(APIView):
                 for allocation in other_pending_allocations
             ]
 
+            cancelled_other_pickups = []
             if other_pending_allocation_ids:
-                PickupRequest.objects.filter(
+                cancelled_other_pickups = list(
+                    PickupRequest.objects.select_related(
+                        "allocation",
+                        "allocation__donation",
+                        "allocation__ngo",
+                    ).filter(
                     allocation_id__in=other_pending_allocation_ids,
                     status="Pending"
+                    )
+                )
+                PickupRequest.objects.filter(
+                    id__in=[pickup.id for pickup in cancelled_other_pickups]
                 ).update(
                     status="Cancelled"
                 )
@@ -1797,6 +1832,11 @@ class DonationStatusUpdateView(APIView):
                     "status"
                 ]
             )
+
+            notify_donation_approved(donation)
+            for pickup in cancelled_other_pickups:
+                pickup.status = "Cancelled"
+                notify_pickup_status_changed(pickup, changed_by="NGO")
 
             return Response(
                 {
@@ -2733,6 +2773,10 @@ class AIMatchView(APIView):
         )
 
         best_match = matches[0]
+        matched_requirement = NGORequirement.objects.select_related("ngo").get(
+            id=best_match["requirement_id"]
+        )
+        notify_ai_match(donation, matched_requirement)
 
         # -------------------------------------------------
         # RESPONSE
@@ -3014,6 +3058,9 @@ class DonationAllocationView(APIView):
                 update_fields=["ngo"]
             )
 
+        for allocation in created_allocations:
+            notify_allocation_created(allocation)
+
         serializer = DonationAllocationSerializer(
             created_allocations,
             many=True
@@ -3290,6 +3337,7 @@ class PickupCreateView(APIView):
             notes=notes,
             status="Pending"
         )
+        notify_pickup_created(pickup)
 
         serializer = PickupRequestSerializer(pickup)
 
@@ -3491,6 +3539,7 @@ class PickupStatusUpdateView(APIView):
 
         pickup.status = new_status
         pickup.save(update_fields=["status", "updated_at"])
+        notify_pickup_status_changed(pickup, changed_by="NGO")
 
         # -------------------------------------------------
         # IMPORTANT:
@@ -3572,6 +3621,7 @@ class DonorPickupCancelView(APIView):
         # already accepted the donation.
         pickup.status = "Cancelled"
         pickup.save(update_fields=["status", "updated_at"])
+        notify_pickup_status_changed(pickup, changed_by="Donor")
 
         return Response(
             {"message": "Pickup request cancelled."},

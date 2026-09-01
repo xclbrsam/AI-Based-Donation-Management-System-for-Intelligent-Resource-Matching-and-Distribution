@@ -235,3 +235,22 @@ html[data-theme="dark"] .sidebar-link.active::before,
 body.dark-theme .sidebar-link.active::before {
   background: #60A5FA !important;
 }
+
+/* Notification unread badge */
+.sidebar-badge {
+  min-width: 18px;
+  height: 18px;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 9px;
+  font-weight: 800;
+}
+.sidebar-badge.has-unread {
+  padding: 0 5px;
+  border-radius: 20px;
+  background: #2563EB;
+  color: #FFFFFF;
+}

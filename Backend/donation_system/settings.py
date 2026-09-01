@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     # Our App
     'donor',
+    'notifications.apps.NotificationsConfig',
 ]
 
 

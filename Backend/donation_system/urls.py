@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include('donor.urls')),
+    path('api/notifications/', include('notifications.urls')),
 
     # JWT Login
     path('api/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

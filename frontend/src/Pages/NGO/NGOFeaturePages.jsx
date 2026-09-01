@@ -1,3 +1,4 @@
+import NotificationsPage from "../../components/NotificationsPage/NotificationsPage";
 // ============================================================
 // NGO FEATURE PAGES
 // Donations | Requirements | Allocations | Pickups
@@ -1596,74 +1597,7 @@ export function NGOImpact() {
 // ============================================================
 
 export function NGONotifications() {
-  const {
-    items,
-    loading,
-  } = useGet(
-    "ngo/donations/",
-    "notifications"
-  );
-
-  const alerts = items
-    .filter((item) =>
-      [
-        "Pending",
-        "Accepted",
-        "Collected",
-      ].includes(item.status)
-    )
-    .slice(0, 10);
-
-  return (
-    <Page title="Notifications">
-
-      {loading ? (
-        <Loading />
-      ) : alerts.length ? (
-        alerts.map((item, index) => (
-          <article
-            className="ngo-notice"
-            key={
-              item.id ||
-              index
-            }
-          >
-
-            <b>
-              {item.status === "Pending"
-                ? "📥"
-                : item.status === "Accepted"
-                ? "✅"
-                : "🚚"}
-            </b>
-
-            <div>
-
-              <strong>
-                Donation{" "}
-                {item.status}
-              </strong>
-
-              <p>
-                {item.item_name ||
-                  item.item ||
-                  "A donation"}{" "}
-                has status{" "}
-                {item.status}.
-              </p>
-
-            </div>
-
-          </article>
-        ))
-      ) : (
-        <Empty
-          text="No recent notifications."
-        />
-      )}
-
-    </Page>
-  );
+  return <NotificationsPage role="ngo" />;
 }
 
 // ============================================================

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { FiBell, FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
+import { NotificationBell } from "../NotificationBell/NotificationBell";
 import "./DonorLayout.css";
 
 const pageMeta = {
@@ -71,15 +72,7 @@ function DonorLayout({ children }) {
           </div>
 
           <div className="donor-appbar-right">
-            <button
-              type="button"
-              className="donor-appbar-notification"
-              aria-label="Open notifications"
-              onClick={() => navigate("/notifications")}
-            >
-              <FiBell />
-              <span />
-            </button>
+            <NotificationBell route="/notifications" className="donor-appbar-notification-wrap" />
             <div className="donor-appbar-user">
               <div className="donor-appbar-avatar">{userName.charAt(0).toUpperCase()}</div>
               <div>

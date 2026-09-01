@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiHome,
@@ -11,6 +12,7 @@ import {
   FiSun,
 } from "react-icons/fi";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import { getUnreadCount } from "../../services/notificationService";
 import "./Sidebar.css";
 
 const navItems = [
@@ -23,6 +25,26 @@ const navItems = [
 
 function Sidebar({ mobileOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      if (!localStorage.getItem("access")) return;
+      try {
+        const count = await getUnreadCount();
+        if (active) setUnreadCount(count);
+      } catch {
+        // Authentication/API errors are handled by the shared API client.
+      }
+    };
+    load();
+    const timer = window.setInterval(load, 30000);
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
   const userName = localStorage.getItem("user_name") || "Donor";
 
   const handleLogout = () => {
@@ -76,7 +98,7 @@ function Sidebar({ mobileOpen = false, onClose = () => {} }) {
         >
           <FiBell />
           <span>Notifications</span>
-          <span className="sidebar-badge">•</span>
+          <span className={`sidebar-badge ${unreadCount ? "has-unread" : ""}`}>{unreadCount > 99 ? "99+" : unreadCount || ""}</span>
         </NavLink>
 
         <p className="sidebar-section-label">ACCOUNT</p>
