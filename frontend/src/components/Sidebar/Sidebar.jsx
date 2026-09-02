@@ -4,6 +4,7 @@ import {
   FiGift,
   FiPackage,
   FiActivity,
+  FiAward,
   FiBell,
   FiUser,
   FiSettings,
@@ -11,6 +12,7 @@ import {
   FiSun,
 } from "react-icons/fi";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
+import { useRanking } from "../../context/RankingContext";
 import "./Sidebar.css";
 
 const navItems = [
@@ -23,6 +25,7 @@ const navItems = [
 
 function Sidebar({ mobileOpen = false, onClose = () => {} }) {
   const navigate = useNavigate();
+  const { currentDonor, loading: rankingsLoading } = useRanking();
   const userName = localStorage.getItem("user_name") || "Donor";
 
   const handleLogout = () => {
@@ -67,6 +70,15 @@ function Sidebar({ mobileOpen = false, onClose = () => {} }) {
             <span>{label}</span>
           </NavLink>
         ))}
+        <NavLink
+          to="/ranking"
+          className={({ isActive }) => `sidebar-link sidebar-ranking ${isActive ? "active" : ""}`}
+          onClick={onClose}
+        >
+          <FiAward />
+          <span>Ranking</span>
+          <span className="sidebar-ranking-badge">{rankingsLoading || !currentDonor ? "--" : `#${currentDonor.rank}`}</span>
+        </NavLink>
 
         <p className="sidebar-section-label">COMMUNICATION</p>
         <NavLink

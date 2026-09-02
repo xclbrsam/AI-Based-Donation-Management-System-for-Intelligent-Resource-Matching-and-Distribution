@@ -14,6 +14,7 @@ import {
   FiUser,
 } from "react-icons/fi";
 import api from "../../services/api";
+import DonorLeaderboard from "../../components/DonorLeaderboard/DonorLeaderboard";
 import "./DonorDashboard.css";
 
 export default function DonorDashboard() {
@@ -133,6 +134,8 @@ export default function DonorDashboard() {
           <button onClick={() => navigate("/my-activity")}>View Activity <FiArrowRight /></button>
         </div>
       </section>
+
+      <DonorLeaderboard showCurrentRank />
 
       <section className="quick-actions-section">
         <div className="section-heading section-heading-wide">

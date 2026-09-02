@@ -485,9 +485,9 @@ function MyDonations() {
 
               {/* =================================================
                   IMAGE
-              ================================================= */}
+               ================================================= */}
 
-              <div className="my-donation-image-container">
+              {/* <div className="my-donation-image-container">
 
                 {donation.item_image ? (
 
@@ -505,7 +505,7 @@ function MyDonations() {
 
                 )}
 
-              </div>
+              </div> */}
 
 
               {/* =================================================

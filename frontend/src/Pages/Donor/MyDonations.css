@@ -1,6 +1,6 @@
 /* =========================================================
    MY DONATIONS
-   RESPONSIVE PREMIUM DONOR DASHBOARD
+   PREMIUM DONOR DASHBOARD
 ========================================================= */
 
 :root {
@@ -18,14 +18,14 @@
   --md-green: #15803d;
   --md-green-light: #ecfdf3;
 
-  --md-orange: #1D4ED8;
+  --md-orange: #2563EB;
   --md-orange-light: #EFF6FF;
 
   --md-blue: #2563EB;
   --md-blue-light: #DBEAFE;
 
   --md-red: #b42318;
-  --md-red-light: #DBEAFE;
+  --md-red-light: #FEE2E2;
 
   --md-border: #e5e0da;
   --md-border-light: #E2E8F0;
@@ -49,14 +49,14 @@
   box-sizing: border-box;
 
   padding:
-    clamp(28px, 4vw, 55px)
+    28px
     clamp(16px, 4vw, 65px)
     80px;
 
   background:
     radial-gradient(
       circle at 90% 0%,
-      rgba(143, 32, 32, 0.045),
+      rgba(37, 99, 235, 0.05),
       transparent 32%
     ),
     var(--md-bg);
@@ -68,26 +68,89 @@
 
 
 /* =========================================================
-   HEADER
+   HEADER / HERO SECTION
 ========================================================= */
 
 .my-donations-header {
+  position: relative;
+
   width: min(1180px, 100%);
 
-  margin: 0 auto;
+  min-height: 330px;
 
-  display: grid;
+  margin: 0 auto 42px;
 
-  grid-template-columns:
-    auto
-    minmax(300px, 1fr)
-    auto;
+  padding:
+    clamp(45px, 5vw, 68px)
+    clamp(35px, 5vw, 65px);
 
-  align-items: center;
+  box-sizing: border-box;
 
-  gap: clamp(20px, 3vw, 55px);
+  display: flex;
 
-  margin-bottom: clamp(30px, 4vw, 45px);
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: flex-start;
+
+  border-radius: 30px;
+
+  overflow: hidden;
+
+  background:
+    linear-gradient(
+      135deg,
+      #2456D8 0%,
+      #2563EB 55%,
+      #2868EA 100%
+    );
+
+  box-shadow:
+    0 20px 50px rgba(37, 99, 235, 0.18);
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   HERO DECORATIVE CIRCLES
+========================================================= */
+
+.my-donations-header::before {
+  content: "";
+
+  position: absolute;
+
+  width: 330px;
+  height: 330px;
+
+  right: -80px;
+  top: -150px;
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.my-donations-header::after {
+  content: "";
+
+  position: absolute;
+
+  width: 210px;
+  height: 210px;
+
+  right: 60px;
+  bottom: -140px;
+
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  border-radius: 50%;
+
+  pointer-events: none;
 }
 
 
@@ -96,6 +159,10 @@
 ========================================================= */
 
 .my-donations-badge {
+  position: relative;
+
+  z-index: 2;
+
   display: inline-flex;
 
   align-items: center;
@@ -103,24 +170,28 @@
 
   width: fit-content;
 
-  padding: 7px 12px;
+  margin-bottom: 20px;
+
+  padding: 7px 14px;
 
   border-radius: 30px;
 
-  background: var(--md-coral-light);
+  background:
+    rgba(255, 255, 255, 0.10);
 
-  color: var(--md-coral);
+  color: #FFD6D6;
 
-  font-size:
-    clamp(8px, 0.7vw, 10px);
+  font-size: 10px;
 
   font-weight: 900;
 
-  letter-spacing: 1.8px;
+  letter-spacing: 2px;
 
   white-space: nowrap;
 
   text-transform: uppercase;
+
+  backdrop-filter: blur(5px);
 }
 
 
@@ -129,6 +200,12 @@
 ========================================================= */
 
 .my-donations-header-content {
+  position: relative;
+
+  z-index: 2;
+
+  width: min(760px, 100%);
+
   min-width: 0;
 }
 
@@ -140,19 +217,19 @@
 .my-donations-header h1 {
   margin: 0;
 
-  color: var(--md-text);
+  color: #ffffff;
 
   font-size:
-    clamp(42px, 5.4vw, 76px);
+    clamp(48px, 6.2vw, 82px);
 
-  line-height: 0.95;
+  line-height: 0.96;
 
   font-weight: 900;
 
   letter-spacing:
-    clamp(-4px, -0.28vw, -2px);
+    clamp(-4px, -0.3vw, -2px);
 
-  white-space: nowrap;
+  white-space: normal;
 }
 
 
@@ -161,94 +238,194 @@
 ========================================================= */
 
 .my-donations-header p {
-  margin: 10px 0 0;
+  margin:
+    17px 0 0;
 
-  color: var(--md-muted);
+  max-width: 720px;
+
+  color: rgba(255, 255, 255, 0.88);
 
   font-size:
-    clamp(13px, 1.1vw, 17px);
+    clamp(14px, 1.2vw, 18px);
 
-  line-height: 1.5;
+  line-height: 1.55;
 
-  white-space: nowrap;
+  white-space: normal;
+}
+
+
+/* =========================================================
+   DECORATIVE ICON
+========================================================= */
+
+.my-donations-header-content::after {
+  content: "✨";
+
+  position: absolute;
+
+  right: -390px;
+  top: 10px;
+
+  width: 120px;
+  height: 120px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  border-radius: 28px;
+
+  background:
+    rgba(255, 255, 255, 0.07);
+
+  color: #FFD166;
+
+  font-size: 46px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  pointer-events: none;
 }
 
 
 /* =========================================================
    REFRESH BUTTON
+   Scoped directly to the My Donations header
 ========================================================= */
 
-.refresh-button,
-.refresh-btn,
-.my-donations-refresh {
-  appearance: none;
+.my-donations-header button {
+  position: relative !important;
 
-  display: inline-flex;
+  z-index: 10 !important;
 
-  align-items: center;
+  display: inline-flex !important;
 
-  justify-content: center;
+  align-items: center !important;
+  justify-content: center !important;
 
-  gap: 7px;
+  gap: 8px !important;
 
-  width: fit-content;
+  width: fit-content !important;
 
-  min-width: 105px;
+  min-width: 125px !important;
 
-  height: 42px;
+  height: 44px !important;
 
-  padding: 0 16px;
+  margin-top: 25px !important;
 
-  box-sizing: border-box;
+  padding: 0 20px !important;
 
-  border: 1px solid #E2E8F0;
+  box-sizing: border-box !important;
 
-  border-radius: 10px;
+  appearance: none !important;
 
-  background: #ffffff;
+  -webkit-appearance: none !important;
 
-  color: #222222;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
 
-  font-family: inherit;
+  border-radius: 12px !important;
 
-  font-size: 13px;
+  outline: none !important;
 
-  font-weight: 750;
+  background: rgba(255, 255, 255, 0.14) !important;
 
-  line-height: 1;
+  color: #ffffff !important;
 
-  white-space: nowrap;
+  font-family: inherit !important;
 
-  cursor: pointer;
+  font-size: 13px !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1 !important;
+
+  letter-spacing: 0.2px !important;
+
+  white-space: nowrap !important;
+
+  cursor: pointer !important;
 
   box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.04);
+    0 7px 20px rgba(0, 0, 0, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+
+  backdrop-filter: blur(8px) !important;
+
+  -webkit-backdrop-filter: blur(8px) !important;
 
   transition:
-    all 0.2s ease;
+    all 0.2s ease !important;
 }
 
-.refresh-button:hover,
-.refresh-btn:hover,
-.my-donations-refresh:hover {
-  border-color: var(--md-coral);
 
-  background: var(--md-coral-light);
+/* =========================================================
+   REFRESH BUTTON HOVER
+========================================================= */
 
-  color: var(--md-coral);
+.my-donations-header button:hover {
+  background: #ffffff !important;
 
-  transform: translateY(-1px);
+  color: #2563EB !important;
+
+  border-color: #ffffff !important;
+
+  transform: translateY(-2px) !important;
 
   box-shadow:
-    0 7px 18px rgba(143, 32, 32, 0.1);
+    0 12px 26px rgba(0, 0, 0, 0.18) !important;
 }
 
-.refresh-button:active,
-.refresh-btn:active,
-.my-donations-refresh:active {
-  transform: translateY(0);
+
+/* =========================================================
+   REFRESH BUTTON ACTIVE
+========================================================= */
+
+.my-donations-header button:active {
+  transform: translateY(0) !important;
+
+  box-shadow:
+    0 5px 12px rgba(0, 0, 0, 0.12) !important;
 }
 
+
+/* =========================================================
+   REFRESH BUTTON FOCUS
+========================================================= */
+
+.my-donations-header button:focus,
+.my-donations-header button:focus-visible {
+  outline: 3px solid rgba(255, 255, 255, 0.4) !important;
+
+  outline-offset: 3px !important;
+}
+
+
+/* =========================================================
+   REFRESH BUTTON MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+  .my-donations-header button {
+    min-width: 120px !important;
+
+    width: fit-content !important;
+
+    height: 42px !important;
+
+    margin-top: 22px !important;
+
+    padding: 0 17px !important;
+
+    border-radius: 11px !important;
+
+    font-size: 12px !important;
+  }
+}
 
 /* =========================================================
    DONATION LIST
@@ -269,6 +446,7 @@
 
 /* =========================================================
    DONATION CARD
+   FULL WIDTH - NO IMAGE COLUMN
 ========================================================= */
 
 .my-donation-card {
@@ -276,17 +454,10 @@
 
   width: 100%;
 
-  display: grid;
-
-  grid-template-columns:
-    clamp(175px, 17vw, 215px)
-    minmax(0, 1fr);
-
-  gap:
-    clamp(22px, 2.5vw, 34px);
+  display: block;
 
   padding:
-    clamp(18px, 2vw, 26px);
+    clamp(24px, 3vw, 34px);
 
   box-sizing: border-box;
 
@@ -336,43 +507,15 @@
 
 
 /* =========================================================
-   IMAGE
-========================================================= */
-
-.my-donation-image {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  height: auto;
-
-  min-width: 0;
-
-  display: block;
-
-  object-fit: cover;
-
-  border-radius: 17px;
-
-  border: 1px solid var(--md-border);
-
-  background:
-    linear-gradient(
-      135deg,
-      #f4eee5,
-      #ebe6df
-    );
-}
-
-
-/* =========================================================
    DONATION CONTENT
 ========================================================= */
 
 .my-donation-content {
+  width: 100%;
+
   min-width: 0;
 
-  width: 100%;
+  box-sizing: border-box;
 }
 
 
@@ -389,9 +532,9 @@
 
   justify-content: space-between;
 
-  gap: 15px;
+  gap: 20px;
 
-  padding-bottom: 14px;
+  padding-bottom: 16px;
 
   border-bottom: 1px solid var(--md-border-light);
 }
@@ -404,11 +547,11 @@
   color: var(--md-coral);
 
   font-size:
-    clamp(24px, 2.2vw, 34px);
+    clamp(26px, 2.6vw, 38px);
 
   line-height: 1.1;
 
-  font-weight: 850;
+  font-weight: 900;
 
   letter-spacing: -0.8px;
 
@@ -429,14 +572,13 @@
 
   justify-content: center;
 
-  min-height: 29px;
+  min-height: 30px;
 
-  padding: 6px 13px;
+  padding: 6px 14px;
 
   border-radius: 30px;
 
-  font-size:
-    clamp(8px, 0.65vw, 10px);
+  font-size: 10px;
 
   font-weight: 900;
 
@@ -449,11 +591,13 @@
 
 .status-pending {
   background: var(--md-orange-light);
+
   color: var(--md-orange);
 }
 
 .status-accepted {
   background: var(--md-green-light);
+
   color: var(--md-green);
 }
 
@@ -461,12 +605,14 @@
 .status-cancelled,
 .status-canceled {
   background: var(--md-red-light);
+
   color: var(--md-red);
 }
 
 .status-collected,
 .status-completed {
   background: var(--md-blue-light);
+
   color: var(--md-blue);
 }
 
@@ -481,10 +627,11 @@
   display: grid;
 
   grid-template-columns:
-    minmax(0, 1fr)
-    minmax(0, 1fr);
+    repeat(2, minmax(0, 1fr));
 
-  margin-top: 13px;
+  column-gap: 30px;
+
+  margin-top: 15px;
 }
 
 .donation-info p {
@@ -493,20 +640,20 @@
   margin: 0;
 
   padding:
-    9px 15px 9px 0;
+    11px 0;
 
   color: var(--md-muted);
 
   font-size:
-    clamp(11px, 0.82vw, 13px);
+    clamp(12px, 0.9vw, 14px);
 
-  line-height: 1.6;
+  line-height: 1.55;
 
   overflow-wrap: anywhere;
 }
 
 .donation-info p:nth-child(even) {
-  padding-left: 17px;
+  padding-left: 20px;
 
   border-left: 1px solid var(--md-border-light);
 }
@@ -515,7 +662,7 @@
   grid-column: 1 / -1;
 
   padding:
-    3px 0 11px;
+    5px 0 13px;
 
   border-left: none;
 
@@ -534,12 +681,11 @@
 ========================================================= */
 
 .donation-date {
-  margin: 9px 0 0;
+  margin: 10px 0 0;
 
   color: #999999;
 
-  font-size:
-    clamp(9px, 0.65vw, 11px);
+  font-size: 11px;
 
   line-height: 1.5;
 }
@@ -556,10 +702,10 @@
 
   box-sizing: border-box;
 
-  margin-top: 17px;
+  margin-top: 20px;
 
   padding:
-    clamp(15px, 1.5vw, 20px);
+    clamp(18px, 2vw, 24px);
 
   border: 1px solid #eadeda;
 
@@ -596,12 +742,12 @@
 
 .pickup-details h3,
 .pickup-title {
-  margin: 0 0 7px;
+  margin: 0 0 8px;
 
   color: var(--md-text);
 
   font-size:
-    clamp(16px, 1.35vw, 20px);
+    clamp(18px, 1.5vw, 22px);
 
   line-height: 1.2;
 
@@ -620,9 +766,9 @@
 
   width: fit-content;
 
-  margin-bottom: 9px;
+  margin-bottom: 10px;
 
-  padding: 5px 10px;
+  padding: 5px 11px;
 
   border-radius: 20px;
 
@@ -630,8 +776,7 @@
 
   color: var(--md-green);
 
-  font-size:
-    clamp(8px, 0.65vw, 10px);
+  font-size: 10px;
 
   font-weight: 900;
 
@@ -665,7 +810,9 @@
 
   grid-template-columns:
     minmax(0, 1.5fr)
-    minmax(150px, 0.8fr);
+    minmax(200px, 0.8fr);
+
+  column-gap: 25px;
 }
 
 .pickup-info p {
@@ -674,12 +821,12 @@
   margin: 0;
 
   padding:
-    7px 15px 7px 0;
+    8px 0;
 
   color: var(--md-muted);
 
   font-size:
-    clamp(10px, 0.78vw, 12px);
+    clamp(11px, 0.85vw, 13px);
 
   line-height: 1.6;
 
@@ -687,9 +834,9 @@
 }
 
 .pickup-info p + p {
-  padding-left: 15px;
+  padding-left: 20px;
 
-  border-left: 1px solid #E2E8F0;
+  border-left: 1px solid var(--md-border-light);
 }
 
 .pickup-info strong {
@@ -710,12 +857,12 @@
 
   gap: 7px;
 
-  margin-top: 7px;
+  margin-top: 8px;
 
   color: var(--md-muted);
 
   font-size:
-    clamp(10px, 0.78vw, 12px);
+    clamp(11px, 0.85vw, 13px);
 
   line-height: 1.55;
 
@@ -728,7 +875,7 @@
 
 
 /* =========================================================
-   PICKUP DATE
+   PICKUP DATE / TIME
 ========================================================= */
 
 .pickup-date,
@@ -739,12 +886,12 @@
 
   gap: 7px;
 
-  margin-top: 7px;
+  margin-top: 8px;
 
   color: var(--md-muted);
 
   font-size:
-    clamp(10px, 0.78vw, 12px);
+    clamp(11px, 0.85vw, 13px);
 
   line-height: 1.5;
 }
@@ -766,19 +913,19 @@
 
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: 9px;
 
-  margin-top: 13px;
+  margin-top: 15px;
 
-  padding-top: 12px;
+  padding-top: 13px;
 
   border-top: 1px solid var(--md-border-light);
 }
 
 .pickup-actions button {
-  min-height: 34px;
+  min-height: 36px;
 
-  padding: 7px 13px;
+  padding: 8px 14px;
 
   border: 1px solid var(--md-border);
 
@@ -790,7 +937,7 @@
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -851,102 +998,272 @@
 
 
 /* =========================================================
-   TIMELINE
+   STATUS TIMELINE
 ========================================================= */
 
 .status-timeline {
-  width: min(560px, 100%);
+  width: 100%;
 
-  display: flex;
-
-  align-items: center;
-
-  margin-top: 17px;
-
-  padding:
-    14px 18px;
+  min-height: 95px;
 
   box-sizing: border-box;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  justify-content: space-between !important;
+
+  margin-top: 20px;
+
+  padding:
+    15px 30px;
 
   border: 1px solid var(--md-border);
 
   border-radius: 15px;
 
-  background: #ffffff;
+  background: #ffffff !important;
+
+  overflow: hidden;
 }
 
-.timeline-step {
-  min-width: 60px;
 
-  display: flex;
+/* =========================================================
+   TIMELINE STEP
+========================================================= */
 
-  align-items: center;
+.status-timeline .timeline-step {
+  position: relative;
 
-  flex-direction: column;
+  width: 85px !important;
 
-  gap: 5px;
+  min-width: 85px !important;
 
-  color: #aaa;
+  max-width: 85px !important;
 
-  text-align: center;
+  height: auto !important;
+
+  display: flex !important;
+
+  flex-direction: column !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  gap: 7px !important;
+
+  margin: 0 !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  border-radius: 0 !important;
+
+  box-shadow: none !important;
+
+  color: #94a3b8 !important;
+
+  text-align: center !important;
+
+  box-sizing: border-box !important;
 }
 
-.timeline-step span {
-  width: 30px;
-  height: 30px;
 
-  display: flex;
+/* =========================================================
+   TIMELINE CIRCLE
+========================================================= */
 
-  align-items: center;
-  justify-content: center;
+.status-timeline .timeline-step span {
+  width: 34px !important;
 
-  border-radius: 50%;
+  min-width: 34px !important;
 
-  background: #E2E8F0;
+  max-width: 34px !important;
 
-  color: #777;
+  height: 34px !important;
 
-  font-size: 9px;
+  min-height: 34px !important;
 
-  font-weight: 900;
+  max-height: 34px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  flex-shrink: 0 !important;
+
+  box-sizing: border-box !important;
+
+  margin: 0 !important;
+
+  padding: 0 !important;
+
+  border: none !important;
+
+  border-radius: 50% !important;
+
+  background: #E2E8F0 !important;
+
+  color: #64748b !important;
+
+  font-family: inherit !important;
+
+  font-size: 12px !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1 !important;
+
+  box-shadow: none !important;
+
+  transform: none !important;
 }
 
-.timeline-step small {
-  font-size: 8px;
 
-  font-weight: 800;
+/* =========================================================
+   TIMELINE LABEL
+========================================================= */
 
-  white-space: nowrap;
+.status-timeline .timeline-step small {
+  display: block !important;
+
+  width: auto !important;
+
+  height: auto !important;
+
+  margin: 0 !important;
+
+  padding: 0 !important;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  color: #94a3b8 !important;
+
+  font-family: inherit !important;
+
+  font-size: 11px !important;
+
+  font-weight: 800 !important;
+
+  line-height: 1.2 !important;
+
+  white-space: nowrap !important;
+
+  text-align: center !important;
 }
 
-.timeline-step.active {
-  color: var(--md-coral);
+
+/* =========================================================
+   ACTIVE TIMELINE STEP
+========================================================= */
+
+.status-timeline .timeline-step.active {
+  background: transparent !important;
+
+  color: var(--md-coral) !important;
 }
 
-.timeline-step.active span {
-  background: var(--md-coral);
+.status-timeline .timeline-step.active span {
+  background: var(--md-coral) !important;
 
-  color: #ffffff;
+  color: #ffffff !important;
+
+  border-radius: 50% !important;
 
   box-shadow:
-    0 5px 13px rgba(143, 32, 32, 0.18);
+    0 5px 13px rgba(37, 99, 235, 0.22) !important;
 }
 
-.timeline-line {
-  flex: 1;
+.status-timeline .timeline-step.active small {
+  color: var(--md-coral) !important;
+}
 
-  height: 2px;
+
+/* =========================================================
+   TIMELINE LINE
+========================================================= */
+
+.status-timeline .timeline-line {
+  flex: 1 1 auto !important;
+
+  width: auto !important;
+
+  min-width: 50px !important;
+
+  height: 2px !important;
+
+  min-height: 2px !important;
+
+  max-height: 2px !important;
 
   margin:
-    0 6px 19px;
+    0 18px 21px !important;
 
-  background: #E2E8F0;
+  padding: 0 !important;
 
-  border-radius: 10px;
+  background: #E2E8F0 !important;
+
+  border: none !important;
+
+  border-radius: 10px !important;
+
+  box-sizing: border-box !important;
 }
 
-.timeline-line.active-line {
-  background: var(--md-coral);
+.status-timeline .timeline-line.active-line {
+  background: var(--md-coral) !important;
+}
+
+
+/* =========================================================
+   REJECTED TIMELINE
+========================================================= */
+
+.status-timeline.rejected-timeline {
+  background: #ffffff !important;
+}
+
+.status-timeline.rejected-timeline .rejected-step span {
+  width: 34px !important;
+
+  min-width: 34px !important;
+
+  height: 34px !important;
+
+  min-height: 34px !important;
+
+  display: flex !important;
+
+  align-items: center !important;
+
+  justify-content: center !important;
+
+  background: #dc2626 !important;
+
+  color: #ffffff !important;
+
+  border: none !important;
+
+  border-radius: 50% !important;
+
+  font-size: 14px !important;
+
+  font-weight: 900 !important;
+}
+
+.status-timeline.rejected-timeline .rejected-step small {
+  color: #dc2626 !important;
+
+  background: transparent !important;
 }
 
 
@@ -961,9 +1278,9 @@
 
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: 9px;
 
-  margin-top: 15px;
+  margin-top: 17px;
 }
 
 .edit-donation-button,
@@ -976,15 +1293,15 @@
 
   gap: 6px;
 
-  min-height: 36px;
+  min-height: 38px;
 
-  padding: 8px 14px;
+  padding: 8px 15px;
 
   border-radius: 9px;
 
   font-family: inherit;
 
-  font-size: 9px;
+  font-size: 10px;
 
   font-weight: 800;
 
@@ -1134,74 +1451,42 @@
 
 
 /* =========================================================
-   LAPTOP
-========================================================= */
-
-@media (max-width: 1100px) {
-
-  .my-donations-header {
-    grid-template-columns:
-      auto
-      minmax(250px, 1fr)
-      auto;
-
-    gap: 25px;
-  }
-
-  .my-donations-header h1 {
-    font-size: clamp(42px, 5vw, 64px);
-  }
-
-  .my-donation-card {
-    grid-template-columns:
-      180px
-      minmax(0, 1fr);
-  }
-}
-
-
-/* =========================================================
    TABLET
 ========================================================= */
 
 @media (max-width: 850px) {
 
-  .my-donations-header {
-    display: flex;
-
-    align-items: flex-start;
-
-    flex-wrap: wrap;
-
-    gap: 12px 20px;
+  .my-donations-page {
+    padding:
+      25px
+      20px
+      60px;
   }
 
-  .my-donations-header-content {
-    flex: 1;
+  .my-donations-header {
+    min-height: 320px;
 
-    min-width: 250px;
+    padding:
+      42px 38px;
   }
 
   .my-donations-header h1 {
-    font-size: clamp(42px, 8vw, 58px);
-
-    white-space: normal;
+    font-size:
+      clamp(46px, 8vw, 68px);
   }
 
-  .my-donations-header p {
-    white-space: normal;
+  .my-donations-header-content::after {
+    right: -300px;
   }
 
-  .my-donation-card {
-    grid-template-columns:
-      155px
-      minmax(0, 1fr);
-
-    gap: 20px;
+  .donation-info {
+    grid-template-columns: 1fr;
   }
 
-  .my-donation-image {
-    width: 155px;
+  .donation-info p:nth-child(even) {
+    padding-left: 0;
+
+    border-left: none;
   }
 
   .pickup-info {
@@ -1224,83 +1509,97 @@
 
   .my-donations-page {
     padding:
-      25px
+      18px
       14px
-      55px;
+      50px;
   }
+
+
+  /* HERO */
 
   .my-donations-header {
     width: 100%;
 
-    display: flex;
+    min-height: 370px;
 
-    flex-direction: column;
+    margin-bottom: 28px;
 
-    align-items: stretch;
+    padding:
+      38px 25px;
 
-    gap: 12px;
+    border-radius: 24px;
 
-    margin-bottom: 25px;
+    justify-content: center;
+  }
+
+  .my-donations-header::before {
+    width: 230px;
+
+    height: 230px;
+
+    right: -100px;
+
+    top: -100px;
+  }
+
+  .my-donations-header::after {
+    width: 150px;
+
+    height: 150px;
+
+    right: -20px;
+
+    bottom: -100px;
   }
 
   .my-donations-badge {
-    align-self: flex-start;
-  }
+    margin-bottom: 15px;
 
-  .my-donations-header-content {
-    width: 100%;
+    font-size: 8px;
+
+    letter-spacing: 1.5px;
   }
 
   .my-donations-header h1 {
     font-size:
-      clamp(38px, 12vw, 52px);
+      clamp(42px, 12vw, 58px);
 
-    line-height: 0.95;
+    line-height: 0.94;
 
-    letter-spacing: -2px;
-
-    white-space: normal;
+    letter-spacing: -2.5px;
   }
 
   .my-donations-header p {
-    margin-top: 9px;
+    margin-top: 15px;
 
     font-size: 13px;
 
-    white-space: normal;
+    line-height: 1.55;
+  }
+
+  .my-donations-header-content::after {
+    display: none;
   }
 
   .refresh-button,
   .refresh-btn,
   .my-donations-refresh {
-    width: 100%;
+    min-width: 110px;
 
-    height: 43px;
+    height: 40px;
+
+    margin-top: 22px;
+
+    font-size: 12px;
   }
 
 
-  /* DONATION CARD */
+  /* CARD */
 
   .my-donation-card {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 16px;
-
-    padding: 14px;
+    padding: 18px;
 
     border-radius: 18px;
-  }
-
-  .my-donation-image {
-    width: 100%;
-
-    height: auto;
-
-    aspect-ratio: 16 / 10;
-
-    border-radius: 14px;
   }
 
 
@@ -1311,11 +1610,11 @@
 
     align-items: flex-start;
 
-    gap: 9px;
+    gap: 10px;
   }
 
   .my-donation-title h2 {
-    font-size: 25px;
+    font-size: 27px;
   }
 
 
@@ -1327,7 +1626,7 @@
 
   .donation-info p {
     padding:
-      8px 0;
+      9px 0;
   }
 
   .donation-info p:nth-child(even) {
@@ -1344,7 +1643,7 @@
   /* PICKUP */
 
   .pickup-details {
-    padding: 15px;
+    padding: 16px;
   }
 
   .pickup-info {
@@ -1361,28 +1660,41 @@
   /* TIMELINE */
 
   .status-timeline {
-    width: 100%;
+    width: 100% !important;
+
+    min-height: 86px;
 
     padding:
-      12px 6px;
+      12px 8px !important;
   }
 
-  .timeline-step {
-    min-width: 42px;
+  .status-timeline .timeline-step {
+    width: 60px !important;
+
+    min-width: 60px !important;
+
+    max-width: 60px !important;
   }
 
-  .timeline-step span {
-    width: 27px;
-    height: 27px;
+  .status-timeline .timeline-step span {
+    width: 29px !important;
+
+    min-width: 29px !important;
+
+    height: 29px !important;
+
+    min-height: 29px !important;
   }
 
-  .timeline-step small {
-    font-size: 7px;
+  .status-timeline .timeline-step small {
+    font-size: 9px !important;
   }
 
-  .timeline-line {
+  .status-timeline .timeline-line {
+    min-width: 20px !important;
+
     margin:
-      0 3px 18px;
+      0 5px 19px !important;
   }
 
 
@@ -1419,33 +1731,62 @@
 
   .my-donations-page {
     padding-left: 10px;
+
     padding-right: 10px;
   }
 
+  .my-donations-header {
+    min-height: 350px;
+
+    padding:
+      32px 20px;
+  }
+
   .my-donations-header h1 {
-    font-size: 35px;
+    font-size: 40px;
   }
 
   .my-donation-title h2 {
-    font-size: 22px;
+    font-size: 23px;
+  }
+
+  .my-donation-card {
+    padding: 14px;
   }
 
   .status-timeline {
     padding:
-      10px 3px;
+      10px 4px !important;
   }
 
-  .timeline-step {
-    min-width: 36px;
+  .status-timeline .timeline-step {
+    width: 50px !important;
+
+    min-width: 50px !important;
+
+    max-width: 50px !important;
   }
 
-  .timeline-step span {
-    width: 26px;
-    height: 26px;
+  .status-timeline .timeline-step span {
+    width: 27px !important;
+
+    min-width: 27px !important;
+
+    height: 27px !important;
+
+    min-height: 27px !important;
   }
 
-  .timeline-step small {
-    font-size: 6px;
+  .status-timeline .timeline-step small {
+    font-size: 8px !important;
+  }
+
+  .status-timeline .timeline-line {
+    min-width: 15px !important;
+
+    margin-left: 3px !important;
+
+    margin-right: 3px !important;
   }
 }
 
@@ -1468,20 +1809,26 @@ body.dark-theme {
   --md-green-light: #122235;
   --md-orange-light: #172B43;
   --md-blue-light: #17345A;
-  --md-red-light: #17345A;
+  --md-red-light: #3A2025;
 }
 
 body.dark-theme .my-donations-page {
   background: var(--md-bg);
 }
 
+body.dark-theme .my-donations-header {
+  background:
+    linear-gradient(
+      135deg,
+      #173F9E,
+      #1D4ED8
+    );
+}
+
 body.dark-theme .my-donation-card,
 body.dark-theme .empty-donations,
-body.dark-theme .status-timeline,
-body.dark-theme .refresh-button,
-body.dark-theme .refresh-btn,
-body.dark-theme .my-donations-refresh {
-  background: var(--md-card);
+body.dark-theme .status-timeline {
+  background: var(--md-card) !important;
 
   border-color: var(--md-border);
 }
@@ -1499,15 +1846,39 @@ body.dark-theme .pickup-details {
 
 body.dark-theme .my-donation-title,
 body.dark-theme .donation-info p:first-child,
-body.dark-theme .pickup-actions,
-body.dark-theme .timeline-line {
+body.dark-theme .pickup-actions {
   border-color: var(--md-border);
 }
 
-body.dark-theme .timeline-step span {
-  background: #403238;
 
-  color: #aaa;
+/* DARK TIMELINE */
+
+body.dark-theme .status-timeline .timeline-step span {
+  background: #403238 !important;
+
+  color: #aaa !important;
+}
+
+body.dark-theme .status-timeline .timeline-step.active span {
+  background: var(--md-coral) !important;
+
+  color: #ffffff !important;
+}
+
+body.dark-theme .status-timeline .timeline-step small {
+  color: #aaa !important;
+}
+
+body.dark-theme .status-timeline .timeline-step.active small {
+  color: var(--md-coral) !important;
+}
+
+body.dark-theme .status-timeline .timeline-line {
+  background: #403238 !important;
+}
+
+body.dark-theme .status-timeline .timeline-line.active-line {
+  background: var(--md-coral) !important;
 }
 
 
@@ -1521,7 +1892,8 @@ body.dark-theme .timeline-step span {
 .pickup-actions button:focus-visible,
 .edit-donation-button:focus-visible,
 .delete-donation-button:focus-visible {
-  outline: 3px solid rgba(143, 32, 32, 0.25);
+  outline:
+    3px solid rgba(37, 99, 235, 0.25);
 
   outline-offset: 2px;
 }
@@ -1536,10 +1908,13 @@ body.dark-theme .timeline-step span {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
+    animation-duration:
+      0.01ms !important;
 
-    animation-iteration-count: 1 !important;
+    animation-iteration-count:
+      1 !important;
 
-    transition-duration: 0.01ms !important;
+    transition-duration:
+      0.01ms !important;
   }
 }

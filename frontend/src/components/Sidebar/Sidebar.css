@@ -117,6 +117,19 @@
   line-height: 1;
 }
 
+.sidebar-ranking-badge {
+  min-width: 25px;
+  margin-left: auto;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: rgba(96,165,250,.18);
+  color: #BFDBFE;
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .sidebar-bottom { margin-top: 15px; }
 .sidebar-theme-row {
   display: flex;
@@ -162,6 +175,7 @@
   .sidebar-link { justify-content: center; padding: 0; }
   .sidebar-link.active::before { left: -10px; }
   .sidebar-badge { position: absolute; top: 5px; right: 12px; }
+  .sidebar-ranking-badge { position: absolute; top: 5px; right: 7px; }
   .sidebar-theme-row { justify-content: center; padding: 7px; }
   .sidebar-logout { justify-content: center; padding: 0; }
 }
@@ -212,6 +226,7 @@
   .donor-sidebar .sidebar-logout { justify-content: flex-start; padding: 0 11px; }
   .donor-sidebar .sidebar-link.active::before { left: 0; }
   .donor-sidebar .sidebar-badge { position: static; margin-left: auto; }
+  .donor-sidebar .sidebar-ranking-badge { position: static; margin-left: auto; }
 }
 
 /* Final active navigation: blue family, never legacy red/pink */

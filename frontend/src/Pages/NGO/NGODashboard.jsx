@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import DonorLeaderboard from "../../components/DonorLeaderboard/DonorLeaderboard";
 import "./NGODashboard.css";
 
 export default function NGODashboard(){
@@ -18,5 +19,6 @@ export default function NGODashboard(){
   </div>
   <div className="ngo-clean-actions"><div><span>QUICK ACTIONS</span><h3>What would you like to manage?</h3></div><div className="ngo-action-row"><button onClick={()=>navigate("/ngo-donations")}>📦 Review Donations</button><button onClick={()=>navigate("/ngo-requirements")}>➕ Add Requirement</button></div></div>
   <div className="ngo-clean-mini"><div><span>AT A GLANCE</span><h3>Current activity</h3></div><div className="ngo-mini-grid"><div><strong>{data.pickups.length}</strong><small>Pickup requests</small></div><div><strong>{donations.length}</strong><small>Total donations</small></div><div><strong>{data.requirements.length}</strong><small>Requirements</small></div></div></div>
+  <DonorLeaderboard />
  </div>
 }

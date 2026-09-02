@@ -41,6 +41,7 @@ from .views import (
     # DONOR
     # =====================================================
     DonorDonationListView,
+    DonorRankingView,
 
     # =====================================================
     # LOGIN
@@ -74,6 +75,8 @@ from .views import (
         admin_ngo_detail,
         admin_approve_ngo,
         admin_reject_ngo,
+        admin_donors,
+        admin_management_data,
     )
 
 
@@ -343,6 +346,12 @@ urlpatterns = [
         name="my-donations"
     ),
 
+    path(
+        "donors/ranking/",
+        DonorRankingView.as_view(),
+        name="donor-ranking"
+    ),
+
     # =====================================================
     # PICKUP REQUESTS
     # =====================================================
@@ -426,5 +435,21 @@ path(
     "admin/ngos/<int:pk>/reject/",
     admin_reject_ngo,
     name="admin-ngo-reject"
+),
+
+# =====================================================
+# ADMIN DONORS
+# =====================================================
+
+path(
+    "admin/donors/",
+    admin_donors,
+    name="admin-donors"
+),
+
+path(
+    "admin/management-data/",
+    admin_management_data,
+    name="admin-management-data"
 ),
 ]
