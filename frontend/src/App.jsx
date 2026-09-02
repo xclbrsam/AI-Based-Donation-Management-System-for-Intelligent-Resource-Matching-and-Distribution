@@ -25,6 +25,7 @@ import DonorNotifications from "./Pages/Donor/DonorNotifications";
 import DonorSettings from "./Pages/Donor/DonorSettings";
 import DonorLayout from "./components/DonorLayout/DonorLayout";
 import NGOLayout from "./components/NGOLayout/NGOLayout";
+import VoiceAssistant from "./components/voice/VoiceAssistant";
 
 
 // =====================================================
@@ -390,6 +391,8 @@ function App() {
         />
 
       </Routes>
+
+      <VoiceAssistant />
 
     </>
   );
