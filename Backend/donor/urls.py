@@ -67,7 +67,15 @@ from .views import (
     NGOPickupListView,
     PickupStatusUpdateView,
     DonorPickupCancelView,
-)
+
+    #admin
+        admin_dashboard_stats,
+        admin_ngos,
+        admin_ngo_detail,
+        admin_approve_ngo,
+        admin_reject_ngo,
+    )
+
 
 
 urlpatterns = [
@@ -374,4 +382,49 @@ urlpatterns = [
         name="pickup-status-update"
     ),
 
+
+        # =====================================================
+    # ADMIN DASHBOARD
+    # =====================================================
+
+    path(
+        "admin/dashboard-stats/",
+        admin_dashboard_stats,
+        name="admin-dashboard-stats"
+    ),
+    
+    
+    # =====================================================
+# ADMIN
+# =====================================================
+
+path(
+    "admin/dashboard-stats/",
+    admin_dashboard_stats,
+    name="admin-dashboard-stats"
+),
+
+path(
+    "admin/ngos/",
+    admin_ngos,
+    name="admin-ngos"
+),
+
+path(
+    "admin/ngos/<int:pk>/",
+    admin_ngo_detail,
+    name="admin-ngo-detail"
+),
+
+path(
+    "admin/ngos/<int:pk>/approve/",
+    admin_approve_ngo,
+    name="admin-ngo-approve"
+),
+
+path(
+    "admin/ngos/<int:pk>/reject/",
+    admin_reject_ngo,
+    name="admin-ngo-reject"
+),
 ]
