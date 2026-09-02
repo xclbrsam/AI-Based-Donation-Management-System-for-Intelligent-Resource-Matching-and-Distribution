@@ -4,6 +4,7 @@ import {
   FiGift,
   FiPackage,
   FiActivity,
+  FiSearch,
   FiAward,
   FiBell,
   FiUser,
@@ -70,6 +71,14 @@ function Sidebar({ mobileOpen = false, onClose = () => {} }) {
             <span>{label}</span>
           </NavLink>
         ))}
+        <NavLink
+          to="/explore-ngos"
+          className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
+          onClick={onClose}
+        >
+          <FiSearch />
+          <span>Explore NGOs</span>
+        </NavLink>
         <NavLink
           to="/ranking"
           className={({ isActive }) => `sidebar-link sidebar-ranking ${isActive ? "active" : ""}`}

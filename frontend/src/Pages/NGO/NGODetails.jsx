@@ -450,6 +450,13 @@ function NGODetails() {
         <div className="ngo-details-actions">
 
           <button
+            className="ngo-view-button ngo-donate-button"
+            onClick={() => navigate("/donate-item")}
+          >
+            Donate to this NGO
+          </button>
+
+          <button
             className="ngo-primary-button"
             onClick={() => navigate("/explore-ngos")}
           >

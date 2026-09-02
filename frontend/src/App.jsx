@@ -289,6 +289,7 @@ function App() {
             "/donate-item",
             "/my-donations",
             "/my-activity",
+            "/explore-ngos",
             "/notifications",
             "/profile",
             "/settings",
@@ -350,7 +351,13 @@ function App() {
 
                 <Route
                     path="/explore-ngos"
-                    element={<ExploreNGOs />}
+                    element={
+                        <DonorRoute>
+                            <DonorLayout>
+                                <ExploreNGOs />
+                            </DonorLayout>
+                        </DonorRoute>
+                    }
                 />
 
                 <Route
