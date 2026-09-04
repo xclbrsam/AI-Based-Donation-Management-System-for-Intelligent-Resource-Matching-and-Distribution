@@ -1,15 +1,34 @@
+from rest_framework.permissions import BasePermission
 import os
 import tempfile
-
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import User
 from django.http import JsonResponse
+
+
+# =========================================================
+# ADMIN PERMISSION
+# =========================================================
+
+class IsAdminUser(BasePermission):
+    """Allows access only to authenticated JWTs issued for admins."""
+
+    message = "Admin access required."
+
+    def has_permission(self, request, view):
+        return bool(
+            request.auth
+            and str(request.auth.get("user_type", "")).strip().lower()
+            == "admin"
+        )
 from django.db import transaction
-from django.db.models import Sum
+from django.db.models import Count, Sum, F
 from django.contrib.auth.hashers import check_password
 
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny,IsAuthenticated,BasePermission
 from rest_framework.response import Response
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -45,6 +64,7 @@ from notifications.services import (
     notify_pickup_status_changed,
 )
 
+from django.http import JsonResponse
 
 # =========================================================
 # AI DONATION IMAGE ANALYSIS API
@@ -1264,6 +1284,73 @@ class LoginView(APIView):
         ]
 
         # =================================================
+        # ADMIN LOGIN
+        # =================================================
+        #
+        # Admin uses Django's built-in User table.
+        #
+        # A Django superuser/staff user created using:
+        #
+        # python manage.py createsuperuser
+        #
+        # can login through the React Admin Login.
+        # =================================================
+
+        try:
+
+            admin_user = User.objects.filter(
+                email__iexact=email,
+                is_active=True
+            ).first()
+
+            if (
+                admin_user
+                and (
+                    admin_user.is_staff
+                    or admin_user.is_superuser
+                )
+                and admin_user.check_password(
+                    password
+                )
+            ):
+
+                tokens = self.get_tokens_for_user(
+                    admin_user.id,
+                    "Admin"
+                )
+
+                return Response(
+                    {
+                        "message":
+                            "Admin Login Successful",
+
+                        "user_type":
+                            "Admin",
+
+                        "user_id":
+                            admin_user.id,
+
+                        "name":
+                            admin_user.get_full_name()
+                            or admin_user.username,
+
+                        "email":
+                            admin_user.email,
+
+                        "tokens":
+                            tokens
+                    },
+                    status=status.HTTP_200_OK
+                )
+
+        except Exception as e:
+
+            print(
+                "ADMIN LOGIN ERROR:",
+                str(e)
+            )
+
+        # =================================================
         # DONOR LOGIN
         # =================================================
 
@@ -1302,7 +1389,8 @@ class LoginView(APIView):
 
                         "tokens":
                             tokens
-                    }
+                    },
+                    status=status.HTTP_200_OK
                 )
 
         except Donor.DoesNotExist:
@@ -1348,7 +1436,8 @@ class LoginView(APIView):
 
                         "tokens":
                             tokens
-                    }
+                    },
+                    status=status.HTTP_200_OK
                 )
 
         except NGO.DoesNotExist:
@@ -1366,8 +1455,6 @@ class LoginView(APIView):
             },
             status=status.HTTP_401_UNAUTHORIZED
         )
-
-
 # =========================================================
 # NGO DONATION REQUESTS
 # =========================================================
@@ -1446,7 +1533,15 @@ class NGODonationListView(APIView):
 
 
 # =========================================================
-# NGO ACCEPT / REJECT DONATION
+# NGO DONATION STATUS UPDATE
+# =========================================================
+#
+# Allowed donation status flow:
+#
+# Pending  -> Accepted
+# Pending  -> Rejected
+# Accepted -> Collected
+#
 # =========================================================
 
 class DonationStatusUpdateView(APIView):
@@ -1455,19 +1550,10 @@ class DonationStatusUpdateView(APIView):
         IsAuthenticated
     ]
 
-    def patch(
-        self,
-        request,
-        pk
-    ):
+    def patch(self, request, pk):
 
-        user_id = request.auth.get(
-            "user_id"
-        )
-
-        user_type = request.auth.get(
-            "user_type"
-        )
+        user_id = request.auth.get("user_id")
+        user_type = request.auth.get("user_type")
 
         # -------------------------------------------------
         # ONLY NGO
@@ -1514,86 +1600,95 @@ class DonationStatusUpdateView(APIView):
             )
         ).strip()
 
+        # -------------------------------------------------
+        # ALLOWED STATUSES
+        # -------------------------------------------------
+
         if new_status not in [
             "Accepted",
-            "Rejected"
+            "Rejected",
+            "Collected"
         ]:
 
             return Response(
                 {
                     "message":
-                        "Only Accepted or Rejected is allowed here."
+                        "Only Accepted, Rejected or Collected is allowed here."
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         # -------------------------------------------------
-        # ACCEPT / REJECT IN ONE TRANSACTION
+        # FIND DONATION
         # -------------------------------------------------
 
-        with transaction.atomic():
+        try:
 
-            try:
+            donation = Donation.objects.get(
+                id=pk
+            )
 
-                # Do not use select_for_update() in this endpoint.
-                # Donation.ngo is nullable and this endpoint previously
-                # triggered PostgreSQL's nullable-side FOR UPDATE error.
-                # The whole accept/reject operation is still protected by
-                # transaction.atomic().
-                donation = Donation.objects.get(
-                    id=pk
-                )
+        except Donation.DoesNotExist:
 
-            except Donation.DoesNotExist:
+            return Response(
+                {
+                    "message":
+                        "Donation not found."
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
 
-                return Response(
-                    {
-                        "message":
-                            "Donation not found."
-                    },
-                    status=status.HTTP_404_NOT_FOUND
-                )
+        # -------------------------------------------------
+        # NGO OWNERSHIP
+        # -------------------------------------------------
+        #
+        # The donation can be connected to the NGO through:
+        #
+        # 1. Donation.ngo
+        # 2. DonationAllocation
+        #
+        # The allocation is important for the new
+        # donation-matching system.
+        # -------------------------------------------------
 
-            # -------------------------------------------------
-            # NGO OWNERSHIP
-            # -------------------------------------------------
-            #
-            # IMPORTANT:
-            # New donations are linked to NGOs through
-            # DonationAllocation. The legacy Donation.ngo field
-            # can be NULL, because the frontend may create the
-            # allocation without setting donation.ngo.
-            #
-            # Therefore NGO ownership MUST be checked using the
-            # pending allocation, not only donation.ngo_id.
-            # -------------------------------------------------
+        if (
+            donation.ngo_id is not None
+            and donation.ngo_id != ngo.id
+        ):
 
-            if donation.ngo_id is not None and donation.ngo_id != ngo.id:
-                return Response(
-                    {
-                        "message":
-                            "You are not authorized to update this donation."
-                    },
-                    status=status.HTTP_403_FORBIDDEN
-                )
+            return Response(
+                {
+                    "message":
+                        "You are not authorized to update this donation."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
 
-            # -------------------------------------------------
-            # DONATION MUST STILL BE PENDING
-            # -------------------------------------------------
+        # -------------------------------------------------
+        # ACCEPT / REJECT
+        # -------------------------------------------------
+
+        if new_status in [
+            "Accepted",
+            "Rejected"
+        ]:
+
+            # Donation must currently be Pending.
 
             if donation.status != "Pending":
 
                 return Response(
                     {
                         "message":
-                            f"Donation is already '{donation.status}' "
+                            f"Donation is already "
+                            f"'{donation.status}' "
                             "and cannot be changed."
                     },
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
             # -------------------------------------------------
-            # FIND THIS NGO'S PENDING ALLOCATIONS
+            # FIND THIS NGO'S PENDING ALLOCATION
             # -------------------------------------------------
 
             allocations = list(
@@ -1604,16 +1699,6 @@ class DonationStatusUpdateView(APIView):
                 )
             )
 
-            # The allocation is the source of truth for the selected
-            # NGO in the new donation-matching flow.
-            if allocations and donation.ngo_id != ngo.id:
-                donation.ngo = ngo
-                donation.save(
-                    update_fields=["ngo"]
-                )
-
-            # A donation selected for an NGO must have an
-            # allocation before that NGO can accept it.
             if not allocations:
 
                 return Response(
@@ -1637,16 +1722,15 @@ class DonationStatusUpdateView(APIView):
                     )
                 )
 
-                # If the donor already scheduled a pickup for an
-                # allocation that the NGO rejects, cancel that pickup
-                # request as well. The pickup must never remain active
-                # for a rejected allocation.
                 pending_allocation_ids = [
                     allocation.id
                     for allocation in pending_allocations
                 ]
 
+                # Cancel related pending pickups.
+
                 cancelled_pickups = []
+
                 if pending_allocation_ids:
                     cancelled_pickups = list(
                         PickupRequest.objects.select_related(
@@ -1654,15 +1738,23 @@ class DonationStatusUpdateView(APIView):
                             "allocation__donation",
                             "allocation__ngo",
                         ).filter(
-                        allocation_id__in=pending_allocation_ids,
-                        status="Pending"
+                            allocation_id__in=pending_allocation_ids,
+                            status="Pending",
                         )
                     )
+
                     PickupRequest.objects.filter(
-                        id__in=[pickup.id for pickup in cancelled_pickups]
+                        id__in=[
+                            pickup.id
+                            for pickup in cancelled_pickups
+                        ]
                     ).update(
                         status="Cancelled"
                     )
+
+
+
+                # Reject all pending allocations.
 
                 DonationAllocation.objects.filter(
                     donation=donation,
@@ -1688,8 +1780,10 @@ class DonationStatusUpdateView(APIView):
                     {
                         "message":
                             "Donation rejected successfully.",
+
                         "donation_id":
                             donation.id,
+
                         "status":
                             donation.status
                     },
@@ -1699,157 +1793,306 @@ class DonationStatusUpdateView(APIView):
             # -------------------------------------------------
             # ACCEPT
             # -------------------------------------------------
-            #
-            # IMPORTANT:
-            # Requirement fulfillment happens HERE, not when
-            # the donor creates/selects an allocation.
-            # -------------------------------------------------
 
-            for allocation in allocations:
+            with transaction.atomic():
 
-                try:
-                    requirement = NGORequirement.objects.get(
-                        id=allocation.requirement_id
-                    )
-                except NGORequirement.DoesNotExist:
-                    requirement = None
+                for allocation in allocations:
 
-                if requirement is None:
+                    try:
 
-                    return Response(
-                        {
-                            "message":
-                                "The selected NGO requirement no longer exists."
-                        },
-                        status=status.HTTP_400_BAD_REQUEST
-                    )
+                        requirement = NGORequirement.objects.get(
+                            id=allocation.requirement_id
+                        )
 
-                # Re-check the remaining quantity while locked.
-                remaining_need = (
-                    requirement.required_quantity
-                    - requirement.fulfilled_quantity
-                )
+                    except NGORequirement.DoesNotExist:
 
-                if remaining_need <= 0:
+                        return Response(
+                            {
+                                "message":
+                                    "The selected NGO requirement "
+                                    "no longer exists."
+                            },
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
 
-                    return Response(
-                        {
-                            "message":
-                                f"The requirement for "
-                                f"{requirement.item_name} is already fulfilled."
-                        },
-                        status=status.HTTP_400_BAD_REQUEST
+                    # -------------------------------------------------
+                    # CHECK REMAINING REQUIREMENT
+                    # -------------------------------------------------
+
+                    remaining_need = (
+                        requirement.required_quantity
+                        - requirement.fulfilled_quantity
                     )
 
-                if allocation.allocated_quantity > remaining_need:
+                    if remaining_need <= 0:
 
-                    return Response(
-                        {
-                            "message":
-                                f"The NGO currently needs only "
-                                f"{remaining_need} units of "
-                                f"{requirement.item_name}."
-                        },
-                        status=status.HTTP_400_BAD_REQUEST
+                        return Response(
+                            {
+                                "message":
+                                    f"The requirement for "
+                                    f"{requirement.item_name} "
+                                    "is already fulfilled."
+                            },
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+
+                    if (
+                        allocation.allocated_quantity
+                        > remaining_need
+                    ):
+
+                        return Response(
+                            {
+                                "message":
+                                    f"The NGO currently needs only "
+                                    f"{remaining_need} units of "
+                                    f"{requirement.item_name}."
+                            },
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+
+                    # -------------------------------------------------
+                    # UPDATE REQUIREMENT
+                    # -------------------------------------------------
+
+                    requirement.fulfilled_quantity += (
+                        allocation.allocated_quantity
+                    )
+
+                    requirement.save(
+                        update_fields=[
+                            "fulfilled_quantity",
+                            "updated_at"
+                        ]
+                    )
+
+                    # -------------------------------------------------
+                    # ACCEPT ALLOCATION
+                    # -------------------------------------------------
+
+                    allocation.status = "Accepted"
+
+                    allocation.save(
+                        update_fields=[
+                            "status"
+                        ]
                     )
 
                 # -------------------------------------------------
-                # FULFILL ONLY NOW
+                # REJECT OTHER NGO ALLOCATIONS
                 # -------------------------------------------------
 
-                requirement.fulfilled_quantity += (
-                    allocation.allocated_quantity
+                other_pending_allocations = list(
+                    DonationAllocation.objects.filter(
+                        donation=donation,
+                        status="Pending"
+                    ).exclude(
+                        ngo=ngo
+                    )
                 )
 
-                requirement.save(
-                    update_fields=[
-                        "fulfilled_quantity",
-                        "updated_at"
-                    ]
-                )
+                other_pending_allocation_ids = [
+                    allocation.id
+                    for allocation
+                    in other_pending_allocations
+                ]
 
-                allocation.status = "Accepted"
+                if other_pending_allocation_ids:
 
-                allocation.save(
-                    update_fields=[
-                        "status"
-                    ]
-                )
+                    PickupRequest.objects.filter(
+                        allocation_id__in=(
+                            other_pending_allocation_ids
+                        ),
+                        status="Pending"
+                    ).update(
+                        status="Cancelled"
+                    )
 
-            # -------------------------------------------------
-            # ONE NGO ACCEPTS -> OTHER PENDING ALLOCATIONS
-            # ARE NO LONGER VALID.
-            # -------------------------------------------------
-
-            other_pending_allocations = list(
                 DonationAllocation.objects.filter(
                     donation=donation,
                     status="Pending"
                 ).exclude(
                     ngo=ngo
-                )
-            )
-
-            other_pending_allocation_ids = [
-                allocation.id
-                for allocation in other_pending_allocations
-            ]
-
-            cancelled_other_pickups = []
-            if other_pending_allocation_ids:
-                cancelled_other_pickups = list(
-                    PickupRequest.objects.select_related(
-                        "allocation",
-                        "allocation__donation",
-                        "allocation__ngo",
-                    ).filter(
-                    allocation_id__in=other_pending_allocation_ids,
-                    status="Pending"
-                    )
-                )
-                PickupRequest.objects.filter(
-                    id__in=[pickup.id for pickup in cancelled_other_pickups]
                 ).update(
-                    status="Cancelled"
+                    status="Rejected"
                 )
 
-            DonationAllocation.objects.filter(
-                donation=donation,
-                status="Pending"
-            ).exclude(
-                ngo=ngo
-            ).update(
-                status="Rejected"
-            )
+                # -------------------------------------------------
+                # UPDATE DONATION
+                # -------------------------------------------------
 
-            # -------------------------------------------------
-            # LOCK DONATION
-            # -------------------------------------------------
+                donation.ngo = ngo
 
-            donation.status = "Accepted"
-            donation.save(
-                update_fields=[
-                    "status"
-                ]
-            )
+                donation.status = "Accepted"
 
-            notify_donation_approved(donation)
-            for pickup in cancelled_other_pickups:
-                pickup.status = "Cancelled"
-                notify_pickup_status_changed(pickup, changed_by="NGO")
+                donation.save(
+                    update_fields=[
+                        "ngo",
+                        "status"
+                    ]
+                )
 
             return Response(
                 {
                     "message":
                         "Donation accepted successfully. "
                         "Requirement quantity has been updated.",
+
                     "donation_id":
                         donation.id,
+
                     "status":
                         donation.status
                 },
                 status=status.HTTP_200_OK
             )
+
+        # =================================================
+        # MARK COLLECTED
+        # =================================================
+
+        if new_status == "Collected":
+
+            # -------------------------------------------------
+            # ONLY ACCEPTED DONATIONS CAN BE COLLECTED
+            # -------------------------------------------------
+
+            if donation.status != "Accepted":
+
+                return Response(
+                    {
+                        "message":
+                            f"Only an Accepted donation can be "
+                            f"marked as Collected. "
+                            f"Current status: '{donation.status}'."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # -------------------------------------------------
+            # MAKE SURE THIS NGO OWNS THE ACCEPTED DONATION
+            # -------------------------------------------------
+
+            accepted_allocation = (
+                DonationAllocation.objects.filter(
+                    donation=donation,
+                    ngo=ngo,
+                    status="Accepted"
+                ).exists()
+            )
+
+            if not accepted_allocation:
+
+                return Response(
+                    {
+                        "message":
+                            "You are not authorized to collect this donation."
+                    },
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # -------------------------------------------------
+            # MARK DONATION COLLECTED
+            # -------------------------------------------------
+
+            donation.status = "Collected"
+
+            donation.save(
+                update_fields=[
+                    "status"
+                ]
+            )
+
+            return Response(
+                {
+                    "message":
+                        "Donation marked as collected successfully.",
+
+                    "donation_id":
+                        donation.id,
+
+                    "status":
+                        donation.status
+                },
+                status=status.HTTP_200_OK
+            )
+
+# =========================================================
+# DONOR MY DONATIONS
+# =========================================================
+
+# =========================================================
+# DONOR LEADERBOARD
+# =========================================================
+
+class DonorRankingView(APIView):
+
+    permission_classes = [
+        IsAuthenticated
+    ]
+
+    def get(self, request):
+
+        user_type = str(
+            request.auth.get("user_type", "")
+        ).strip().lower()
+
+        if user_type not in ["donor", "ngo", "admin"]:
+
+            return Response(
+                {
+                    "message": "Only donors, NGOs and admins can view donor rankings."
+                },
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        ranked_donors = (
+            Donor.objects.filter(
+                donations__status="Collected"
+            )
+            .annotate(
+                total_donation=Sum("donations__quantity"),
+                donation_count=Count("donations")
+            )
+            .order_by(
+                "-total_donation",
+                "-donation_count",
+                "name",
+                "id"
+            )
+        )
+
+        rankings = []
+        current_donor = None
+        current_donor_id = request.auth.get("user_id")
+
+        for rank, donor in enumerate(ranked_donors, start=1):
+
+            ranking = {
+                "rank": rank,
+                "donor_id": donor.id,
+                "donor_name": donor.name,
+                "total_donation": donor.total_donation,
+                "total_quantity": donor.total_donation,
+                "donation_count": donor.donation_count,
+                "status": "Active" if donor.status_active else "Inactive",
+            }
+
+            rankings.append(ranking)
+
+            if (
+                user_type == "donor"
+                and donor.id == current_donor_id
+            ):
+                current_donor = ranking
+
+        return Response(
+            {
+                "rankings": rankings,
+                "current_donor": current_donor,
+            },
+            status=status.HTTP_200_OK
+        )
 
 
 # =========================================================
@@ -3627,3 +3870,1521 @@ class DonorPickupCancelView(APIView):
             {"message": "Pickup request cancelled."},
             status=status.HTTP_200_OK
         )
+# =========================================================
+# ADMIN DASHBOARD STATISTICS API
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_dashboard_stats(request):
+
+    # =====================================================
+    # BASIC COUNTS
+    # =====================================================
+
+    total_donors = Donor.objects.count()
+
+    total_ngos = NGO.objects.count()
+
+    total_donations = Donation.objects.count()
+
+    total_requirements = NGORequirement.objects.count()
+
+    total_allocations = DonationAllocation.objects.count()
+
+    total_pickups = PickupRequest.objects.count()
+
+
+    # =====================================================
+    # PENDING COUNTS
+    # =====================================================
+
+    pending_ngos = NGO.objects.filter(
+        status="Pending"
+    ).count()
+
+    pending_donations = Donation.objects.filter(
+        status="Pending"
+    ).count()
+
+    pending_requirements = NGORequirement.objects.filter(
+        is_active=True,
+        fulfilled_quantity__lt=F("required_quantity")
+    ).count()
+
+    pending_pickups = PickupRequest.objects.filter(
+        status="Pending"
+    ).count()
+
+
+    # =====================================================
+    # DONATION STATUS
+    # =====================================================
+
+    accepted_donations = Donation.objects.filter(
+        status="Accepted"
+    ).count()
+
+    collected_donations = Donation.objects.filter(
+        status="Collected"
+    ).count()
+
+    rejected_donations = Donation.objects.filter(
+        status="Rejected"
+    ).count()
+
+
+    # =====================================================
+    # PICKUP STATUS
+    # =====================================================
+
+    confirmed_pickups = PickupRequest.objects.filter(
+        status="Confirmed"
+    ).count()
+
+    delivered_pickups = PickupRequest.objects.filter(
+        status="Delivered"
+    ).count()
+
+    cancelled_pickups = PickupRequest.objects.filter(
+        status="Cancelled"
+    ).count()
+
+
+    # =====================================================
+    # ALLOCATION STATUS
+    # =====================================================
+
+    matched_donations = DonationAllocation.objects.count()
+
+    accepted_allocations = DonationAllocation.objects.filter(
+        status="Accepted"
+    ).count()
+
+    pending_allocations = DonationAllocation.objects.filter(
+        status="Pending"
+    ).count()
+
+
+    # =====================================================
+    # RECENT DONATIONS
+    # =====================================================
+
+    recent_donations = (
+        Donation.objects
+        .select_related(
+            "donor",
+            "ngo"
+        )
+        .order_by(
+            "-donation_date"
+        )[:10]
+    )
+
+
+    recent_data = []
+
+    for donation in recent_donations:
+
+        recent_data.append({
+
+            "id":
+                donation.id,
+
+            "item_name":
+                donation.item_name,
+
+            "category":
+                donation.category,
+
+            "quantity":
+                donation.quantity,
+
+            "condition":
+                donation.condition,
+
+            "status":
+                donation.status,
+
+            "donor":
+                (
+                    donation.donor.name
+                    if donation.donor
+                    else "Unknown"
+                ),
+
+            "ngo":
+                (
+                    donation.ngo.ngo_name
+                    if donation.ngo
+                    else None
+                ),
+
+            "donation_date":
+                (
+                    donation.donation_date.isoformat()
+                ),
+
+        })
+
+
+    # =====================================================
+    # RETURN DATA
+    # =====================================================
+
+    return Response(
+
+        {
+            "success": True,
+
+            "stats": {
+
+                "total_donors":
+                    total_donors,
+
+                "total_ngos":
+                    total_ngos,
+
+                "total_donations":
+                    total_donations,
+
+                "total_requirements":
+                    total_requirements,
+
+                "total_allocations":
+                    total_allocations,
+
+                "total_pickups":
+                    total_pickups,
+
+                "pending_ngos":
+                    pending_ngos,
+
+                "pending_donations":
+                    pending_donations,
+
+                "pending_requirements":
+                    pending_requirements,
+
+                "pending_pickups":
+                    pending_pickups,
+
+                "accepted_donations":
+                    accepted_donations,
+
+                "collected_donations":
+                    collected_donations,
+
+                "rejected_donations":
+                    rejected_donations,
+
+                "confirmed_pickups":
+                    confirmed_pickups,
+
+                "delivered_pickups":
+                    delivered_pickups,
+
+                "cancelled_pickups":
+                    cancelled_pickups,
+
+                "matched_donations":
+                    matched_donations,
+
+                "accepted_allocations":
+                    accepted_allocations,
+
+                "pending_allocations":
+                    pending_allocations,
+
+            },
+
+            "recent_donations":
+                recent_data,
+        },
+
+        status=status.HTTP_200_OK
+    )
+
+# ADMIN NGO MANAGEMENT
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_ngos(request):
+    """
+    Admin API to view all NGOs.
+
+    Optional query parameter:
+
+        ?status=Pending
+        ?status=Approved
+        ?status=Rejected
+
+    Example:
+        /api/admin/ngos/
+        /api/admin/ngos/?status=Pending
+    """
+
+    status_filter = request.GET.get("status")
+
+    ngos = NGO.objects.all().order_by("-registered_at")
+
+    # -----------------------------------------------------
+    # FILTER BY STATUS
+    # -----------------------------------------------------
+
+    if status_filter:
+        ngos = ngos.filter(
+            status=status_filter
+        )
+
+    # -----------------------------------------------------
+    # CREATE RESPONSE
+    # -----------------------------------------------------
+
+    data = []
+
+    for ngo in ngos:
+
+        data.append({
+
+            "id":
+                ngo.id,
+
+            "ngo_name":
+                ngo.ngo_name,
+
+            "description":
+                ngo.description,
+
+            "registration_no":
+                ngo.registration_no,
+
+            "email_id":
+                ngo.email_id,
+
+            "phone_no":
+                ngo.phone_no,
+
+            "website_link":
+                ngo.website_link,
+
+            "address":
+                ngo.address,
+
+            "city":
+                ngo.city,
+
+            "state":
+                ngo.state,
+
+            "pincode":
+                ngo.pincode,
+
+            "language":
+                ngo.language,
+
+            "status":
+                ngo.status,
+
+            "picture":
+                (
+                    request.build_absolute_uri(
+                        ngo.picture.url
+                    )
+                    if ngo.picture
+                    else None
+                ),
+
+            "certificate":
+                (
+                    request.build_absolute_uri(
+                        ngo.certificate_files.url
+                    )
+                    if ngo.certificate_files
+                    else None
+                ),
+
+            "registered_at":
+                (
+                    ngo.registered_at.isoformat()
+                ),
+
+        })
+
+    return Response(
+        {
+            "success": True,
+
+            "count":
+                len(data),
+
+            "ngos":
+                data,
+        },
+
+        status=status.HTTP_200_OK
+    )
+
+
+# =========================================================
+# ADMIN NGO DETAIL
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_ngo_detail(request, pk):
+    """
+    Admin API to view complete details of one NGO.
+    """
+
+    try:
+
+        ngo = NGO.objects.get(
+            id=pk
+        )
+
+    except NGO.DoesNotExist:
+
+        return Response(
+            {
+                "success": False,
+
+                "message":
+                    "NGO not found."
+            },
+
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    return Response(
+
+        {
+            "success": True,
+
+            "ngo": {
+
+                "id":
+                    ngo.id,
+
+                "ngo_name":
+                    ngo.ngo_name,
+
+                "description":
+                    ngo.description,
+
+                "registration_no":
+                    ngo.registration_no,
+
+                "email_id":
+                    ngo.email_id,
+
+                "phone_no":
+                    ngo.phone_no,
+
+                "website_link":
+                    ngo.website_link,
+
+                "address":
+                    ngo.address,
+
+                "city":
+                    ngo.city,
+
+                "state":
+                    ngo.state,
+
+                "pincode":
+                    ngo.pincode,
+
+                "language":
+                    ngo.language,
+
+                "status":
+                    ngo.status,
+
+                "picture":
+                    (
+                        request.build_absolute_uri(
+                            ngo.picture.url
+                        )
+                        if ngo.picture
+                        else None
+                    ),
+
+                "certificate":
+                    (
+                        request.build_absolute_uri(
+                            ngo.certificate_files.url
+                        )
+                        if ngo.certificate_files
+                        else None
+                    ),
+
+                "registered_at":
+                    (
+                        ngo.registered_at.isoformat()
+                    ),
+
+            }
+        },
+
+        status=status.HTTP_200_OK
+    )
+
+
+# =========================================================
+# ADMIN APPROVE NGO
+# =========================================================
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_approve_ngo(request, pk):
+    """
+    Approve a pending NGO.
+    """
+
+    try:
+
+        ngo = NGO.objects.get(
+            id=pk
+        )
+
+    except NGO.DoesNotExist:
+
+        return Response(
+            {
+                "success": False,
+
+                "message":
+                    "NGO not found."
+            },
+
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # -----------------------------------------------------
+    # ALREADY APPROVED
+    # -----------------------------------------------------
+
+    if ngo.status == "Approved":
+
+        return Response(
+            {
+                "success": False,
+
+                "message":
+                    "NGO is already approved."
+            },
+
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # -----------------------------------------------------
+    # APPROVE NGO
+    # -----------------------------------------------------
+
+    ngo.status = "Approved"
+
+    ngo.save(
+        update_fields=["status"]
+    )
+
+    return Response(
+
+        {
+            "success": True,
+
+            "message":
+                "NGO approved successfully.",
+
+            "ngo": {
+
+                "id":
+                    ngo.id,
+
+                "ngo_name":
+                    ngo.ngo_name,
+
+                "status":
+                    ngo.status,
+
+            }
+        },
+
+        status=status.HTTP_200_OK
+    )
+
+
+# =========================================================
+# ADMIN REJECT NGO
+# =========================================================
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_reject_ngo(request, pk):
+    """
+    Reject an NGO.
+    """
+
+    try:
+
+        ngo = NGO.objects.get(
+            id=pk
+        )
+
+    except NGO.DoesNotExist:
+
+        return Response(
+            {
+                "success": False,
+
+                "message":
+                    "NGO not found."
+            },
+
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # -----------------------------------------------------
+    # ALREADY REJECTED
+    # -----------------------------------------------------
+
+    if ngo.status == "Rejected":
+
+        return Response(
+            {
+                "success": False,
+
+                "message":
+                    "NGO is already rejected."
+            },
+
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # -----------------------------------------------------
+    # REJECT NGO
+    # -----------------------------------------------------
+
+    ngo.status = "Rejected"
+
+    ngo.save(
+        update_fields=["status"]
+    )
+
+    return Response(
+
+        {
+            "success": True,
+
+            "message":
+                "NGO rejected successfully.",
+
+            "ngo": {
+
+                "id":
+                    ngo.id,
+
+                "ngo_name":
+                    ngo.ngo_name,
+
+                "status":
+                    ngo.status,
+
+            }
+        },
+
+        status=status.HTTP_200_OK
+             )
+
+# =========================================================
+# ADMIN DONOR MANAGEMENT
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_donors(request):
+    """
+    Admin API to view all registered donors.
+
+    Optional:
+        ?status=active
+        ?status=inactive
+
+    Example:
+        /api/admin/donors/
+    """
+
+    status_filter = request.GET.get("status")
+
+    donors = Donor.objects.all().order_by("-registered_date")
+
+    # -----------------------------------------------------
+    # FILTER ACTIVE / INACTIVE
+    # -----------------------------------------------------
+
+    if status_filter == "active":
+        donors = donors.filter(
+            status_active=True
+        )
+
+    elif status_filter == "inactive":
+        donors = donors.filter(
+            status_active=False
+        )
+
+    # -----------------------------------------------------
+    # RESPONSE
+    # -----------------------------------------------------
+
+    data = []
+
+    for donor in donors:
+
+        data.append({
+
+            "id":
+                donor.id,
+
+            "name":
+                donor.name,
+
+            "email":
+                donor.email,
+
+            "phone":
+                donor.phone,
+
+            "language":
+                donor.language_preference,
+
+            "address":
+                donor.address,
+
+            "city":
+                donor.city,
+
+            "state":
+                donor.state,
+
+            "pincode":
+                donor.pincode,
+
+            "status_active":
+                donor.status_active,
+
+            "registered_date":
+                donor.registered_date.isoformat(),
+
+            "picture":
+                (
+                    request.build_absolute_uri(
+                        donor.picture.url
+                    )
+                    if donor.picture
+                    else None
+                ),
+
+            # Number of donations made by this donor
+            "total_donations":
+                donor.donations.count(),
+        })
+
+    return Response(
+        {
+            "success": True,
+
+            "count":
+                len(data),
+
+            "donors":
+                data,
+        },
+
+        status=status.HTTP_200_OK
+    )
+
+# =========================================================
+# ADMIN COMPLETE DATA API
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_management_data(request):
+
+    data_type = request.GET.get(
+        "type",
+        "donors"
+    ).lower()
+
+
+    # =====================================================
+    # DONORS
+    # =====================================================
+
+    if data_type == "donors":
+
+        donors = (
+            Donor.objects
+            .all()
+            .order_by("-registered_date")
+        )
+
+        data = []
+
+        for donor in donors:
+
+            data.append({
+
+                "id": donor.id,
+
+                "name": donor.name,
+
+                "email": donor.email,
+
+                "phone": donor.phone,
+
+                "city": donor.city,
+
+                "state": donor.state,
+
+                "pincode": donor.pincode,
+
+                "language":
+                    donor.language_preference,
+
+                "status":
+                    "Active"
+                    if donor.status_active
+                    else "Inactive",
+
+                "donations":
+                    donor.donations.count(),
+
+                "registered_date":
+                    donor.registered_date.isoformat(),
+
+                "picture":
+                    (
+                        request.build_absolute_uri(
+                            donor.picture.url
+                        )
+                        if donor.picture
+                        else None
+                    ),
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "donors",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # NGOS
+    # =====================================================
+
+    if data_type == "ngos":
+
+        ngos = (
+            NGO.objects
+            .all()
+            .order_by("-registered_at")
+        )
+
+        data = []
+
+        for ngo in ngos:
+
+            data.append({
+
+                "id": ngo.id,
+
+                "name": ngo.ngo_name,
+
+                "registration_no":
+                    ngo.registration_no,
+
+                "email":
+                    ngo.email_id,
+
+                "phone":
+                    ngo.phone_no,
+
+                "city":
+                    ngo.city,
+
+                "state":
+                    ngo.state,
+
+                "status":
+                    ngo.status,
+
+                "language":
+                    ngo.language,
+
+                "registered_at":
+                    ngo.registered_at.isoformat(),
+
+                "picture":
+                    (
+                        request.build_absolute_uri(
+                            ngo.picture.url
+                        )
+                        if ngo.picture
+                        else None
+                    ),
+
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "ngos",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # DONATIONS
+    # =====================================================
+
+    if data_type == "donations":
+
+        donations = (
+            Donation.objects
+            .select_related(
+                "donor",
+                "ngo"
+            )
+            .all()
+            .order_by("-donation_date")
+        )
+
+        data = []
+
+        for donation in donations:
+
+            data.append({
+
+                "id":
+                    donation.id,
+
+                "item_name":
+                    donation.item_name,
+
+                "category":
+                    donation.category,
+
+                "quantity":
+                    donation.quantity,
+
+                "condition":
+                    donation.condition,
+
+                "status":
+                    donation.status,
+
+                "donor":
+                    (
+                        donation.donor.name
+                        if donation.donor
+                        else "Unknown"
+                    ),
+
+                "donor_email":
+                    (
+                        donation.donor.email
+                        if donation.donor
+                        else ""
+                    ),
+
+                "ngo":
+                    (
+                        donation.ngo.ngo_name
+                        if donation.ngo
+                        else "Not allocated"
+                    ),
+
+                "location":
+                    donation.location,
+
+                "donation_date":
+                    donation.donation_date.isoformat(),
+
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "donations",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # REQUIREMENTS
+    # =====================================================
+
+    if data_type == "requirements":
+
+        requirements = (
+            NGORequirement.objects
+            .select_related("ngo")
+            .all()
+            .order_by("-created_at")
+        )
+
+        data = []
+
+        for requirement in requirements:
+
+            remaining = max(
+                requirement.required_quantity
+                - requirement.fulfilled_quantity,
+                0
+            )
+
+            data.append({
+
+                "id":
+                    requirement.id,
+
+                "ngo":
+                    requirement.ngo.ngo_name,
+
+                "item_name":
+                    requirement.item_name,
+
+                "category":
+                    requirement.category,
+
+                "required_quantity":
+                    requirement.required_quantity,
+
+                "fulfilled_quantity":
+                    requirement.fulfilled_quantity,
+
+                "remaining_quantity":
+                    remaining,
+
+                "priority":
+                    requirement.priority,
+
+                "description":
+                    requirement.description,
+
+                "is_active":
+                    requirement.is_active,
+
+                "created_at":
+                    requirement.created_at.isoformat(),
+
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "requirements",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # ALLOCATIONS
+    # =====================================================
+
+    if data_type == "allocations":
+
+        allocations = (
+            DonationAllocation.objects
+            .select_related(
+                "donation",
+                "donation__donor",
+                "ngo",
+                "requirement"
+            )
+            .all()
+            .order_by("-allocated_at")
+        )
+
+        data = []
+
+        for allocation in allocations:
+
+            data.append({
+
+                "id":
+                    allocation.id,
+
+                "donation":
+                    allocation.donation.item_name,
+
+                "donor":
+                    allocation.donation.donor.name,
+
+                "ngo":
+                    allocation.ngo.ngo_name,
+
+                "requirement":
+                    (
+                        allocation.requirement.item_name
+                        if allocation.requirement
+                        else "N/A"
+                    ),
+
+                "quantity":
+                    allocation.allocated_quantity,
+
+                "status":
+                    allocation.status,
+
+                "allocated_at":
+                    allocation.allocated_at.isoformat(),
+
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "allocations",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # PICKUPS
+    # =====================================================
+
+    if data_type == "pickups":
+
+        pickups = (
+            PickupRequest.objects
+            .select_related(
+                "allocation",
+                "allocation__donation",
+                "allocation__donation__donor",
+                "allocation__ngo"
+            )
+            .all()
+            .order_by("-created_at")
+        )
+
+        data = []
+
+        for pickup in pickups:
+
+            allocation = pickup.allocation
+
+            data.append({
+
+                "id":
+                    pickup.id,
+
+                "item":
+                    allocation.donation.item_name,
+
+                "donor":
+                    allocation.donation.donor.name,
+
+                "ngo":
+                    allocation.ngo.ngo_name,
+
+                "address":
+                    pickup.pickup_address,
+
+                "scheduled_time":
+                    pickup.scheduled_time.isoformat(),
+
+                "status":
+                    pickup.status,
+
+                "notes":
+                    pickup.notes,
+
+                "created_at":
+                    pickup.created_at.isoformat(),
+
+            })
+
+        return Response({
+
+            "success": True,
+
+            "type": "pickups",
+
+            "count": len(data),
+
+            "data": data
+
+        })
+
+
+    # =====================================================
+    # INVALID TYPE
+    # =====================================================
+
+    return Response(
+
+        {
+            "success": False,
+
+            "message":
+                "Invalid admin data type."
+
+        },
+
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+
+# =========================================================
+# ADMIN MANAGEMENT DATA
+# =========================================================
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def admin_management_data(request):
+
+    data_type = request.GET.get(
+        "type",
+        "donors"
+    ).lower()
+
+
+    # =====================================================
+    # DONORS
+    # =====================================================
+
+    if data_type == "donors":
+
+        donors = Donor.objects.all().order_by(
+            "-registered_date"
+        )
+
+        data = []
+
+        for donor in donors:
+
+            data.append({
+
+                "id": donor.id,
+
+                "name": donor.name,
+
+                "email": donor.email,
+
+                "phone": donor.phone,
+
+                "city": donor.city,
+
+                "state": donor.state,
+
+                "pincode": donor.pincode,
+
+                "status":
+                    "Active"
+                    if donor.status_active
+                    else "Inactive",
+
+                "donations":
+                    donor.donations.count(),
+
+                "registered_date":
+                    donor.registered_date.isoformat(),
+
+            })
+
+        return Response({
+            "success": True,
+            "type": "donors",
+            "count": len(data),
+            "data": data
+        })
+
+
+    # =====================================================
+    # DONATIONS
+    # =====================================================
+
+    if data_type == "donations":
+
+        donations = Donation.objects.select_related(
+            "donor",
+            "ngo"
+        ).all().order_by(
+            "-donation_date"
+        )
+
+        data = []
+
+        for donation in donations:
+
+            data.append({
+
+                "id":
+                    donation.id,
+
+                "item_name":
+                    donation.item_name,
+
+                "category":
+                    donation.category,
+
+                "quantity":
+                    donation.quantity,
+
+                "condition":
+                    donation.condition,
+
+                "status":
+                    donation.status,
+
+                "donor":
+                    (
+                        donation.donor.name
+                        if donation.donor
+                        else "Unknown"
+                    ),
+
+                "ngo":
+                    (
+                        donation.ngo.ngo_name
+                        if donation.ngo
+                        else "Not allocated"
+                    ),
+
+                "location":
+                    donation.location,
+
+                "donation_date":
+                    donation.donation_date.isoformat(),
+
+            })
+
+        return Response({
+            "success": True,
+            "type": "donations",
+            "count": len(data),
+            "data": data
+        })
+
+
+    # =====================================================
+    # REQUIREMENTS
+    # =====================================================
+
+    if data_type == "requirements":
+
+        requirements = NGORequirement.objects.select_related(
+            "ngo"
+        ).all().order_by(
+            "-created_at"
+        )
+
+        data = []
+
+        for requirement in requirements:
+
+            remaining = max(
+                requirement.required_quantity
+                - requirement.fulfilled_quantity,
+                0
+            )
+
+            data.append({
+
+                "id":
+                    requirement.id,
+
+                "ngo":
+                    requirement.ngo.ngo_name,
+
+                "item_name":
+                    requirement.item_name,
+
+                "category":
+                    requirement.category,
+
+                "required_quantity":
+                    requirement.required_quantity,
+
+                "fulfilled_quantity":
+                    requirement.fulfilled_quantity,
+
+                "remaining_quantity":
+                    remaining,
+
+                "priority":
+                    requirement.priority,
+
+                "is_active":
+                    requirement.is_active,
+
+                "created_at":
+                    requirement.created_at.isoformat(),
+
+            })
+
+        return Response({
+            "success": True,
+            "type": "requirements",
+            "count": len(data),
+            "data": data
+        })
+
+
+    # =====================================================
+    # ALLOCATIONS
+    # =====================================================
+
+    if data_type == "allocations":
+
+        allocations = DonationAllocation.objects.select_related(
+            "donation",
+            "donation__donor",
+            "ngo",
+            "requirement"
+        ).all().order_by(
+            "-allocated_at"
+        )
+
+        data = []
+
+        for allocation in allocations:
+
+            data.append({
+
+                "id":
+                    allocation.id,
+
+                "donation":
+                    allocation.donation.item_name,
+
+                "donor":
+                    allocation.donation.donor.name,
+
+                "ngo":
+                    allocation.ngo.ngo_name,
+
+                "requirement":
+                    (
+                        allocation.requirement.item_name
+                        if allocation.requirement
+                        else "N/A"
+                    ),
+
+                "quantity":
+                    allocation.allocated_quantity,
+
+                "status":
+                    allocation.status,
+
+                "allocated_at":
+                    allocation.allocated_at.isoformat(),
+
+            })
+
+        return Response({
+            "success": True,
+            "type": "allocations",
+            "count": len(data),
+            "data": data
+        })
+
+
+    # =====================================================
+    # PICKUPS
+    # =====================================================
+
+    if data_type == "pickups":
+
+        pickups = PickupRequest.objects.select_related(
+            "allocation",
+            "allocation__donation",
+            "allocation__donation__donor",
+            "allocation__ngo"
+        ).all().order_by(
+            "-created_at"
+        )
+
+        data = []
+
+        for pickup in pickups:
+
+            allocation = pickup.allocation
+
+            data.append({
+
+                "id":
+                    pickup.id,
+
+                "item":
+                    allocation.donation.item_name,
+
+                "donor":
+                    allocation.donation.donor.name,
+
+                "ngo":
+                    allocation.ngo.ngo_name,
+
+                "address":
+                    pickup.pickup_address,
+
+                "scheduled_time":
+                    pickup.scheduled_time.isoformat(),
+
+                "status":
+                    pickup.status,
+
+                "notes":
+                    pickup.notes,
+
+                "created_at":
+                    pickup.created_at.isoformat(),
+
+            })
+
+        return Response({
+            "success": True,
+            "type": "pickups",
+            "count": len(data),
+            "data": data
+        })
+
+
+    return Response(
+        {
+            "success": False,
+            "message": "Invalid admin data type."
+        },
+        status=status.HTTP_400_BAD_REQUEST
+    )
+

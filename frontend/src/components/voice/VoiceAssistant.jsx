@@ -194,11 +194,6 @@ export default function VoiceAssistant() {
     recognitionRef.current = recognition;
     recognition.start();
   };
-
-  if (!supported) {
-    return null;
-  }
-
   return (
     <>
       <button

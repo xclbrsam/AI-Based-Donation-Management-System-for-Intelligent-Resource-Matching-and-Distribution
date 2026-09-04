@@ -41,6 +41,7 @@ from .views import (
     # DONOR
     # =====================================================
     DonorDonationListView,
+    DonorRankingView,
 
     # =====================================================
     # LOGIN
@@ -67,7 +68,17 @@ from .views import (
     NGOPickupListView,
     PickupStatusUpdateView,
     DonorPickupCancelView,
-)
+
+    #admin
+        admin_dashboard_stats,
+        admin_ngos,
+        admin_ngo_detail,
+        admin_approve_ngo,
+        admin_reject_ngo,
+        admin_donors,
+        admin_management_data,
+    )
+
 
 
 urlpatterns = [
@@ -335,6 +346,12 @@ urlpatterns = [
         name="my-donations"
     ),
 
+    path(
+        "donors/ranking/",
+        DonorRankingView.as_view(),
+        name="donor-ranking"
+    ),
+
     # =====================================================
     # PICKUP REQUESTS
     # =====================================================
@@ -374,4 +391,65 @@ urlpatterns = [
         name="pickup-status-update"
     ),
 
+
+        # =====================================================
+    # ADMIN DASHBOARD
+    # =====================================================
+
+    path(
+        "admin/dashboard-stats/",
+        admin_dashboard_stats,
+        name="admin-dashboard-stats"
+    ),
+    
+    
+    # =====================================================
+# ADMIN
+# =====================================================
+
+path(
+    "admin/dashboard-stats/",
+    admin_dashboard_stats,
+    name="admin-dashboard-stats"
+),
+
+path(
+    "admin/ngos/",
+    admin_ngos,
+    name="admin-ngos"
+),
+
+path(
+    "admin/ngos/<int:pk>/",
+    admin_ngo_detail,
+    name="admin-ngo-detail"
+),
+
+path(
+    "admin/ngos/<int:pk>/approve/",
+    admin_approve_ngo,
+    name="admin-ngo-approve"
+),
+
+path(
+    "admin/ngos/<int:pk>/reject/",
+    admin_reject_ngo,
+    name="admin-ngo-reject"
+),
+
+# =====================================================
+# ADMIN DONORS
+# =====================================================
+
+path(
+    "admin/donors/",
+    admin_donors,
+    name="admin-donors"
+),
+
+path(
+    "admin/management-data/",
+    admin_management_data,
+    name="admin-management-data"
+),
 ]

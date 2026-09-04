@@ -8,7 +8,8 @@ from .views import (
     login_page,
     donor_dashboard,
     AIScanView,
-    ngo_dashboard
+    ngo_dashboard,
+    admin_dashboard_stats,
 )
 
 
@@ -82,11 +83,22 @@ urlpatterns = [
         name="ai-scan"
     ),
 
-    # New endpoint used by React donation page
+    # Endpoint used by React donation page
     path(
         "donations/analyze-image/",
         AIScanView.as_view(),
         name="analyze-donation-image"
+    ),
+
+
+    # ========================================================
+    # ADMIN DASHBOARD API
+    # ========================================================
+
+    path(
+        "admin/dashboard-stats/",
+        admin_dashboard_stats,
+        name="admin-dashboard-stats"
     ),
 
 ]

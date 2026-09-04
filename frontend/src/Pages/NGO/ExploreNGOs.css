@@ -1,7 +1,7 @@
 .explore-ngos-page {
-  min-height: 100vh;
-  padding: 60px 30px;
-  background: #F7FAFF;
+  min-height: 0;
+  padding: 0;
+  background: transparent;
 }
 
 .explore-ngos-container {
@@ -168,7 +168,7 @@
 
 @media (max-width: 600px) {
   .explore-ngos-page {
-    padding: 35px 15px;
+    padding: 0;
   }
 
   .explore-ngos-header h1 {

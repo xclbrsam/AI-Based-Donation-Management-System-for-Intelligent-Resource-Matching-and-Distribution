@@ -108,23 +108,14 @@ WSGI_APPLICATION = 'donation_system.wsgi.application'
 
 
 # Database
-
 DATABASES = {
-
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql',
-
         'NAME': 'ai_donation',
-
         'USER': 'postgres',
-
         'PASSWORD': 'ai_donation01',
-
         'HOST': 'localhost',
-
         'PORT': '5432',
-
     }
 }
 

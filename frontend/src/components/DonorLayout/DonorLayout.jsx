@@ -11,6 +11,8 @@ const pageMeta = {
   "/donate-item": { title: "Donate an Item", subtitle: "Turn something you have into something someone needs" },
   "/my-donations": { title: "My Donations", subtitle: "Track everything you have donated" },
   "/my-activity": { title: "My Activity", subtitle: "Follow your donation journey" },
+  "/explore-ngos": { title: "Explore NGOs", subtitle: "Discover organizations making a difference" },
+  "/ranking": { title: "Donor Ranking", subtitle: "See the community impact leaderboard" },
   "/notifications": { title: "Notifications", subtitle: "Stay updated on your donations" },
   "/profile": { title: "Profile", subtitle: "Manage your donor information" },
   "/settings": { title: "Settings", subtitle: "Personalize your donor experience" },

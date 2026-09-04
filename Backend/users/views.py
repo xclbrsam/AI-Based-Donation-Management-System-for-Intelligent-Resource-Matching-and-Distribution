@@ -1,9 +1,9 @@
-import os
 import tempfile
 from pathlib import Path
-from ai.gemini_detector import analyze_donation_image
-from django.contrib.auth import authenticate
+
 from django.shortcuts import render
+from django.http import JsonResponse
+from django.db.models import F
 
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -17,10 +17,18 @@ from rest_framework.parsers import (
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from ai.gemini_detector import analyze_donation_image
+
 from .models import (
     CustomUser,
     Profile,
-    NGOProfile
+    NGOProfile,
+    Donor,
+    NGO,
+    NGORequirement,
+    Donation,
+    DonationAllocation,
+    PickupRequest,
 )
 
 from .serializers import (
@@ -29,12 +37,6 @@ from .serializers import (
     ProfileSerializer,
     NGOProfileSerializer
 )
-
-# ============================================================
-# GEMINI AI
-# ============================================================
-
-from ai.gemini_detector import analyze_donation_image
 
 
 # ============================================================
@@ -546,11 +548,9 @@ class AIScanView(APIView):
     Uses Gemini Vision to detect multiple donation items
     from a single uploaded image.
 
-    Endpoint:
+    Endpoints:
 
         POST /api/donations/scan/
-
-    Also available as:
 
         POST /api/donations/analyze-image/
 
@@ -658,7 +658,7 @@ class AIScanView(APIView):
         try:
 
             # ------------------------------------------------
-            # Get file extension
+            # GET FILE EXTENSION
             # ------------------------------------------------
 
             suffix = Path(
@@ -666,7 +666,7 @@ class AIScanView(APIView):
             ).suffix
 
             # ------------------------------------------------
-            # Create temporary file
+            # CREATE TEMPORARY FILE
             # ------------------------------------------------
 
             with tempfile.NamedTemporaryFile(
@@ -788,3 +788,216 @@ class AIScanView(APIView):
                         "Temporary file cleanup error:",
                         str(cleanup_error)
                     )
+
+
+# ============================================================
+# ADMIN DASHBOARD STATISTICS API
+# ============================================================
+
+def admin_dashboard_stats(request):
+    """
+    Returns statistics for the React Admin Dashboard.
+
+    Endpoint:
+
+        GET /api/admin/dashboard-stats/
+    """
+
+    # ========================================================
+    # BASIC COUNTS
+    # ========================================================
+
+    total_donors = Donor.objects.count()
+
+    total_ngos = NGO.objects.count()
+
+    total_donations = Donation.objects.count()
+
+    total_requirements = NGORequirement.objects.count()
+
+    total_allocations = DonationAllocation.objects.count()
+
+    total_pickups = PickupRequest.objects.count()
+
+
+    # ========================================================
+    # PENDING COUNTS
+    # ========================================================
+
+    pending_ngos = NGO.objects.filter(
+        status="Pending"
+    ).count()
+
+    pending_donations = Donation.objects.filter(
+        status="Pending"
+    ).count()
+
+    pending_requirements = NGORequirement.objects.filter(
+        is_active=True,
+        fulfilled_quantity__lt=F(
+            "required_quantity"
+        )
+    ).count()
+
+    pending_pickups = PickupRequest.objects.filter(
+        status="Pending"
+    ).count()
+
+
+    # ========================================================
+    # DONATION STATUS
+    # ========================================================
+
+    accepted_donations = Donation.objects.filter(
+        status="Accepted"
+    ).count()
+
+    collected_donations = Donation.objects.filter(
+        status="Collected"
+    ).count()
+
+    rejected_donations = Donation.objects.filter(
+        status="Rejected"
+    ).count()
+
+
+    # ========================================================
+    # PICKUP STATUS
+    # ========================================================
+
+    confirmed_pickups = PickupRequest.objects.filter(
+        status="Confirmed"
+    ).count()
+
+    delivered_pickups = PickupRequest.objects.filter(
+        status="Delivered"
+    ).count()
+
+
+    # ========================================================
+    # ALLOCATION STATUS
+    # ========================================================
+
+    matched_donations = DonationAllocation.objects.count()
+
+    completed_allocations = DonationAllocation.objects.filter(
+        status="Collected"
+    ).count()
+
+
+    # ========================================================
+    # RECENT DONATIONS
+    # ========================================================
+
+    recent_donations = Donation.objects.select_related(
+        "donor",
+        "ngo"
+    ).order_by(
+        "-donation_date"
+    )[:10]
+
+
+    recent_data = []
+
+    for donation in recent_donations:
+
+        recent_data.append({
+
+            "id":
+                donation.id,
+
+            "item_name":
+                donation.item_name,
+
+            "category":
+                donation.category,
+
+            "quantity":
+                donation.quantity,
+
+            "condition":
+                donation.condition,
+
+            "status":
+                donation.status,
+
+            "donor":
+                donation.donor.name
+                if donation.donor
+                else "Unknown",
+
+            "ngo":
+                donation.ngo.ngo_name
+                if donation.ngo
+                else None,
+
+            "donation_date":
+                donation.donation_date.isoformat(),
+        })
+
+
+    # ========================================================
+    # RETURN RESPONSE
+    # ========================================================
+
+    return JsonResponse({
+
+        "success": True,
+
+        "stats": {
+
+            "total_donors":
+                total_donors,
+
+            "total_ngos":
+                total_ngos,
+
+            "total_donations":
+                total_donations,
+
+            "total_requirements":
+                total_requirements,
+
+            "total_allocations":
+                total_allocations,
+
+            "total_pickups":
+                total_pickups,
+
+            "pending_ngos":
+                pending_ngos,
+
+            "pending_donations":
+                pending_donations,
+
+            "pending_requirements":
+                pending_requirements,
+
+            "pending_pickups":
+                pending_pickups,
+
+            "accepted_donations":
+                accepted_donations,
+
+            "collected_donations":
+                collected_donations,
+
+            "rejected_donations":
+                rejected_donations,
+
+            "matched_donations":
+                matched_donations,
+
+            "completed_allocations":
+                completed_allocations,
+
+            "confirmed_pickups":
+                confirmed_pickups,
+
+            "delivered_pickups":
+                delivered_pickups,
+        },
+
+        "recent_donations":
+            recent_data,
+    })

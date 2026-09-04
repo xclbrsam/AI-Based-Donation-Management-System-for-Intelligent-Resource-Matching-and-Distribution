@@ -1,6 +1,6 @@
 /* =====================================================
-   AI DONATIONS - LOGIN
-   NAVY + IVORY + CORAL
+   RESOURCEBRIDGE - LOGIN
+   NAVY + IVORY + BLUE
 ===================================================== */
 
 :root {
@@ -10,9 +10,9 @@
   --login-ivory: #FAFAF9;
   --login-white: #ffffff;
 
-  --login-coral: #2563EB;
-  --login-coral-dark: #1D4ED8;
-  --login-coral-soft: #DBEAFE;
+  --login-blue: #2563EB;
+  --login-blue-dark: #1D4ED8;
+  --login-blue-soft: #DBEAFE;
 
   --login-text: #0F172A;
   --login-muted: #475569;
@@ -21,6 +21,7 @@
   --login-shadow:
     0 25px 70px rgba(23, 32, 51, 0.12);
 }
+
 
 /* =====================================================
    DARK MODE
@@ -33,13 +34,13 @@ body.dark-theme {
   --login-ivory: #08111F;
   --login-white: #0D1B2A;
 
-  --login-coral: #2563EB;
-  --login-coral-dark: #1D4ED8;
-  --login-coral-soft: #17345A;
+  --login-blue: #3B82F6;
+  --login-blue-dark: #2563EB;
+  --login-blue-soft: #17345A;
 
-  --login-text: #FFF5F8;
-  --login-muted: #9E8C93;
-  --login-border: #403238;
+  --login-text: #F8FAFC;
+  --login-muted: #94A3B8;
+  --login-border: #334155;
 
   --login-shadow:
     0 25px 70px rgba(0, 0, 0, 0.30);
@@ -110,10 +111,12 @@ body.dark-theme {
 .brand-logo {
   display: flex;
   align-items: center;
+
   gap: 12px;
 
   font-size: 20px;
   font-weight: 700;
+
   letter-spacing: -0.3px;
 
   margin-bottom: 100px;
@@ -129,14 +132,14 @@ body.dark-theme {
 
   border-radius: 12px;
 
-  background: var(--login-coral);
+  background: var(--login-blue);
 
   color: white;
 
   font-size: 20px;
 
   box-shadow:
-    0 8px 25px rgba(232, 117, 92, 0.3);
+    0 8px 25px rgba(37, 99, 235, 0.30);
 }
 
 
@@ -147,7 +150,7 @@ body.dark-theme {
 .brand-eyebrow {
   margin: 0 0 20px;
 
-  color: #1D4ED8;
+  color: #60A5FA;
 
   font-size: 12px;
   font-weight: 700;
@@ -168,7 +171,7 @@ body.dark-theme {
 }
 
 .brand-message h1 span {
-  color: var(--login-coral);
+  color: var(--login-blue);
 }
 
 .brand-description {
@@ -176,9 +179,10 @@ body.dark-theme {
 
   margin: 30px 0 0;
 
-  color: #CBBBC1;
+  color: #CBD5E1;
 
   font-size: 16px;
+
   line-height: 1.8;
 }
 
@@ -190,6 +194,7 @@ body.dark-theme {
 .impact-card {
   display: flex;
   align-items: center;
+
   gap: 16px;
 
   max-width: 430px;
@@ -198,7 +203,7 @@ body.dark-theme {
 
   padding: 18px 20px;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.10);
 
   border-radius: 16px;
 
@@ -219,9 +224,9 @@ body.dark-theme {
 
   border-radius: 13px;
 
-  background: var(--login-coral-soft);
+  background: var(--login-blue-soft);
 
-  color: var(--login-coral);
+  color: var(--login-blue);
 
   font-size: 20px;
 }
@@ -240,6 +245,7 @@ body.dark-theme {
   color: #94A3B8;
 
   font-size: 12px;
+
   line-height: 1.5;
 }
 
@@ -263,7 +269,7 @@ body.dark-theme {
   right: -210px;
   top: -100px;
 
-  border: 1px solid rgba(232, 117, 92, 0.16);
+  border: 1px solid rgba(37, 99, 235, 0.20);
 }
 
 .decoration-two {
@@ -325,7 +331,7 @@ body.dark-theme {
 ===================================================== */
 
 .login-header {
-  margin-bottom: 38px;
+  margin-bottom: 28px;
 }
 
 .mobile-logo {
@@ -335,7 +341,7 @@ body.dark-theme {
 .login-eyebrow {
   margin: 0 0 10px;
 
-  color: var(--login-coral);
+  color: var(--login-blue);
 
   font-size: 11px;
   font-weight: 800;
@@ -349,6 +355,7 @@ body.dark-theme {
   color: var(--login-text);
 
   font-size: 34px;
+
   line-height: 1.15;
 
   letter-spacing: -1.2px;
@@ -360,7 +367,156 @@ body.dark-theme {
   color: var(--login-muted);
 
   font-size: 14px;
+
   line-height: 1.6;
+}
+
+
+/* =====================================================
+   LOGIN TYPE TABS
+===================================================== */
+
+.login-type-tabs {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 6px;
+
+  margin-bottom: 16px;
+
+  padding: 5px;
+
+  box-sizing: border-box;
+
+  background: #F1F5F9;
+
+  border: 1px solid #E2E8F0;
+
+  border-radius: 14px;
+}
+
+.login-type-tab {
+  min-height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 8px 6px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: transparent;
+
+  color: #64748B;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.login-type-tab:hover {
+  color: var(--login-blue);
+
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.login-type-tab.active {
+  background: #ffffff;
+
+  color: var(--login-blue);
+
+  box-shadow:
+    0 3px 10px rgba(15, 23, 42, 0.08);
+}
+
+.login-type-tab.active:hover {
+  transform: none;
+}
+
+.login-tab-icon {
+  font-size: 15px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   ADMIN TAB
+   SAME BLUE THEME - SUBTLE DIFFERENCE
+===================================================== */
+
+.login-type-tab.admin-tab.active {
+  color: #1E40AF;
+
+  background: #EFF6FF;
+
+  box-shadow:
+    0 3px 10px rgba(37, 99, 235, 0.10);
+}
+
+
+/* =====================================================
+   SELECTED LOGIN MESSAGE
+===================================================== */
+
+.selected-login-message {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  margin-bottom: 22px;
+
+  padding: 11px 14px;
+
+  border-left: 3px solid var(--login-blue);
+
+  border-radius: 9px;
+
+  background: #F8FAFC;
+}
+
+.selected-login-message strong {
+  color: var(--login-text);
+
+  font-size: 13px;
+
+  font-weight: 700;
+}
+
+.selected-login-message span {
+  color: var(--login-muted);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
+   ADMIN MESSAGE
+===================================================== */
+
+.login-type-tab.admin-tab.active
+  + .selected-login-message {
+  border-left-color: #1D4ED8;
 }
 
 
@@ -391,6 +547,7 @@ body.dark-theme {
   color: var(--login-text);
 
   font-size: 13px;
+
   font-weight: 650;
 }
 
@@ -412,16 +569,17 @@ body.dark-theme {
 
   background: transparent;
 
-  color: var(--login-coral);
+  color: var(--login-blue);
 
   font-size: 12px;
+
   font-weight: 600;
 
   cursor: pointer;
 }
 
 .forgot-button:hover {
-  color: var(--login-coral-dark);
+  color: var(--login-blue-dark);
 
   text-decoration: underline;
 }
@@ -450,7 +608,7 @@ body.dark-theme {
 
   border-radius: 12px;
 
-  background: #fff;
+  background: #ffffff;
 
   transition:
     border-color 0.2s ease,
@@ -476,12 +634,14 @@ body.dark-theme {
   align-items: center;
   justify-content: center;
 
-  color: #969ba5;
+  color: #969BA5;
 
   font-size: 17px;
+
   line-height: 1;
 
   pointer-events: none;
+
   user-select: none;
 
   z-index: 2;
@@ -506,6 +666,7 @@ body.dark-theme {
   padding: 0;
 
   border: none;
+
   outline: none;
 
   background: transparent;
@@ -513,41 +674,39 @@ body.dark-theme {
   color: var(--login-text);
 
   font-family: inherit;
-  font-size: 14px;
 
-  transition: color 0.2s ease;
+  font-size: 14px;
 }
 
 .input-wrapper input::placeholder {
-  color: #a4a8b0;
+  color: #A4A8B0;
+
   opacity: 1;
 }
 
-.input-wrapper input:hover {
-  border: none;
-}
-
+.input-wrapper input:hover,
 .input-wrapper input:focus {
   border: none;
+
   outline: none;
 }
 
 
 /* =====================================================
-   WRAPPER HOVER / FOCUS
+   INPUT HOVER / FOCUS
 ===================================================== */
 
 .input-wrapper:hover {
-  border-color: #c9c6c0;
+  border-color: #CBD5E1;
 }
 
 .input-wrapper:focus-within {
-  border-color: var(--login-coral);
+  border-color: var(--login-blue);
 
-  background: white;
+  background: #ffffff;
 
   box-shadow:
-    0 0 0 4px rgba(232, 117, 92, 0.1);
+    0 0 0 4px rgba(37, 99, 235, 0.10);
 }
 
 
@@ -576,7 +735,7 @@ body.dark-theme {
 
   background: transparent;
 
-  color: #8b9099;
+  color: #8B9099;
 
   font-size: 16px;
 
@@ -586,14 +745,14 @@ body.dark-theme {
 }
 
 .password-toggle:hover {
-  background: var(--login-coral-soft);
+  background: var(--login-blue-soft);
 
-  color: var(--login-coral);
+  color: var(--login-blue);
 }
 
 
 /* =====================================================
-   BROWSER AUTOFILL
+   AUTOFILL
 ===================================================== */
 
 .input-wrapper input:-webkit-autofill,
@@ -610,35 +769,44 @@ body.dark-theme {
 
 
 /* =====================================================
-   SUBMIT
+   SUBMIT BUTTON
 ===================================================== */
 
 .login-submit {
   width: 100%;
+
   height: 54px;
 
   display: flex;
-  flex-direction: row;
   align-items: center;
   justify-content: center;
+
+  flex-direction: row;
 
   gap: 10px;
 
   margin-top: 4px;
+
   padding: 0 18px;
+
   box-sizing: border-box;
 
   border: none;
+
   border-radius: 12px;
 
-  background: var(--login-coral);
-  color: white;
+  background: var(--login-blue);
+
+  color: #ffffff;
 
   font-family: inherit;
+
   font-size: 14px;
+
   font-weight: 700;
 
   cursor: pointer;
+
   white-space: nowrap;
 
   box-shadow:
@@ -651,7 +819,8 @@ body.dark-theme {
 }
 
 .login-submit:hover:not(:disabled) {
-  background: var(--login-coral-dark);
+  background: var(--login-blue-dark);
+
   transform: translateY(-2px);
 
   box-shadow:
@@ -664,36 +833,72 @@ body.dark-theme {
 
 .login-submit:disabled {
   opacity: 0.7;
+
   cursor: not-allowed;
 }
 
+
+/* =====================================================
+   ADMIN SUBMIT
+   BLUE, NOT PURPLE
+===================================================== */
+
+.admin-login-submit {
+  background:
+    linear-gradient(
+      135deg,
+      #2563EB,
+      #1D4ED8
+    );
+}
+
+.admin-login-submit:hover:not(:disabled) {
+  background:
+    linear-gradient(
+      135deg,
+      #1D4ED8,
+      #1E40AF
+    );
+
+  box-shadow:
+    0 14px 30px rgba(29, 78, 216, 0.30);
+}
+
+
+/* =====================================================
+   BUTTON CONTENT
+===================================================== */
+
 .login-submit > span:not(.button-arrow):not(.spinner) {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
+
   line-height: 1;
 }
 
 .button-arrow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
   width: 20px;
   height: 20px;
 
-  flex: 0 0 20px;
+  display: inline-flex;
 
-  position: static;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 20px;
 
   margin: 0;
   padding: 0;
 
   font-size: 19px;
+
   line-height: 1;
 
   transform: translateY(-1px);
 }
+
 
 /* =====================================================
    SPINNER
@@ -703,9 +908,9 @@ body.dark-theme {
   width: 16px;
   height: 16px;
 
-  border: 2px solid rgba(255, 255, 255, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.40);
 
-  border-top-color: white;
+  border-top-color: #ffffff;
 
   border-radius: 50%;
 
@@ -721,6 +926,7 @@ body.dark-theme {
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 5px;
 
   margin-top: 30px;
@@ -737,11 +943,12 @@ body.dark-theme {
 
   background: transparent;
 
-  color: var(--login-coral);
+  color: var(--login-blue);
 
   font-family: inherit;
 
   font-size: 13px;
+
   font-weight: 700;
 
   cursor: pointer;
@@ -753,22 +960,61 @@ body.dark-theme {
 
 
 /* =====================================================
+   ADMIN INFO
+===================================================== */
+
+.admin-login-info {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  margin-top: 18px;
+
+  padding: 12px 14px;
+
+  border: 1px solid #DBEAFE;
+
+  border-radius: 10px;
+
+  background: #EFF6FF;
+}
+
+.admin-login-info > span {
+  flex-shrink: 0;
+
+  font-size: 16px;
+}
+
+.admin-login-info p {
+  margin: 0;
+
+  color: #1E40AF;
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =====================================================
    FOOTER
 ===================================================== */
 
 .login-footer {
   margin: 24px 0 0;
 
-  color: #a0a3aa;
+  color: #A0A3AA;
 
   text-align: center;
 
   font-size: 10px;
+
   line-height: 1.6;
 }
 
 .login-footer span {
-  color: #7d818a;
+  color: #7D818A;
 }
 
 
@@ -780,11 +1026,13 @@ body.dark-theme {
 
   from {
     opacity: 0;
+
     transform: translateY(15px);
   }
 
   to {
     opacity: 1;
+
     transform: translateY(0);
   }
 
@@ -920,36 +1168,109 @@ body.dark-theme {
     font-size: 29px;
   }
 
+  .login-type-tab {
+    font-size: 11px;
+
+    gap: 4px;
+  }
+
+  .login-tab-icon {
+    font-size: 13px;
+  }
+
 }
 
 
 /* =====================================================
-   DARK MODE OVERRIDES
+   DARK MODE
 ===================================================== */
 
 body.dark-theme .login-page,
 body.dark-theme .login-section {
   background: var(--login-ivory);
+
   color: var(--login-text);
 }
 
 body.dark-theme .login-brand {
-  background: linear-gradient(
-    135deg,
-    var(--login-navy),
-    var(--login-navy-light)
-  );
+  background:
+    linear-gradient(
+      135deg,
+      var(--login-navy),
+      var(--login-navy-light)
+    );
 }
 
 body.dark-theme .login-card {
   background: var(--login-white);
+
   border-color: var(--login-border);
 
   box-shadow: var(--login-shadow);
 }
 
+
+/* =====================================================
+   DARK MODE - TABS
+===================================================== */
+
+body.dark-theme .login-type-tabs {
+  background: #0F172A;
+
+  border-color: #1E293B;
+}
+
+body.dark-theme .login-type-tab {
+  color: #94A3B8;
+}
+
+body.dark-theme .login-type-tab:hover {
+  background: #172033;
+
+  color: #60A5FA;
+}
+
+body.dark-theme .login-type-tab.active {
+  background: #1E293B;
+
+  color: #60A5FA;
+}
+
+body.dark-theme .login-type-tab.admin-tab.active {
+  background: #172554;
+
+  color: #60A5FA;
+}
+
+
+/* =====================================================
+   DARK MODE - SELECTED MESSAGE
+===================================================== */
+
+body.dark-theme .selected-login-message {
+  background: #0F172A;
+
+  border-color: #1E3A5F;
+
+  border-left-color: #3B82F6;
+}
+
+body.dark-theme .selected-login-message strong {
+  color: #F8FAFC;
+}
+
+body.dark-theme .selected-login-message span {
+  color: #94A3B8;
+}
+
+
+/* =====================================================
+   DARK MODE - INPUT
+===================================================== */
+
 body.dark-theme .input-wrapper {
   background: #0F172A;
+
   border-color: var(--login-border);
 }
 
@@ -959,7 +1280,8 @@ body.dark-theme .input-wrapper:hover {
 
 body.dark-theme .input-wrapper:focus-within {
   background: #0F172A;
-  border-color: var(--login-coral);
+
+  border-color: var(--login-blue);
 }
 
 body.dark-theme .input-wrapper input {
@@ -967,7 +1289,7 @@ body.dark-theme .input-wrapper input {
 }
 
 body.dark-theme .input-wrapper input::placeholder {
-  color: #475569;
+  color: #64748B;
 }
 
 body.dark-theme .input-icon {
@@ -979,9 +1301,15 @@ body.dark-theme .password-toggle {
 }
 
 body.dark-theme .password-toggle:hover {
-  background: var(--login-coral-soft);
-  color: var(--login-coral);
+  background: var(--login-blue-soft);
+
+  color: var(--login-blue);
 }
+
+
+/* =====================================================
+   DARK MODE - TEXT
+===================================================== */
 
 body.dark-theme .login-header h2,
 body.dark-theme .form-group label {
@@ -995,41 +1323,60 @@ body.dark-theme .register-prompt {
 
 body.dark-theme .forgot-button,
 body.dark-theme .register-prompt button {
-  color: var(--login-coral);
+  color: var(--login-blue);
 }
 
 body.dark-theme .login-footer {
-  color: #7f8a9c;
+  color: #7F8A9C;
 }
 
 body.dark-theme .login-footer span {
-  color: #a0aab8;
+  color: #A0AAB8;
+}
+
+
+/* =====================================================
+   DARK MODE - BRAND
+===================================================== */
+
+body.dark-theme .brand-description {
+  color: #CBD5E1;
+}
+
+body.dark-theme .brand-eyebrow {
+  color: #60A5FA;
 }
 
 body.dark-theme .impact-card {
   background: rgba(255, 255, 255, 0.07);
+
   border-color: rgba(255, 255, 255, 0.12);
-}
-
-body.dark-theme .brand-description {
-  color: #CBBBC1;
-}
-
-body.dark-theme .brand-eyebrow {
-  color: #1D4ED8;
 }
 
 body.dark-theme .impact-card span {
   color: #94A3B8;
 }
 
-/* Keep white text on navy/coral surfaces */
-body.dark-theme .login-brand,
-body.dark-theme .login-submit {
-  color: #ffffff;
+
+/* =====================================================
+   DARK MODE - ADMIN INFO
+===================================================== */
+
+body.dark-theme .admin-login-info {
+  background: #172554;
+
+  border-color: #1E40AF;
 }
 
-/* Browser autofill */
+body.dark-theme .admin-login-info p {
+  color: #BFDBFE;
+}
+
+
+/* =====================================================
+   DARK MODE - AUTOFILL
+===================================================== */
+
 body.dark-theme .input-wrapper input:-webkit-autofill,
 body.dark-theme .input-wrapper input:-webkit-autofill:hover,
 body.dark-theme .input-wrapper input:-webkit-autofill:focus {
@@ -1039,7 +1386,11 @@ body.dark-theme .input-wrapper input:-webkit-autofill:focus {
     0 0 0 1000px #0F172A inset;
 }
 
-/* Smooth theme transition */
+
+/* =====================================================
+   SMOOTH THEME TRANSITION
+===================================================== */
+
 .login-page,
 .login-brand,
 .login-section,
@@ -1047,6 +1398,10 @@ body.dark-theme .input-wrapper input:-webkit-autofill:focus {
 .input-wrapper,
 .input-wrapper input,
 .password-toggle,
+.login-type-tabs,
+.login-type-tab,
+.selected-login-message,
+.admin-login-info,
 .login-footer {
   transition:
     background-color 0.3s ease,

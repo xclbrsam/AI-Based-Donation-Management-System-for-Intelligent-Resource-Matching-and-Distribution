@@ -6,10 +6,24 @@ import "./Login.css";
 function Login() {
   const navigate = useNavigate();
 
+  const [loginType, setLoginType] = useState("donor");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // =====================================================
+  // CHANGE LOGIN TYPE
+  // =====================================================
+
+  const changeLoginType = (type) => {
+    setLoginType(type);
+
+    setEmail("");
+    setPassword("");
+  };
 
   // =====================================================
   // LOGIN
@@ -17,6 +31,11 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      alert("Please enter email and password.");
+      return;
+    }
 
     try {
       setLoading(true);
@@ -36,16 +55,72 @@ function Login() {
       // =================================================
 
       if (!data) {
-        alert("Invalid login response.");
+        alert(
+          "Invalid login response."
+        );
         return;
       }
 
       if (!data.tokens) {
-        alert("Login tokens were not received.");
+        alert(
+          "Login tokens were not received."
+        );
 
         console.error(
-          "Tokens missing from login response:",
+          "Tokens missing:",
           data
+        );
+
+        return;
+      }
+
+      // =================================================
+      // NORMALIZE USER TYPE
+      // =================================================
+
+      const userType = String(
+        data.user_type || ""
+      )
+        .trim()
+        .toLowerCase();
+
+      console.log(
+        "User Type:",
+        userType
+      );
+
+      // =================================================
+      // CHECK SELECTED LOGIN TYPE
+      // =================================================
+
+      if (
+        loginType === "admin"
+        && userType !== "admin"
+      ) {
+        alert(
+          "These credentials do not belong to an admin account."
+        );
+
+        return;
+      }
+
+      if (
+        loginType === "donor"
+        && userType !== "donor"
+      ) {
+        alert(
+          "Please use the correct login section for your account."
+        );
+
+        return;
+      }
+
+      if (
+        loginType === "ngo"
+        && userType !== "ngo"
+      ) {
+        alert(
+          "Please use the correct login section for your account."
         );
 
         return;
@@ -71,12 +146,12 @@ function Login() {
 
       localStorage.setItem(
         "user_type",
-        data.user_type
+        userType
       );
 
       localStorage.setItem(
         "user_id",
-        data.user_id
+        String(data.user_id || "")
       );
 
       localStorage.setItem(
@@ -103,7 +178,7 @@ function Login() {
 
       console.log(
         "User Type:",
-        data.user_type
+        userType
       );
 
       console.log(
@@ -126,27 +201,21 @@ function Login() {
       );
 
       // =================================================
-      // NORMALIZE USER TYPE
+      // ADMIN LOGIN
       // =================================================
 
-      const userType = String(
-        data.user_type || ""
-      )
-        .trim()
-        .toLowerCase();
+      if (userType === "admin") {
 
-      console.log(
-        "Normalized User Type:",
-        userType
-      );
+        alert(
+          "Admin Login Successful!"
+        );
 
-      // =================================================
-      // SUCCESS
-      // =================================================
+        navigate(
+          "/admin-dashboard"
+        );
 
-      alert(
-        "Login Successful!"
-      );
+        return;
+      }
 
       // =================================================
       // NGO LOGIN
@@ -154,8 +223,8 @@ function Login() {
 
       if (userType === "ngo") {
 
-        console.log(
-          "Redirecting to NGO Dashboard..."
+        alert(
+          "NGO Login Successful!"
         );
 
         navigate(
@@ -171,8 +240,8 @@ function Login() {
 
       if (userType === "donor") {
 
-        console.log(
-          "Redirecting to Donor Dashboard..."
+        alert(
+          "Login Successful!"
         );
 
         navigate(
@@ -236,7 +305,6 @@ function Login() {
         alert(
           "Cannot connect to backend server"
         );
-
       }
 
     } finally {
@@ -245,7 +313,6 @@ function Login() {
 
     }
   };
-
 
   // =====================================================
   // PAGE
@@ -262,8 +329,6 @@ function Login() {
 
         <div className="brand-content">
 
-          {/* LOGO */}
-
           <div className="brand-logo">
 
             <span className="brand-logo-icon">
@@ -275,9 +340,6 @@ function Login() {
             </span>
 
           </div>
-
-
-          {/* BRAND MESSAGE */}
 
           <div className="brand-message">
 
@@ -306,9 +368,6 @@ function Login() {
 
           </div>
 
-
-          {/* IMPACT CARD */}
-
           <div className="impact-card">
 
             <div className="impact-icon">
@@ -331,9 +390,6 @@ function Login() {
           </div>
 
         </div>
-
-
-        {/* DECORATIONS */}
 
         <div
           className="brand-decoration decoration-one"
@@ -381,6 +437,122 @@ function Login() {
 
 
           {/* =================================================
+              LOGIN TYPE TABS
+          ================================================= */}
+
+          <div className="login-type-tabs">
+
+            <button
+              type="button"
+              className={
+                loginType === "donor"
+                  ? "login-type-tab active"
+                  : "login-type-tab"
+              }
+              onClick={() =>
+                changeLoginType("donor")
+              }
+            >
+              <span className="login-tab-icon">
+                👤
+              </span>
+
+              <span>
+                Donor
+              </span>
+            </button>
+
+
+            <button
+              type="button"
+              className={
+                loginType === "ngo"
+                  ? "login-type-tab active"
+                  : "login-type-tab"
+              }
+              onClick={() =>
+                changeLoginType("ngo")
+              }
+            >
+              <span className="login-tab-icon">
+                🏢
+              </span>
+
+              <span>
+                NGO
+              </span>
+            </button>
+
+
+            <button
+              type="button"
+              className={
+                loginType === "admin"
+                  ? "login-type-tab active admin-tab"
+                  : "login-type-tab admin-tab"
+              }
+              onClick={() =>
+                changeLoginType("admin")
+              }
+            >
+              <span className="login-tab-icon">
+                🛡️
+              </span>
+
+              <span>
+                Admin
+              </span>
+            </button>
+
+          </div>
+
+
+          {/* =================================================
+              SELECTED LOGIN MESSAGE
+          ================================================= */}
+
+          <div className="selected-login-message">
+
+            {loginType === "donor" && (
+              <>
+                <strong>
+                  Donor Login
+                </strong>
+
+                <span>
+                  Sign in to manage your donations.
+                </span>
+              </>
+            )}
+
+            {loginType === "ngo" && (
+              <>
+                <strong>
+                  NGO Login
+                </strong>
+
+                <span>
+                  Sign in to manage NGO activities.
+                </span>
+              </>
+            )}
+
+            {loginType === "admin" && (
+              <>
+                <strong>
+                  Admin Login
+                </strong>
+
+                <span>
+                  Sign in to manage ResourceBridge.
+                </span>
+              </>
+            )}
+
+          </div>
+
+
+          {/* =================================================
               LOGIN FORM
           ================================================= */}
 
@@ -396,12 +568,19 @@ function Login() {
             <div className="form-group">
 
               <label htmlFor="email">
-                Email address
+
+                {loginType === "admin"
+                  ? "Admin email"
+                  : "Email address"}
+
               </label>
 
               <div className="input-wrapper">
 
-                <span className="input-icon" aria-hidden="true">
+                <span
+                  className="input-icon"
+                  aria-hidden="true"
+                >
                   ✉️
                 </span>
 
@@ -410,7 +589,11 @@ function Login() {
                   name="email"
                   type="email"
                   autoComplete="username"
-                  placeholder="you@example.com"
+                  placeholder={
+                    loginType === "admin"
+                      ? "admin@example.com"
+                      : "you@example.com"
+                  }
                   value={email}
                   onChange={(e) =>
                     setEmail(
@@ -508,7 +691,11 @@ function Login() {
 
             <button
               type="submit"
-              className="login-submit"
+              className={
+                loginType === "admin"
+                  ? "login-submit admin-login-submit"
+                  : "login-submit"
+              }
               disabled={loading}
             >
 
@@ -526,7 +713,9 @@ function Login() {
 
                 <>
                   <span>
-                    Sign In
+                    {loginType === "admin"
+                      ? "Sign In as Admin"
+                      : "Sign In"}
                   </span>
 
                   <span className="button-arrow">
@@ -545,22 +734,48 @@ function Login() {
               REGISTER
           ================================================= */}
 
-          <div className="register-prompt">
+          {loginType !== "admin" && (
 
-            <span>
-              Don't have an account?
-            </span>
+            <div className="register-prompt">
 
-            <button
-              type="button"
-              onClick={() =>
-                navigate("/register")
-              }
-            >
-              Create an account
-            </button>
+              <span>
+                Don't have an account?
+              </span>
 
-          </div>
+              <button
+                type="button"
+                onClick={() =>
+                  navigate("/register")
+                }
+              >
+                Create an account
+              </button>
+
+            </div>
+
+          )}
+
+
+          {/* =================================================
+              ADMIN INFORMATION
+          ================================================= */}
+
+          {loginType === "admin" && (
+
+            <div className="admin-login-info">
+
+              <span>
+                🛡️
+              </span>
+
+              <p>
+                Admin access is restricted to
+                authorized ResourceBridge administrators.
+              </p>
+
+            </div>
+
+          )}
 
 
           {/* =================================================
