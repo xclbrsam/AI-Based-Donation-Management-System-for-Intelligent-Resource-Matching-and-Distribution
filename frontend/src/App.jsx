@@ -6,37 +6,36 @@ import Navbar from "./components/Navbar/Navbar";
 // PUBLIC PAGES
 // =====================================================
 
-import Home from "./pages/Home/Home";
-import Login from "./pages/Login/Login";
-import RegisterChoice from "./pages/RegisterChoice/RegisterChoice";
+import Home from "./Pages/Home/Home";
+import Login from "./Pages/Login/Login";
+import RegisterChoice from "./Pages/RegisterChoice/RegisterChoice";
 
 // =====================================================
 // DONOR PAGES
 // =====================================================
 
-import DonorRegister from "./pages/Donor/DonorRegister";
-import DonorDashboard from "./pages/Donor/DonorDashboard";
-import DonateItem from "./pages/Donor/DonateItem";
-import MyDonations from "./pages/Donor/MyDonations";
-import EditDonation from "./pages/Donor/EditDonation";
-import DonorProfile from "./pages/Donor/DonorProfile";
-import MyActivity from "./pages/Donor/MyActivity";
-import DonorNotifications from "./pages/Donor/DonorNotifications";
-import DonorSettings from "./pages/Donor/DonorSettings";
-
-import RankingPage from "./pages/Ranking/RankingPage";
+import DonorRegister from "./Pages/Donor/DonorRegister";
+import DonorDashboard from "./Pages/Donor/DonorDashboard";
+import DonateItem from "./Pages/Donor/DonateItem";
+import MyDonations from "./Pages/Donor/MyDonations";
+import EditDonation from "./Pages/Donor/EditDonation";
+import DonorProfile from "./Pages/Donor/DonorProfile";
+import MyActivity from "./Pages/Donor/MyActivity";
+import DonorNotifications from "./Pages/Donor/DonorNotifications";
+import DonorSettings from "./Pages/Donor/DonorSettings";
+import RankingPage from "./Pages/Ranking/RankingPage";
 import { RankingProvider } from "./context/RankingContext";
 
 // =====================================================
 // NGO PAGES
 // =====================================================
 
-import NGORegister from "./pages/NGO/NGORegister";
-import NGODashboard from "./pages/NGO/NGODashboard";
-import NGOProfile from "./pages/NGO/NGOProfile";
-import NGOWorkspacePage from "./pages/NGO/NGOWorkspacePage";
-import ExploreNGOs from "./pages/NGO/ExploreNGOs";
-import NGODetails from "./pages/NGO/NGODetails";
+import NGORegister from "./Pages/NGO/NGORegister";
+import NGODashboard from "./Pages/NGO/NGODashboard";
+import NGOProfile from "./Pages/NGO/NGOProfile";
+import NGOWorkspacePage from "./Pages/NGO/NGOWorkspacePage";
+import ExploreNGOs from "./Pages/NGO/ExploreNGOs";
+import NGODetails from "./Pages/NGO/NGODetails";
 
 // =====================================================
 // LAYOUTS
@@ -52,17 +51,17 @@ import AdminLayout from "./components/AdminLayout/AdminLayout";
 // ADMIN PAGES
 // =====================================================
 
-import AdminDashboard from "./pages/Admin/AdminDashboard";
-import AdminNGOs from "./pages/Admin/AdminNGOs";
-import AdminDonors from "./pages/Admin/AdminDonors";
-import AdminDonations from "./pages/Admin/AdminDonations";
-import AdminRanking from "./pages/Admin/AdminRanking";
-import AdminRequirements from "./pages/Admin/AdminRequirements";
-import AdminAllocations from "./pages/Admin/AdminAllocations";
-import AdminPickups from "./pages/Admin/AdminPickups";
-import AdminNotifications from "./pages/Admin/AdminNotifications";
-import AdminAnalytics from "./pages/Admin/AdminAnalytics";
-import AdminSettings from "./pages/Admin/AdminSettings";
+import AdminDashboard from "./Pages/Admin/AdminDashboard";
+import AdminNGOs from "./Pages/Admin/AdminNGOs";
+import AdminDonors from "./Pages/Admin/AdminDonors";
+import AdminDonations from "./Pages/Admin/AdminDonations";
+import AdminRanking from "./Pages/Admin/AdminRanking";
+import AdminRequirements from "./Pages/Admin/AdminRequirements";
+import AdminAllocations from "./Pages/Admin/AdminAllocations";
+import AdminPickups from "./Pages/Admin/AdminPickups";
+import AdminNotifications from "./Pages/Admin/AdminNotifications";
+import AdminAnalytics from "./Pages/Admin/AdminAnalytics";
+import AdminSettings from "./Pages/Admin/AdminSettings";
 
 // =====================================================
 // USER TYPE
