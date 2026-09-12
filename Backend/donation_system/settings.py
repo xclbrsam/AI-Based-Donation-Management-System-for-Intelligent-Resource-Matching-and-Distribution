@@ -248,6 +248,17 @@ CORS_ALLOWED_ORIGINS = [
     'https://ai-based-donation-management-system-hazel.vercel.app',
 ]
 
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^https://.*\.vercel\.app$',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'https://ai-based-donation-management-system-hazel.vercel.app',
+    'https://*.vercel.app',
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 
