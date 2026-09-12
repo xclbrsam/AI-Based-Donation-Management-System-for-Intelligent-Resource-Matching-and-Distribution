@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv(
     'django-insecure-local-development-key',
 )
 
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app']
 
