@@ -4,6 +4,17 @@ An AI-assisted donation management platform that connects donors, NGOs, and admi
 
 > This documentation describes the current implementation. It does not imply that the application includes payment processing, production deployment, or any other capability not present in the repository.
 
+**Built with:** React, Vite, Django REST Framework, PostgreSQL, JWT authentication, and Google Gemini-assisted image analysis and resource matching.
+
+## Project Highlights
+
+- AI-assisted donation and resource matching against approved NGO requirements
+- Donor, NGO, and administrator workspaces with role-aware navigation
+- Donation, allocation, and pickup lifecycle tracking
+- Transparent monitoring through statuses, notifications, and dashboards
+- Donor ranking based on contribution data
+- REST API architecture with JWT access and refresh tokens
+
 ## Project Overview
 
 The system provides separate workspaces for donors, NGOs, and administrators. Donors can submit items, inspect approved NGOs and their requirements, receive AI-assisted matching recommendations, allocate donations, follow pickup progress, and view their ranking. NGOs can manage requirements, review incoming allocations, and coordinate pickups. Administrators can monitor platform statistics and manage donors, NGOs, donations, requirements, allocations, and pickups.
@@ -154,13 +165,42 @@ The active `Backend/donation_system/settings.py` reads `DB_PASSWORD` from the pr
 
 The active Django project is `Backend/donation_system`, with API routes mounted under `/api/`. The `donor` app exposes registration, login, donation CRUD/status operations, NGO discovery and details, NGO requirements, matching, AI matching, allocations, donor donations and ranking, profiles, uploads, pickups, and admin management endpoints. The `notifications` app exposes recipient-scoped notification listing, unread counts, read state, and deletion. JWT login and refresh endpoints are available at `/api/login/` and `/api/token/refresh/`.
 
-## Screenshots
+## 📸 Application Screenshots
 
-No screenshots are included yet. Add real captures under [`docs/screenshots/`](docs/screenshots/) and link them here, for example:
+The following gallery is reserved for real screenshots of the donor, NGO, and administrator interfaces. No screenshots are currently included in the repository, so no nonexistent image files are referenced.
 
-```markdown
-![Donor dashboard](docs/screenshots/donor-dashboard.png)
-```
+> Screenshots will be added here after capturing the latest application interface. Place real image files in [`docs/screenshots/`](docs/screenshots/) and link only those files that exist.
+
+### 👤 Donor Interface
+
+| Screen | Description |
+| --- | --- |
+| Donor Dashboard | Overview of donation totals, progress, recent activity, ranking, notifications, and available actions. |
+| Donation | Form for creating an item donation, including item details, quantity, condition, location, and optional image analysis. |
+| My Donations | Donor donation list with status tracking, details, allocation information, and eligible actions. |
+| Explore NGOs | Browse approved NGOs and discover organizations with relevant requirements. |
+| NGO Details | Review an NGO's profile and available donation context before allocating support. |
+| Ranking | Community donor leaderboard and current donor ranking. |
+| Notifications | Donation, matching, allocation, and pickup updates for the donor. |
+
+### 🏢 NGO Interface
+
+| Screen | Description |
+| --- | --- |
+| NGO Dashboard | Overview of incoming donations, accepted and collected items, requirements, pickups, and ranking. |
+| Donation/Requirement Management | Review allocations and maintain active item requirements with quantities and priorities. |
+| Ranking | Shared donor leaderboard displayed in the NGO workspace. |
+| Notifications | NGO-scoped updates for requirements, allocations, matches, and pickups. |
+
+### 🛠️ Admin Interface
+
+| Screen | Description |
+| --- | --- |
+| Admin Dashboard | Platform statistics and recent donation activity. |
+| Donor Management | Review and manage donor records. |
+| NGO Management | Review NGO records and approve or reject NGO registrations. |
+| Donation Management | Inspect and manage donation records and statuses. |
+| Ranking | Searchable donor contribution ranking. |
 
 ## Future Improvements
 
