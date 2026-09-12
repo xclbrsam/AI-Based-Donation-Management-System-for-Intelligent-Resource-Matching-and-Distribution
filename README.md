@@ -167,40 +167,31 @@ The active Django project is `Backend/donation_system`, with API routes mounted 
 
 ## 📸 Application Screenshots
 
-The following gallery is reserved for real screenshots of the donor, NGO, and administrator interfaces. No screenshots are currently included in the repository, so no nonexistent image files are referenced.
-
-> Screenshots will be added here after capturing the latest application interface. Place real image files in [`docs/screenshots/`](docs/screenshots/) and link only those files that exist.
+The following gallery presents the real screenshots currently available for the donor, NGO, and administrator interfaces. Additional screens can be added to [`docs/screenshots/`](docs/screenshots/) as they are captured.
 
 ### 👤 Donor Interface
 
 | Screen | Description |
 | --- | --- |
-| Donor Dashboard | Overview of donation totals, progress, recent activity, ranking, notifications, and available actions. |
-| Donation | Form for creating an item donation, including item details, quantity, condition, location, and optional image analysis. |
-| My Donations | Donor donation list with status tracking, details, allocation information, and eligible actions. |
-| Explore NGOs | Browse approved NGOs and discover organizations with relevant requirements. |
-| NGO Details | Review an NGO's profile and available donation context before allocating support. |
-| Ranking | Community donor leaderboard and current donor ranking. |
-| Notifications | Donation, matching, allocation, and pickup updates for the donor. |
+| Donor Dashboard | ![Donor Dashboard](docs/screenshots/donor-dashboard.png.png)<br>Overview of donation totals, progress, recent activity, and available actions. |
+| Donation | ![Donation](docs/screenshots/donate.png.png)<br>Form for creating an item donation with item details, quantity, condition, location, and optional image analysis. |
+| My Donations | ![My Donations](docs/screenshots/my-donations.png.png)<br>Donor donation list with status tracking, details, allocation information, and eligible actions. |
+| Ranking | ![Donor Ranking](docs/screenshots/ranking.png.png)<br>Community donor leaderboard and contribution ranking. |
 
 ### 🏢 NGO Interface
 
 | Screen | Description |
 | --- | --- |
-| NGO Dashboard | Overview of incoming donations, accepted and collected items, requirements, pickups, and ranking. |
-| Donation/Requirement Management | Review allocations and maintain active item requirements with quantities and priorities. |
-| Ranking | Shared donor leaderboard displayed in the NGO workspace. |
-| Notifications | NGO-scoped updates for requirements, allocations, matches, and pickups. |
+| NGO Dashboard | ![NGO Dashboard](docs/screenshots/ngo-dashboard.png.png)<br>Overview of incoming donations, accepted and collected items, requirements, pickups, and ranking. |
+| Donation/Requirement Management | ![NGO Requirements](docs/screenshots/ngo-requirements.png.png)<br>Manage active NGO requirements with item details, quantities, priorities, and fulfillment information. |
+| Ranking | ![NGO Ranking](docs/screenshots/ranking.png.png)<br>Shared donor leaderboard displayed in the NGO workspace. |
 
 ### 🛠️ Admin Interface
 
 | Screen | Description |
 | --- | --- |
-| Admin Dashboard | Platform statistics and recent donation activity. |
-| Donor Management | Review and manage donor records. |
-| NGO Management | Review NGO records and approve or reject NGO registrations. |
-| Donation Management | Inspect and manage donation records and statuses. |
-| Ranking | Searchable donor contribution ranking. |
+| Admin Dashboard | ![Admin Dashboard](docs/screenshots/admin-dashboard.png.png)<br>Platform statistics and recent donation activity. |
+| Ranking | ![Admin Ranking](docs/screenshots/ranking.png.png)<br>Searchable donor contribution ranking. |
 
 ## Future Improvements
 
