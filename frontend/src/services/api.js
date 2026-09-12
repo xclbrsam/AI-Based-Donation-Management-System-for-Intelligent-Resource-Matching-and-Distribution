@@ -1,7 +1,18 @@
 import axios from "axios";
 
+const configuredApiUrl = import.meta.env.VITE_API_URL || (
+  import.meta.env.PROD
+    ? "https://ai-based-donation-management-system-six.vercel.app"
+    : "http://127.0.0.1:8000"
+);
+
+const normalizedApiUrl = configuredApiUrl.replace(/\/$/, "");
+const apiBaseUrl = normalizedApiUrl.endsWith("/api")
+  ? normalizedApiUrl
+  : `${normalizedApiUrl}/api`;
+
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api/",
+  baseURL: `${apiBaseUrl}/`,
 });
 
 
@@ -82,7 +93,7 @@ api.interceptors.response.use(
         // ---------------------------------------------
 
         const response = await axios.post(
-          "http://127.0.0.1:8000/api/token/refresh/",
+          `${apiBaseUrl}/token/refresh/`,
           {
             refresh: refresh,
           }
